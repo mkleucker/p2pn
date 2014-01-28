@@ -19,7 +19,7 @@ public class Peer {
 	Peer(){
 		
 	}
-	
+		
 	public int getId() {
 		return id;
 	}
@@ -51,5 +51,6 @@ public class Peer {
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
 	}
+	
 
 }
