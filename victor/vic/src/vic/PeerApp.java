@@ -109,37 +109,4 @@ public class PeerApp {
 		}
 	}
 
-	class StartService implements Runnable{
-		int port;
-		public StartService(int port){
-			this.port = port;
-		}
-		@Override
-		public void run(){
-			try{
-				int count = 0;
-				ServerSocket serverSocket = new ServerSocket(port);
-				jta.append("Server is now listening to port " + port + "!\n",false);
-				while(true){
-					Socket socket = serverSocket.accept();
-					count++;
-
-					InetAddress inetAddress = socket.getInetAddress();
-					String hostName = inetAddress.getHostName();
-					String hostAddress = inetAddress.getHostAddress();
-					NewUser newUser = new NewUser(count,hostName,hostAddress);
-					Thread thread2 = new Thread(newUser);
-					SocketThread socketThread = new SocketThread(socket);
-					Thread thread = new Thread(socketThread);
-
-					thread2.start();
-					thread.start();
-				}
-			}
-			catch(Exception ex) {
-				jta.append("Exception! \n",false);
-				System.err.println(ex);
-			}
-		}
-	}
 }
