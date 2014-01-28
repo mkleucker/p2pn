@@ -52,5 +52,4 @@ public class Peer {
 		this.capacity = capacity;
 	}
 	
-
 }

@@ -1,13 +1,21 @@
 package vic;
 
+import java.net.Socket;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import java.net.Socket;
-
-import java.util.Date;
-import java.util.Scanner;
-import java.util.ArrayList;
 
 public class PeerApp {
 
@@ -70,7 +78,7 @@ public class PeerApp {
 	class connectionTask implements Runnable {
 		String ip;
 		int port;
-		public connectTask(String ip, int port) {
+		public connectionTask(String ip, int port) {
 			this.ip = ip;
 			this.port = port;
 		}
