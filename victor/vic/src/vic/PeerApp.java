@@ -1,25 +1,35 @@
 package vic;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import java.net.Socket;
+
+import java.util.Date;
+import java.util.Scanner;
 import java.util.ArrayList;
 
 public class PeerApp {
-	
+
 	Peer peer;
 	ArrayList<Peer> peerList;
 
-	
+	PrintWriter output;
+	Scanner input;
+
+
 	/*
 	 * Constructor of the class PeerApp
 	 */
-	PeerApp(int idC, String adressC, int portC, int capacityC){
-		peer = new Peer(idC,adressC,portC,capacityC);//creation of the Peer
+	PeerApp(int idC, String addressC, int portC, int capacityC){
+		peer = new Peer(idC,addressC,portC,capacityC);//creation of the Peer
 		peerList = new ArrayList<Peer>();
 	}
-	
+
 	public ArrayList<Peer> getPeer(){
 		return peerList;
 	}
-	
+
 	public int getId() {
 		return peer.getId();
 	}
@@ -32,8 +42,8 @@ public class PeerApp {
 		return peer.getAdress();
 	}
 
-	public void setAdress(String adress) {
-		peer.setAdress(adress);
+	public void setAdress(String address) {
+		peer.setAdress(address);
 	}
 
 	public int getPort() {
@@ -51,9 +61,85 @@ public class PeerApp {
 	public void setCapacity(int capacity) {
 		peer.setCapacity(capacity);
 	}
-	
-	
 
-	
-	
+	public void hello(String ip, int port) {
+		Thread connection = new Thread(new connectionTask(ip, port));
+		connection.start();
+	}
+
+	class connectionTask implements Runnable {
+		String ip;
+		int port;
+		public connectTask(String ip, int port) {
+			this.ip = ip;
+			this.port = port;
+		}
+		@Override
+		public void run() {
+			try {
+				Socket socket = new Socket(ip, port);
+				input = new Scanner(socket.getInputStream());
+				output = new PrintWriter(socket.getOutputStream());
+
+				System.out.println("Connection established to " + ip + ':' + port);
+
+				output.flush();
+			} catch (IOException ex) {
+				System.err.println(ex);
+			}
+		}
+	}
+
+	class listeningTask implements Runnable {
+		int port;
+		public listeningTask(int port) {
+			this.port = port;
+		}
+		@Override
+		public void run() { 
+			try {
+				ServerSocket serverSocket = new ServerSocket(port);
+				while(true){
+					Socket socket = serverSocket.accept();
+
+				}
+			} catch (IOException ex) {
+				System.err.println(ex);
+			}
+		}
+	}
+
+	class StartService implements Runnable{
+		int port;
+		public StartService(int port){
+			this.port = port;
+		}
+		@Override
+		public void run(){
+			try{
+				int count = 0;
+				ServerSocket serverSocket = new ServerSocket(port);
+				jta.append("Server is now listening to port " + port + "!\n",false);
+				while(true){
+					Socket socket = serverSocket.accept();
+					count++;
+
+					InetAddress inetAddress = socket.getInetAddress();
+					String hostName = inetAddress.getHostName();
+					String hostAddress = inetAddress.getHostAddress();
+					NewUser newUser = new NewUser(count,hostName,hostAddress);
+					Thread thread2 = new Thread(newUser);
+					SocketThread socketThread = new SocketThread(socket);
+					Thread thread = new Thread(socketThread);
+
+					thread2.start();
+					thread.start();
+				}
+			}
+			catch(Exception ex) {
+				jta.append("Exception! \n",false);
+				System.err.println(ex);
+			}
+		}
+	}
 }
