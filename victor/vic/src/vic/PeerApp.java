@@ -20,7 +20,8 @@ import java.io.PrintWriter;
 public class PeerApp {
 
 	Peer peer;
-	ArrayList<Peer> peerList;
+	//ArrayList<Peer> peerList; 		Use HashMap instead
+	HashMap<int, Peer> peerList;
 
 	PrintWriter output;
 	Scanner input;
@@ -29,13 +30,26 @@ public class PeerApp {
 	/*
 	 * Constructor of the class PeerApp
 	 */
-	PeerApp(int idC, String addressC, int portC, int capacityC){
-		peer = new Peer(idC,addressC,portC,capacityC);//creation of the Peer
-		peerList = new ArrayList<Peer>();
+	public PeerApp(int id, String address, int port, int capacity) {
+		peer = new Peer(id, address, port, capacity);//creation of the Peer
+		peerList = new HashMap<int, Peer>();
 	}
 
-	public ArrayList<Peer> getPeer(){
-		return peerList;
+	public Set<Map.Entry<int, Peer>> getPeerSet() {
+		Set<Map.Entry<int, Peer>> peerSet = peerList.entrySet();
+		return peerSet;
+	}
+
+	public void plist() {
+		System.out.println("List of peers known to the local peer: ");
+		Set<Map.Entry<int, Peer>> peerSet = getPeerSet();
+		for (Map.Entry<int, Peer> entry: peerSet) {
+			Peer peer = entry.getValue();
+			System.out.print("Name: P" + peer.id + "  ");
+			System.out.print("IP: " + peer.ip + "  ");
+			System.out.print("Port: " + peer.port + "  ");
+			System.out.println("Capacity: " + peer.capacity);
+		}
 	}
 
 	public int getId() {
