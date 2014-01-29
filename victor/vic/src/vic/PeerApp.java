@@ -21,7 +21,7 @@ public class PeerApp {
 
 	Peer peer;
 	//ArrayList<Peer> peerList; 		Use HashMap instead
-	HashMap<int, Peer> peerList;
+	HashMap<Integer, Peer> peerList;
 
 	PrintWriter output;
 	Scanner input;
@@ -32,21 +32,21 @@ public class PeerApp {
 	 */
 	public PeerApp(int id, String address, int port, int capacity) {
 		peer = new Peer(id, address, port, capacity);//creation of the Peer
-		peerList = new HashMap<int, Peer>();
+		peerList = new HashMap<Integer, Peer>();
 	}
 
-	public Set<Map.Entry<int, Peer>> getPeerSet() {
-		Set<Map.Entry<int, Peer>> peerSet = peerList.entrySet();
+	public Set<Map.Entry<Integer, Peer>> getPeerSet() {
+		Set<Map.Entry<Integer, Peer>> peerSet = peerList.entrySet();
 		return peerSet;
 	}
 
 	public void plist() {
 		System.out.println("List of peers known to the local peer: ");
-		Set<Map.Entry<int, Peer>> peerSet = getPeerSet();
-		for (Map.Entry<int, Peer> entry: peerSet) {
+		Set<Map.Entry<Integer, Peer>> peerSet = getPeerSet();
+		for (Map.Entry<Integer, Peer> entry: peerSet) {
 			Peer peer = entry.getValue();
 			System.out.print("Name: P" + peer.id + "  ");
-			System.out.print("IP: " + peer.ip + "  ");
+			System.out.print("IP: " + peer.address + "  ");
 			System.out.print("Port: " + peer.port + "  ");
 			System.out.println("Capacity: " + peer.capacity);
 		}
@@ -60,12 +60,12 @@ public class PeerApp {
 		peer.setId(id);
 	}
 
-	public String getAdress() {
-		return peer.getAdress();
+	public String getAddress() {
+		return peer.getAddress();
 	}
 
-	public void setAdress(String address) {
-		peer.setAdress(address);
+	public void setAddress(String address) {
+		peer.setAddress(address);
 	}
 
 	public int getPort() {
