@@ -26,21 +26,23 @@ public class PeerApp {
 	PrintWriter output;
 	Scanner input;
 
-
-	/*
+	/**
 	 * Constructor of the class PeerApp
 	 */
 	public PeerApp(int id, String address, int port, int capacity) {
 		peer = new Peer(id, address, port, capacity);//creation of the Peer
-		peerList = new HashMap<Integer, Peer>();
+		peerList = new HashMap<Integer, Peer>();	// initialize the peerList
+
+		Thread listening = new Thread(new listeningTask(port));   //start listening to the port
+		listening.start();
 	}
 
-	public Set<Map.Entry<Integer, Peer>> getPeerSet() {
+	public Set<Map.Entry<Integer, Peer>> getPeerSet() {		// return the set of peers in the peerList
 		Set<Map.Entry<Integer, Peer>> peerSet = peerList.entrySet();
 		return peerSet;
 	}
 
-	public void plist() {
+	public void plist() {					//print the peerList on the console
 		System.out.println("List of peers known to the local peer: ");
 		Set<Map.Entry<Integer, Peer>> peerSet = getPeerSet();
 		for (Map.Entry<Integer, Peer> entry: peerSet) {
@@ -84,13 +86,18 @@ public class PeerApp {
 		peer.setCapacity(capacity);
 	}
 
-	public void hello(String ip, int port) {
+	public void hello(String ip, int port) {		// send message to the peer indicated by the ip and port
 		Thread connection = new Thread(new connectionTask(ip, port));
 		connection.start();
+		/**
+		 * A problem here is that we only know the ip and the port of the peer, 
+		 * but we need the whole peer to be added into the peerList, this needs to be
+		 * solved, maybe by adding another argument?
+		 */
 	}
 
-	class connectionTask implements Runnable {
-		String ip;
+	class connectionTask implements Runnable {		//this is used when the local peer wants to establish 
+		String ip;					// a connection to another peer
 		int port;
 		public connectionTask(String ip, int port) {
 			this.ip = ip;
@@ -105,6 +112,10 @@ public class PeerApp {
 
 				System.out.println("Connection established to " + ip + ':' + port);
 
+				/**
+				 *  do something here
+				 */
+
 				output.flush();
 			} catch (IOException ex) {
 				System.err.println(ex);
@@ -112,8 +123,8 @@ public class PeerApp {
 		}
 	}
 
-	class listeningTask implements Runnable {
-		int port;
+	class listeningTask implements Runnable {		//when the peer is created, it will use this thread to listen
+		int port;					// to its port
 		public listeningTask(int port) {
 			this.port = port;
 		}
@@ -124,6 +135,9 @@ public class PeerApp {
 				while(true){
 					Socket socket = serverSocket.accept();
 
+					/**
+					 * new a thread to deal with this request, and send some messages.
+					 */
 				}
 			} catch (IOException ex) {
 				System.err.println(ex);
