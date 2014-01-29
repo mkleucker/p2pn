@@ -27,6 +27,12 @@ public class PeerApp {
 	Scanner input;
 
 	/**
+	 *used to ensure peers finished saying hello before some 
+	 *other peers come and start to say hello
+	 */
+	Lock lock = new ReentrantLock();	
+
+	/**
 	 * Constructor of the class PeerApp
 	 */
 	public PeerApp(int id, String address, int port, int capacity) {
@@ -116,7 +122,9 @@ public class PeerApp {
 				 *  do something here
 				 */
 
+				output.println("Hello this is peer P" + this.peer.id);
 				output.flush();
+
 			} catch (IOException ex) {
 				System.err.println(ex);
 			}
@@ -138,11 +146,48 @@ public class PeerApp {
 					/**
 					 * new a thread to deal with this request, and send some messages.
 					 */
+					Thread thread = new Thread(new answerTask(socket));
+					thread.start();
 				}
-			} catch (IOException ex) {
+			} catch (Exception ex) {
 				System.err.println(ex);
 			}
 		}
 	}
 
+	/**
+	 * This thread is created when there is a new connection to the local peer,
+	 * and this thread will answer the request of the peer.
+	 */
+	protected class answerTask implements Runnable {
+		private Socket socket;
+
+		SocketThread(Socket socket){
+			this.socket = socket;
+		}
+
+		@Override
+		public void run(){
+			try{
+				input = new Scanner(socket.getInputStream());
+				output = new PrintWriter(socket.getOutputStream());
+
+				while(true){
+					lock.lock();
+
+					String greeting = input.nextLine();
+					System.out.println(greeting);
+
+					lock.unlock();
+				}
+			} catch(Exception ex) {
+				System.err.println(ex);
+				try {
+					socket.close();
+				} catch(Exception e) {
+					System.err.println(e);
+				}
+			}
+		}
+	}
 }
