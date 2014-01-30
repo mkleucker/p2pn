@@ -20,22 +20,44 @@ import java.io.PrintWriter;
 public class PeerApp {
 
 	Peer peer;
-	ArrayList<Peer> peerList;
+	//ArrayList<Peer> peerList; 		Use HashMap instead
+	HashMap<Integer, Peer> peerList;
 
 	PrintWriter output;
 	Scanner input;
 
+	/**
+	 *used to ensure peers finished saying hello before some 
+	 *other peers come and start to say hello
+	 */
+	Lock lock = new ReentrantLock();	
 
-	/*
+	/**
 	 * Constructor of the class PeerApp
 	 */
-	PeerApp(int idC, String addressC, int portC, int capacityC){
-		peer = new Peer(idC,addressC,portC,capacityC);//creation of the Peer
-		peerList = new ArrayList<Peer>();
+	public PeerApp(int id, String address, int port, int capacity) {
+		peer = new Peer(id, address, port, capacity);//creation of the Peer
+		peerList = new HashMap<Integer, Peer>();	// initialize the peerList
+
+		Thread listening = new Thread(new listeningTask(port));   //start listening to the port
+		listening.start();
 	}
 
-	public ArrayList<Peer> getPeer(){
-		return peerList;
+	public Set<Map.Entry<Integer, Peer>> getPeerSet() {		// return the set of peers in the peerList
+		Set<Map.Entry<Integer, Peer>> peerSet = peerList.entrySet();
+		return peerSet;
+	}
+
+	public void plist() {					//print the peerList on the console
+		System.out.println("List of peers known to the local peer: ");
+		Set<Map.Entry<Integer, Peer>> peerSet = getPeerSet();
+		for (Map.Entry<Integer, Peer> entry: peerSet) {
+			Peer peer = entry.getValue();
+			System.out.print("Name: P" + peer.id + "  ");
+			System.out.print("IP: " + peer.address + "  ");
+			System.out.print("Port: " + peer.port + "  ");
+			System.out.println("Capacity: " + peer.capacity);
+		}
 	}
 
 	public int getId() {
@@ -46,12 +68,12 @@ public class PeerApp {
 		peer.setId(id);
 	}
 
-	public String getAdress() {
-		return peer.getAdress();
+	public String getAddress() {
+		return peer.getAddress();
 	}
 
-	public void setAdress(String address) {
-		peer.setAdress(address);
+	public void setAddress(String address) {
+		peer.setAddress(address);
 	}
 
 	public int getPort() {
@@ -70,13 +92,18 @@ public class PeerApp {
 		peer.setCapacity(capacity);
 	}
 
-	public void hello(String ip, int port) {
+	public void hello(String ip, int port) {		// send message to the peer indicated by the ip and port
 		Thread connection = new Thread(new connectionTask(ip, port));
 		connection.start();
+		/**
+		 * A problem here is that we only know the ip and the port of the peer, 
+		 * but we need the whole peer to be added into the peerList, this needs to be
+		 * solved, maybe by adding another argument?
+		 */
 	}
 
-	class connectionTask implements Runnable {
-		String ip;
+	class connectionTask implements Runnable {		//this is used when the local peer wants to establish 
+		String ip;					// a connection to another peer
 		int port;
 		public connectionTask(String ip, int port) {
 			this.ip = ip;
@@ -91,15 +118,21 @@ public class PeerApp {
 
 				System.out.println("Connection established to " + ip + ':' + port);
 
+				/**
+				 *  do something here
+				 */
+
+				output.println("Hello this is peer P" + this.peer.id);
 				output.flush();
+
 			} catch (IOException ex) {
 				System.err.println(ex);
 			}
 		}
 	}
 
-	class listeningTask implements Runnable {
-		int port;
+	class listeningTask implements Runnable {		//when the peer is created, it will use this thread to listen
+		int port;					// to its port
 		public listeningTask(int port) {
 			this.port = port;
 		}
@@ -110,11 +143,51 @@ public class PeerApp {
 				while(true){
 					Socket socket = serverSocket.accept();
 
+					/**
+					 * new a thread to deal with this request, and send some messages.
+					 */
+					Thread thread = new Thread(new answerTask(socket));
+					thread.start();
 				}
-			} catch (IOException ex) {
+			} catch (Exception ex) {
 				System.err.println(ex);
 			}
 		}
 	}
 
+	/**
+	 * This thread is created when there is a new connection to the local peer,
+	 * and this thread will answer the request of the peer.
+	 */
+	protected class answerTask implements Runnable {
+		private Socket socket;
+
+		SocketThread(Socket socket){
+			this.socket = socket;
+		}
+
+		@Override
+		public void run(){
+			try{
+				input = new Scanner(socket.getInputStream());
+				output = new PrintWriter(socket.getOutputStream());
+
+				while(true){
+					lock.lock();
+
+					String greeting = input.nextLine();
+					System.out.println(greeting);
+
+					lock.unlock();
+				}
+			} catch(Exception ex) {
+				System.err.println(ex);
+				try {
+					socket.close();
+				} catch(Exception e) {
+					System.err.println(e);
+				}
+			}
+		}
+	}
 }
