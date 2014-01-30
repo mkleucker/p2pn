@@ -16,7 +16,7 @@ public class Main {
     private Object peer;
 
     private BufferedReader reader;
-,
+
     public Main(String[] args){
         this.reader = new BufferedReader(new InputStreamReader(System.in));
         this.peer = new Object();
