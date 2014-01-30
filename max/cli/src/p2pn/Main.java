@@ -13,7 +13,38 @@ import java.io.InputStreamReader;
  */
 public class Main {
 
-    //private Object peer;
+    private Object peer;
+
+    private BufferedReader reader;
+,
+    public Main(String[] args){
+        this.reader = new BufferedReader(new InputStreamReader(System.in));
+        this.peer = new Object();
+        this.parseInput();
+    }
+
+    private void parseInput(){
+        String input;
+        try {
+            System.out.print(">");
+            input = reader.readLine();
+            System.out.println(input);
+            if(input.equals("exit")){
+                System.exit(0);
+            }
+            this.peer.toString();
+            parseInput();
+        } catch (IOException ioe) {
+            System.out.println("IO error!");
+            System.exit(1);
+        }
+
+    }
+
+    private void issueCommandToPeer(){
+
+    }
+
 
     /**
      * Default Java init method
@@ -26,42 +57,6 @@ public class Main {
             System.err.println("Too few arguments. Make sure to provide the Peer ID and the desired port to run on.");
         }
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        parseInput(br);
-
-
-
-    }
-
-    /**
-     * Initiating the peer.
-     */
-    private void initPeer(String id, int port){
-        //this.peer = new Peer(id, port);
-    }
-
-    private void shutdownPeer(){
-        //this.peer.shutdown();
-    }
-
-    private static void parseInput(BufferedReader br){
-        String input;
-        try {
-            System.out.print(">");
-            input = br.readLine();
-            System.out.println(input);
-            if(input.equals("exit")){
-                System.exit(0);
-            }
-            parseInput(br);
-        } catch (IOException ioe) {
-            System.out.println("IO error!");
-            System.exit(1);
-        }
-
-    }
-
-    private void issueCommandToPeer(){
-
+        Main director = new Main(args);
     }
 }
