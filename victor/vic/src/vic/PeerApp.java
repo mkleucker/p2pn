@@ -16,7 +16,7 @@ public class PeerApp {
 
 	PrintWriter output;
 	Scanner input;
-	int MAXDEPTH;
+	int maxdepth;
 
 	/**
 	 *used to ensure peers finished saying hello before some 
@@ -30,9 +30,9 @@ public class PeerApp {
 	public PeerApp(int id, String ip, int port, int capacity, int max) {
 		peer = new Peer(id, ip, port, capacity);//creation of the Peer
 		peerList = new HashMap<Integer, Peer>();	// initialize the peerList
-		this.MAXDEPTH = max;
+		this.maxdepth = max;
 
-		Thread listening = new Thread(new listeningTask());   //start listening to the port
+		Thread listening = new Thread(new ListeningTask());   //start listening to the port
 		listening.start();
 	}
 
@@ -96,13 +96,13 @@ public class PeerApp {
 			ipAux = peerAux.getIP();
 			portAux = peerAux.getPort();
 			// creation of a connection for every peer in the list of peers
-			Thread connection = new Thread(new connectionTask(ipAux, portAux));
+			Thread connection = new Thread(new ConnectionTask(ipAux, portAux));
 			connection.start();
 		}		
 	}
 
 	public void hello(String ip, int port) {		// send message to the peer indicated by the ip and port
-		Thread connection = new Thread(new connectionTask(ip, port));
+		Thread connection = new Thread(new ConnectionTask(ip, port));
 		connection.start();
 		/**
 		 * A problem here is that we only know the ip and the port of the peer, 
@@ -111,10 +111,10 @@ public class PeerApp {
 		 */
 	}
 
-	class connectionTask implements Runnable {		//this is used when the local peer wants to establish 
+	class ConnectionTask implements Runnable {		//this is used when the local peer wants to establish
 		String ip;					// a connection to another peer
 		int port;
-		public connectionTask(String ip, int port) {
+		public ConnectionTask(String ip, int port) {
 			this.ip = ip;
 			this.port = port;
 		}
@@ -131,7 +131,7 @@ public class PeerApp {
 				params.addElement(peer.getIP());
 				params.addElement(new Integer(peer.getPort()));
 				params.addElement(new Integer(peer.getCapacity()));
-				params.addElement(new Integer(MAXDEPTH));
+				params.addElement(new Integer(maxdepth));
 
 				// Issue a request
 				@SuppressWarnings("unchecked")
@@ -157,7 +157,8 @@ public class PeerApp {
 		}
 	}
 
-	public class helloHandler {
+	public class HelloHandler {
+        
 		public Hashtable<String, Peer> hello(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt) {
 			Peer inPeer = new Peer(IdArg, IPArg, portArg, capacityArg);
 			int depth = depthInt;
@@ -228,7 +229,7 @@ public class PeerApp {
 		}
 	}
 
-	class listeningTask implements Runnable {		//when the peer is created, it will use this thread to listen
+	class ListeningTask implements Runnable {		//when the peer is created, it will use this thread to listen
 		@Override
 		public void run() { 
 			try {
@@ -242,7 +243,7 @@ public class PeerApp {
 
 				// Register our handler class as discovery
 				System.out.println("Registering helloHandler class to discovery...");
-				server.addHandler("discovery", new helloHandler());
+				server.addHandler("discovery", new HelloHandler());
 				System.out.println("Now accepting requests. (Halt program to stop.)");
                 server.start();
 			} catch (Exception e) {
@@ -252,82 +253,4 @@ public class PeerApp {
 		}
 	}
 
-	/*
-	class connectionTask implements Runnable {		//this is used when the local peer wants to establish 
-		String ip;					// a connection to another peer
-		int port;
-		public connectionTask(String ip, int port) {
-			this.ip = ip;
-			this.port = port;
-		}
-		@Override
-		public void run() {
-			try {
-				Socket socket = new Socket(ip, port);
-				input = new Scanner(socket.getInputStream());
-				output = new PrintWriter(socket.getOutputStream());
-
-				System.out.println("Connection established to " + ip + ':' + port);
-
-				output.println("Hello this is peer P" + peer.id);
-				output.flush();
-
-			} catch (IOException ex) {
-				System.err.println(ex);
-			}
-		}
-	}
-
-	class listeningTask implements Runnable {		//when the peer is created, it will use this thread to listen
-		int port;					// to its port
-		public listeningTask(int port) {
-			this.port = port;
-		}
-		@Override
-		public void run() { 
-			try {
-				ServerSocket serverSocket = new ServerSocket(port);
-				while(true){
-					Socket socket = serverSocket.accept();
-					Thread thread = new Thread(new answerTask(socket));
-					thread.start();
-				}
-			} catch (Exception ex) {
-				System.err.println(ex);
-			}
-		}
-	}
-
-	protected class answerTask implements Runnable {
-		private Socket socket;
-
-		answerTask(Socket socket){
-			this.socket = socket;
-		}
-
-		@Override
-		public void run(){
-			try{
-				input = new Scanner(socket.getInputStream());
-				output = new PrintWriter(socket.getOutputStream());
-
-				while(true){
-					lock.lock();
-
-					String greeting = input.nextLine();
-					System.out.println(greeting);
-
-					lock.unlock();
-				}
-			} catch(Exception ex) {
-				System.err.println(ex);
-				try {
-					socket.close();
-				} catch(Exception e) {
-					System.err.println(e);
-				}
-			}
-		}
-	}
-	*/
 }
