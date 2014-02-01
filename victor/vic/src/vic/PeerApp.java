@@ -27,7 +27,7 @@ public class PeerApp {
 
 	PrintWriter output;
 	Scanner input;
-	static int MAXDEPTH = 5;
+	int MAXDEPTH;
 
 	/**
 	 *used to ensure peers finished saying hello before some 
@@ -38,9 +38,10 @@ public class PeerApp {
 	/**
 	 * Constructor of the class PeerApp
 	 */
-	public PeerApp(int id, String ip, int port, int capacity) {
+	public PeerApp(int id, String ip, int port, int capacity, int max) {
 		peer = new Peer(id, ip, port, capacity);//creation of the Peer
 		peerList = new HashMap<Integer, Peer>();	// initialize the peerList
+		this.MAXDEPTH = max;
 
 		Thread listening = new Thread(new listeningTask());   //start listening to the port
 		listening.start();
@@ -146,9 +147,9 @@ public class PeerApp {
 	}
 
 	public class helloHandler {
-		public HashMap<Integer, Peer> hello(Integer idInt, Integer depthInt) {
-			int id = idInt.intValue();
+		public HashMap<Integer, Peer> hello(Peer inPeer, Integer depthInt) {
 			int depth = depthInt.intValue();
+			peerList.put(new Integer(inPeer.getId()), inPeer);
 			HashMap<Integer, Peer> res = new HashMap<Integer, Peer>();
 			res.put(new Integer(peer.getId()), peer);
 
@@ -168,7 +169,7 @@ public class PeerApp {
 					// Create the request parameters using user input
 					Vector<Object> params = new Vector<Object>();
 					params.addElement(peer);
-					params.addElement(new Integer(MAXDEPTH));
+					params.addElement(new Integer(depth - 1));
 
 					// Issue a request
 					@SuppressWarnings("unchecked")
@@ -177,6 +178,12 @@ public class PeerApp {
 					/**
 					 * then add the peers in this vector to the peer list of the current peer;
 					 */
+					Iterator<Entry<Integer, Peer>> iterator = result.entrySet().iterator();
+					while(iterator.hasNext()) {
+						Entry<Integer, Peer> entry = iterator.next();
+						res.put(entry.getKey(), entry.getValue());
+						peerList.put(entry.getKey(), entry.getValue()); // also update the current peer list
+					}
 
 				} catch (IOException e) {
 					System.out.println("IO Exception: " + e.getMessage());
