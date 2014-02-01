@@ -127,7 +127,10 @@ public class PeerApp {
 
 				// Create the request parameters using user input
 				Vector<Object> params = new Vector<Object>();
-				params.addElement(peer);
+				params.addElement(new Integer(peer.getId()));
+				params.addElement(peer.getIP());
+				params.addElement(new Integer(peer.getPort()));
+				params.addElement(new Integer(peer.getCapacity()));
 				params.addElement(new Integer(MAXDEPTH));
 
 				// Issue a request
@@ -152,7 +155,8 @@ public class PeerApp {
 	}
 
 	public class helloHandler {
-		public HashMap<Integer, Peer> hello(Peer inPeer, Integer depthInt) {
+		public HashMap<Integer, Peer> hello(Integer IdArg, String IPArg, Integer portArg, Integer capacityArg, Integer depthInt) {
+			Peer inPeer = new Peer(IdArg.intValue(), IPArg, portArg.intValue(), capacityArg.intValue());
 			int depth = depthInt.intValue();
 			peerList.put(new Integer(inPeer.getId()), inPeer);
 			HashMap<Integer, Peer> res = new HashMap<Integer, Peer>();
@@ -174,7 +178,10 @@ public class PeerApp {
 
 						// Create the request parameters using user input
 						Vector<Object> params = new Vector<Object>();
-						params.addElement(peer);
+						params.addElement(new Integer(peer.getId()));
+						params.addElement(peer.getIP());
+						params.addElement(new Integer(peer.getPort()));
+						params.addElement(new Integer(peer.getCapacity()));
 						params.addElement(new Integer(depth - 1));
 
 						// Issue a request
