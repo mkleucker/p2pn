@@ -1,24 +1,14 @@
 package vic;
 
-import java.net.Socket;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-
-import java.util.*;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-import java.util.HashMap;
-import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import org.apache.xmlrpc.WebServer;
+import org.apache.xmlrpc.XmlRpcClient;
+import org.apache.xmlrpc.XmlRpcException;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import org.apache.xmlrpc.*;
+import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class PeerApp {
 
