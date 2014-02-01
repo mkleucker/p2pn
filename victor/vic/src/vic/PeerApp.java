@@ -234,7 +234,6 @@ public class PeerApp {
                         // Check answer
                         if(incomingData instanceof Hashtable)
                         {
-                            System.out.println("HASHTABLE!");
                             result = (Hashtable<String,Vector>) incomingData;
                         }
                         else
@@ -284,7 +283,8 @@ public class PeerApp {
 				WebServer server = new WebServer(getPort());
 				System.out.println("Started successfully.");
 
-				server.setParanoid(true);
+                // we _do_ want other clients to connect to us
+				server.setParanoid(false);
 				server.acceptClient(getIP());
 
 				// Register our handler class as discovery
