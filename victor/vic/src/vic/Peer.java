@@ -52,4 +52,9 @@ public class Peer {
 		this.capacity = capacity;
 	}
 	
+	public boolean equals(Peer p) {
+		if(p.getId() == getId())
+			return true;
+		return false;
+	}
 }

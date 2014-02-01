@@ -98,6 +98,19 @@ public class PeerApp {
 	}
 
 	public void helloAll() {
+		String ipAux;
+		int portAux;
+		 //Iteration of all the peers in the list of peers
+		Iterator<Map.Entry<Integer, Peer>> iterator = peerList.entrySet().iterator();
+		while(iterator.hasNext()) {			
+			Map.Entry<Integer, Peer> entry = iterator.next();
+			Peer peerAux = entry.getValue();
+			ipAux = peerAux.getIP();
+			portAux = peerAux.getPort();
+			// creation of a connection for every peer in the list of peers
+			Thread connection = new Thread(new connectionTask(ipAux, portAux));
+			connection.start();
+		}		
 	}
 
 	public void hello(String ip, int port) {		// send message to the peer indicated by the ip and port
@@ -165,7 +178,7 @@ public class PeerApp {
 			Set<Map.Entry<Integer, Peer>> set = peerList.entrySet();
 			for (Map.Entry<Integer, Peer> temp: set) {
 				Peer itPeer = temp.getValue();
-				if(true) {
+				if(!peer.equals(itPeer)) {
 					try {
 						// Create the client, identifying the server
 						XmlRpcClient client = new XmlRpcClient("http://" + itPeer.getIP() + ':' + itPeer.getPort() + '/');
