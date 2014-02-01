@@ -2,16 +2,16 @@ package vic;
 
 public class Peer {
 	int id; // the id number for each Peer
-	String address; // the IP address 
+	String ip; // the IP 
 	int port; // the port number  
 	int capacity; // the maximum number of neighbors
 	
 	/*
 	 * Constructor of the class Peer
 	 */
-	Peer(int id, String address, int port, int capacity){
+	Peer(int id, String ip, int port, int capacity){
 		this.id = id; // the id number for each Peer
-		this.address = address; // the IP address 
+		this.ip = ip; // the IP 
 		this.port = port; // the port number  
 		this.capacity = capacity; // the maximum number of neighbors
 	}
@@ -28,12 +28,12 @@ public class Peer {
 		this.id = id;
 	}
 
-	public String getAddress() {
-		return address;
+	public String getIP() {
+		return ip;
 	}
 
-	public void setAddress(String address) {
-		this.address = address;
+	public void setIP(String ip) {
+		this.ip = ip;
 	}
 
 	public int getPort() {

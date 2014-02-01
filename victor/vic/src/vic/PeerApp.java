@@ -7,6 +7,7 @@ import java.net.ServerSocket;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -37,11 +38,11 @@ public class PeerApp {
 	/**
 	 * Constructor of the class PeerApp
 	 */
-	public PeerApp(int id, String address, int port, int capacity) {
-		peer = new Peer(id, address, port, capacity);//creation of the Peer
+	public PeerApp(int id, String ip, int port, int capacity) {
+		peer = new Peer(id, ip, port, capacity);//creation of the Peer
 		peerList = new HashMap<Integer, Peer>();	// initialize the peerList
 
-		Thread listening = new Thread(new listeningTask(port));   //start listening to the port
+		Thread listening = new Thread(new listeningTask());   //start listening to the port
 		listening.start();
 	}
 
@@ -55,10 +56,10 @@ public class PeerApp {
 		Set<Map.Entry<Integer, Peer>> peerSet = getPeerSet();
 		for (Map.Entry<Integer, Peer> entry: peerSet) {
 			Peer peer = entry.getValue();
-			System.out.print("Name: P" + peer.id + "  ");
-			System.out.print("IP: " + peer.address + "  ");
-			System.out.print("Port: " + peer.port + "  ");
-			System.out.println("Capacity: " + peer.capacity);
+			System.out.print("Name: P" + getId() + "  ");
+			System.out.print("IP: " + getIP() + "  ");
+			System.out.print("Port: " + getPort() + "  ");
+			System.out.println("Capacity: " + getCapacity());
 		}
 	}
 
@@ -70,12 +71,12 @@ public class PeerApp {
 		peer.setId(id);
 	}
 
-	public String getAddress() {
-		return peer.getAddress();
+	public String getIP() {
+		return peer.getIP();
 	}
 
-	public void setAddress(String address) {
-		peer.setAddress(address);
+	public void setIP(String ip) {
+		peer.setIP(ip);
 	}
 
 	public int getPort() {
@@ -115,20 +116,20 @@ public class PeerApp {
 		public void run() {
 			try {
 				// Create the client, identifying the server
-				XmlRpcClient client = new XmlRpcClient("http://" + ip + ':' port + '/');
+				XmlRpcClient client = new XmlRpcClient("http://" + ip + ':' + port + '/');
 				System.out.println("Connection established to " + ip + ':' + port);
 
 				// Create the request parameters using user input
-				Vector params = new Vector();
-				params.addElement(ip);
-				params.addElement(new Integer(port));
+				Vector<Object> params = new Vector<Object>();
+				params.addElement(new Integer(getId()));
 				params.addElement(new Integer(MAXDEPTH));
 
 				// Issue a request
-				Vector result = (Vector)client.execute("discovery.hello", params);
+				@SuppressWarnings("unchecked")
+				HashMap<Integer, Peer> result = (HashMap<Integer, Peer>)client.execute("discovery.hello", params);
 
 				/**
-				 * then add the peers in this vector to the peerlist of the current peer;
+				 * then add the peers in this vector to the peer list of the current peer;
 				 */
 
 			} catch (IOException e) {
@@ -140,8 +141,20 @@ public class PeerApp {
 	}
 
 	public class helloHandler {
-		public Vector hello(String ip, Integer portInt, Integer depthInt) {
-			int port = portInteger.intValue();
+		public HashMap<Integer, Peer> hello(Integer idInt, Integer depthInt) {
+			int id = idInt.intValue();
+			int depth = depthInt.intValue();
+			HashMap<Integer, Peer> res = new HashMap<Integer, Peer>();
+
+			if(depth <= 0) {
+				res = peerList;
+				return res;
+			}
+
+			for () {
+			}
+
+			return res;
 		}
 	}
 
@@ -151,18 +164,18 @@ public class PeerApp {
 			try {
 				// Start the server, using built-in version
 				System.out.println("Attempting to start XML-RPC Server...");
-				WebServer server = new WebServer(peer.port);
+				WebServer server = new WebServer(getPort());
 				System.out.println("Started successfully.");
 
 				server.setParanoid(true);
-				server.addClient(peer.ip);
+				server.acceptClient(getIP());
 
 				// Register our handler class as discovery
 				System.out.println("Registering helloHandler class to discovery...");
 				server.addHandler("discovery", new helloHandler());
 				System.out.println("Now accepting requests. (Halt program to stop.)");
 
-			} catch (IOException e) {
+			} catch (Exception e) {
 				System.out.println("Could not start server: " + e.getMessage(  ));
 			}
 		}
