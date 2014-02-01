@@ -96,6 +96,9 @@ public class PeerApp {
 		peer.setCapacity(capacity);
 	}
 
+	public void helloAll() {
+	}
+
 	public void hello(String ip, int port) {		// send message to the peer indicated by the ip and port
 		Thread connection = new Thread(new connectionTask(ip, port));
 		connection.start();
