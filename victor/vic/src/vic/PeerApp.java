@@ -135,7 +135,7 @@ public class PeerApp {
 
 				// Issue a request
 				@SuppressWarnings("unchecked")
-                Hashtable<Integer,Peer> result = (Hashtable<Integer,Peer>)client.execute("discovery.hello", params);
+                Hashtable result = (Hashtable)client.execute("discovery.hello", params);
                 System.out.println(result);
 				/**
 				 * then add the peers in this vector to the peer list of the current peer;
@@ -158,16 +158,17 @@ public class PeerApp {
 	}
 
 	public class helloHandler {
-		public Hashtable<Integer, Peer> hello(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt) {
+		public Hashtable<String, Peer> hello(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt) {
 			Peer inPeer = new Peer(IdArg, IPArg, portArg, capacityArg);
 			int depth = depthInt;
 			peerList.put(new Integer(inPeer.getId()), inPeer);
-			HashMap<Integer, Peer> res = new HashMap<Integer, Peer>();
-			res.put(new Integer(peer.getId()), peer);
+			HashMap<String, Peer> res = new HashMap<String, Peer>();
+			res.put(new Integer(peer.getId()).toString(), peer);
 
 			if(depth <= 0) {
-				res = peerList;
-				return new Hashtable(res);
+//				res = peerList;
+//				return new Hashtable<String, Peer>(res);
+                return null;
 			}
 
 			Set<Map.Entry<Integer, Peer>> set = peerList.entrySet();
@@ -181,24 +182,33 @@ public class PeerApp {
 
 						// Create the request parameters using user input
 						Vector<Object> params = new Vector<Object>();
-						params.addElement(new Integer(peer.getId()));
+						params.addElement(peer.getId());
 						params.addElement(peer.getIP());
-						params.addElement(new Integer(peer.getPort()));
-						params.addElement(new Integer(peer.getCapacity()));
-						params.addElement(new Integer(depth - 1));
+						params.addElement(peer.getPort());
+						params.addElement(peer.getCapacity());
+						params.addElement(depth - 1);
 
 						// Issue a request
 						@SuppressWarnings("unchecked")
-						Hashtable<Integer,Peer> result = (Hashtable<Integer,Peer>) client.execute("discovery.hello", params);
+						Object result = (Object) client.execute("discovery.hello", params);
+                        if(result instanceof Hashtable)
+                        {
+                            System.out.println("HASHTABLE!");
+                        }
+                        else
+                        {
+                            System.out.println("OTHER");
+                        }
                         System.out.println(result.toString());
+                        Hashtable<String,Peer> result2 = (Hashtable<String,Peer>) result;
 						/**
 						 * then add the peers in this vector to the peer list of the current peer;
 						 */
-						Iterator<Map.Entry<Integer, Peer>> iterator = result.entrySet().iterator();
+						Iterator<Map.Entry<String, Peer>> iterator = result2.entrySet().iterator();
 						while(iterator.hasNext()) {
-							Map.Entry<Integer, Peer> entry = iterator.next();
-							res.put(entry.getKey(), entry.getValue());
-							peerList.put(entry.getKey(), entry.getValue()); // also update the current peer list
+							Map.Entry<String, Peer> entry = iterator.next();
+							res.put(entry.getKey().toString(), entry.getValue());
+							peerList.put(Integer.parseInt(entry.getKey()), entry.getValue()); // also update the current peer list
 						}
 
 					} catch (IOException e) {
@@ -211,8 +221,10 @@ public class PeerApp {
                     }
 				}
 			}
+            Hashtable<String,Peer> res2 = new Hashtable<String,Peer>(res);
+            System.out.println(res2.toString());
 
-			return new Hashtable(res);
+			return res2;
 		}
 	}
 
