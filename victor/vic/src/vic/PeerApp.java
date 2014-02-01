@@ -16,6 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.apache.xmlrpc.*;
 
 public class PeerApp {
 
@@ -25,6 +26,7 @@ public class PeerApp {
 
 	PrintWriter output;
 	Scanner input;
+	static int MAXDEPTH = 5;
 
 	/**
 	 *used to ensure peers finished saying hello before some 
@@ -112,17 +114,78 @@ public class PeerApp {
 		@Override
 		public void run() {
 			try {
+				// Create the client, identifying the server
+				XmlRpcClient client = new XmlRpcClient("http://" + ip + ':' port + '/');
+				System.out.println("Connection established to " + ip + ':' + port);
+
+				// Create the request parameters using user input
+				Vector params = new Vector();
+				params.addElement(ip);
+				params.addElement(new Integer(port));
+				params.addElement(new Integer(MAXDEPTH));
+
+				// Issue a request
+				Vector result = (Vector)client.execute("discovery.hello", params);
+
+				/**
+				 * then add the peers in this vector to the peerlist of the current peer;
+				 */
+
+			} catch (IOException e) {
+				System.out.println("IO Exception: " + e.getMessage());
+			} catch (XmlRpcException e) {
+				System.out.println("Exception within XML-RPC: " + e.getMessage());
+			}
+		}
+	}
+
+	public class helloHandler {
+		public Vector hello(String ip, Integer portInt, Integer depthInt) {
+			int port = portInteger.intValue();
+		}
+	}
+
+	class listeningTask implements Runnable {		//when the peer is created, it will use this thread to listen
+		@Override
+		public void run() { 
+			try {
+				// Start the server, using built-in version
+				System.out.println("Attempting to start XML-RPC Server...");
+				WebServer server = new WebServer(peer.port);
+				System.out.println("Started successfully.");
+
+				server.setParanoid(true);
+				server.addClient(peer.ip);
+
+				// Register our handler class as discovery
+				System.out.println("Registering helloHandler class to discovery...");
+				server.addHandler("discovery", new helloHandler());
+				System.out.println("Now accepting requests. (Halt program to stop.)");
+
+			} catch (IOException e) {
+				System.out.println("Could not start server: " + e.getMessage(  ));
+			}
+		}
+	}
+
+	/*
+	class connectionTask implements Runnable {		//this is used when the local peer wants to establish 
+		String ip;					// a connection to another peer
+		int port;
+		public connectionTask(String ip, int port) {
+			this.ip = ip;
+			this.port = port;
+		}
+		@Override
+		public void run() {
+			try {
 				Socket socket = new Socket(ip, port);
 				input = new Scanner(socket.getInputStream());
 				output = new PrintWriter(socket.getOutputStream());
 
 				System.out.println("Connection established to " + ip + ':' + port);
 
-				/**
-				 *  do something here
-				 */
-
-				output.println("Hello this is peer P" + this.peer.id);
+				output.println("Hello this is peer P" + peer.id);
 				output.flush();
 
 			} catch (IOException ex) {
@@ -142,10 +205,6 @@ public class PeerApp {
 				ServerSocket serverSocket = new ServerSocket(port);
 				while(true){
 					Socket socket = serverSocket.accept();
-
-					/**
-					 * new a thread to deal with this request, and send some messages.
-					 */
 					Thread thread = new Thread(new answerTask(socket));
 					thread.start();
 				}
@@ -155,14 +214,10 @@ public class PeerApp {
 		}
 	}
 
-	/**
-	 * This thread is created when there is a new connection to the local peer,
-	 * and this thread will answer the request of the peer.
-	 */
 	protected class answerTask implements Runnable {
 		private Socket socket;
 
-		SocketThread(Socket socket){
+		answerTask(Socket socket){
 			this.socket = socket;
 		}
 
@@ -190,4 +245,5 @@ public class PeerApp {
 			}
 		}
 	}
+	*/
 }
