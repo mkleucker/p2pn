@@ -121,7 +121,7 @@ public class PeerApp {
 
 				// Create the request parameters using user input
 				Vector<Object> params = new Vector<Object>();
-				params.addElement(new Integer(getId()));
+				params.addElement(peer);
 				params.addElement(new Integer(MAXDEPTH));
 
 				// Issue a request
@@ -131,6 +131,11 @@ public class PeerApp {
 				/**
 				 * then add the peers in this vector to the peer list of the current peer;
 				 */
+				Iterator<Entry<Integer, Peer>> iterator = result.entrySet().iterator();
+				while(iterator.hasNext()){
+					Entry<Integer, Peer> entry = iterator.next();
+					peerList.put(entry.getKey(), entry.getValue());
+				}
 
 			} catch (IOException e) {
 				System.out.println("IO Exception: " + e.getMessage());
@@ -145,13 +150,39 @@ public class PeerApp {
 			int id = idInt.intValue();
 			int depth = depthInt.intValue();
 			HashMap<Integer, Peer> res = new HashMap<Integer, Peer>();
+			res.put(new Integer(peer.getId()), peer);
 
 			if(depth <= 0) {
 				res = peerList;
 				return res;
 			}
 
-			for () {
+			Set<Map.Entry<Integer, Peer>> set = peerList.entrySet();
+			for (Map.Entry<Integer, Peer> entry: set) {
+				Peer itPeer = entry.getValue();
+				try {
+					// Create the client, identifying the server
+					XmlRpcClient client = new XmlRpcClient("http://" + itPeer.getIP() + ':' + itPeer.getPort() + '/');
+					System.out.println("Connection established to " + itPeer.getIP() + ':' + itPeer.getPort());
+
+					// Create the request parameters using user input
+					Vector<Object> params = new Vector<Object>();
+					params.addElement(peer);
+					params.addElement(new Integer(MAXDEPTH));
+
+					// Issue a request
+					@SuppressWarnings("unchecked")
+					HashMap<Integer, Peer> result = (HashMap<Integer, Peer>)client.execute("discovery.hello", params);
+
+					/**
+					 * then add the peers in this vector to the peer list of the current peer;
+					 */
+
+				} catch (IOException e) {
+					System.out.println("IO Exception: " + e.getMessage());
+				} catch (XmlRpcException e) {
+					System.out.println("Exception within XML-RPC: " + e.getMessage());
+				}
 			}
 
 			return res;
