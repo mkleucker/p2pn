@@ -1,6 +1,8 @@
 package vic;
 
-import org.apache.xmlrpc.*;
+import org.apache.xmlrpc.WebServer;
+import org.apache.xmlrpc.XmlRpcClient;
+import org.apache.xmlrpc.XmlRpcException;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,7 +13,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public class PeerApp {
 
 	Peer peer;
-	//ArrayList<Peer> peerList; 		Use HashMap instead
 	HashMap<Integer, Peer> peerList;
 
 	PrintWriter output;
@@ -101,23 +102,35 @@ public class PeerApp {
 		}		
 	}
 
-	public void hello(String ip, int port) {		// send message to the peer indicated by the ip and port
+    /**
+     * Connects to the specified adress.
+     * @param ip IP-Address of the targeted peer.
+     * @param port Port of the targeted peer.
+     */
+	public void hello(String ip, int port) {
 		Thread connection = new Thread(new ConnectionTask(ip, port));
 		connection.start();
+        // TODO: Add to peerlist
 		/**
-		 * A problem here is that we only know the ip and the port of the peer, 
+		 * A problem here is that we only know the ip and the port of the peer,
 		 * but we need the whole peer to be added into the peerList, this needs to be
 		 * solved, maybe by adding another argument?
 		 */
 	}
 
-	class ConnectionTask implements Runnable {		//this is used when the local peer wants to establish
-		String ip;					// a connection to another peer
+    /**
+     * Subclass to establish a connection to a different peer.
+     */
+	class ConnectionTask implements Runnable {
+
+        String ip;
 		int port;
+
 		public ConnectionTask(String ip, int port) {
 			this.ip = ip;
 			this.port = port;
 		}
+
 		@Override
 		public void run() {
 			try {
@@ -125,18 +138,10 @@ public class PeerApp {
 				XmlRpcClient client = new XmlRpcClient("http://" + ip + ':' + port + '/');
 				System.out.println("Connection established to " + ip + ':' + port);
 
-				// Create the request parameters using user input
-				Vector<Object> params = new Vector<Object>();
-				params.addElement(new Integer(peer.getId()));
-				params.addElement(peer.getIP());
-				params.addElement(new Integer(peer.getPort()));
-				params.addElement(new Integer(peer.getCapacity()));
-				params.addElement(new Integer(maxdepth));
-
 				// Issue a request
-				@SuppressWarnings("unchecked")
-                Hashtable result = (Hashtable)client.execute("discovery.hello", params);
+                Hashtable result = (Hashtable)client.execute("discovery.hello", createVectorForPeer(peer, maxdepth));
                 System.out.println(result);
+
 				/**
 				 * then add the peers in this vector to the peer list of the current peer;
 				 */
@@ -155,62 +160,100 @@ public class PeerApp {
 
             }
 		}
+
+
 	}
 
+
+    /**
+     * Creates request parameters for the current peer.
+     * @return Vector with all parameters
+     */
+    private static Vector<Object> createVectorForPeer(Peer peer, int depth){
+        Vector<Object> params = new Vector<Object>();
+        params.addElement(peer.getId());
+        params.addElement(peer.getIP());
+        params.addElement(peer.getPort());
+        params.addElement(peer.getCapacity());
+        params.addElement(depth);
+
+        return params;
+    }
+
+    private static Hashtable<String,Vector> createExchangeData(HashMap<Integer,Peer> rawData){
+        Hashtable<String, Vector> result = new Hashtable<String, Vector>();
+
+        for (Map.Entry<Integer, Peer> entry: rawData.entrySet()) {
+            // TODO: fix depth parameter
+            result.put(Integer.toString(entry.getKey()), createVectorForPeer(entry.getValue(), 0));
+        }
+
+        return result;
+    }
+
+    private static Peer createPeerFromVector(Vector data){
+        return new Peer((Integer)data.get(0),
+                (String)data.get(1),
+                (Integer) data.get(2),
+                (Integer) data.get(3));
+    }
+
+    /**
+     * Handler is able to do the handshake with another peer.
+     */
 	public class HelloHandler {
         
-		public Hashtable<String, Peer> hello(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt) {
-			Peer inPeer = new Peer(IdArg, IPArg, portArg, capacityArg);
-			int depth = depthInt;
-			peerList.put(new Integer(inPeer.getId()), inPeer);
-			HashMap<String, Peer> res = new HashMap<String, Peer>();
-			res.put(new Integer(peer.getId()).toString(), peer);
+		public Hashtable<String, Vector> hello(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt) {
 
-			if(depth <= 0) {
-//				res = peerList;
-//				return new Hashtable<String, Peer>(res);
-                return null;
-			}
+            // Create Peer object
+            Peer inPeer = new Peer(IdArg, IPArg, portArg, capacityArg);
+			peerList.put(inPeer.getId(), inPeer); //TODO: Necessary?
 
-			Set<Map.Entry<Integer, Peer>> set = peerList.entrySet();
-			for (Map.Entry<Integer, Peer> temp: set) {
+            // Only return local object
+            if(depthInt <= 0) {
+                return createExchangeData(peerList);
+            }
+
+			HashMap<Integer, Peer> res = new HashMap<Integer, Peer>();
+			res.put(peer.getId(), peer); //TODO: Necessary?
+
+			for (Map.Entry<Integer, Peer> temp: peerList.entrySet()) {
 				Peer itPeer = temp.getValue();
+
 				if(!peer.equals(itPeer)) {
 					try {
 						// Create the client, identifying the server
 						XmlRpcClient client = new XmlRpcClient("http://" + itPeer.getIP() + ':' + itPeer.getPort() + '/');
 						System.out.println("Connection established to " + itPeer.getIP() + ':' + itPeer.getPort());
 
-						// Create the request parameters using user input
-						Vector<Object> params = new Vector<Object>();
-						params.addElement(peer.getId());
-						params.addElement(peer.getIP());
-						params.addElement(peer.getPort());
-						params.addElement(peer.getCapacity());
-						params.addElement(depth - 1);
-
 						// Issue a request
-						@SuppressWarnings("unchecked")
-						Object result = (Object) client.execute("discovery.hello", params);
-                        if(result instanceof Hashtable)
+						Object incomingData = (Object) client.execute("discovery.hello",
+                                createVectorForPeer(peer, depthInt-1));
+
+                        Hashtable<String,Vector> result = new Hashtable<String, Vector>();
+                        // Check answer
+                        if(incomingData instanceof Hashtable)
                         {
                             System.out.println("HASHTABLE!");
+                            result = (Hashtable<String,Vector>) incomingData;
                         }
                         else
                         {
                             System.out.println("OTHER");
+                            return null;
                         }
-                        System.out.println(result.toString());
-                        Hashtable<String,Peer> result2 = (Hashtable<String,Peer>) result;
+
 						/**
 						 * then add the peers in this vector to the peer list of the current peer;
 						 */
-						Iterator<Map.Entry<String, Peer>> iterator = result2.entrySet().iterator();
-						while(iterator.hasNext()) {
-							Map.Entry<String, Peer> entry = iterator.next();
-							res.put(entry.getKey().toString(), entry.getValue());
-							peerList.put(Integer.parseInt(entry.getKey()), entry.getValue()); // also update the current peer list
-						}
+
+                        for (Map.Entry<String, Vector> entry: result.entrySet()) {
+                            Integer id = Integer.parseInt(entry.getKey());
+                            Peer peer = createPeerFromVector(entry.getValue());
+                            res.put(id, peer);
+                            peerList.put(id, peer);
+                        }
+
 
 					} catch (IOException e) {
 						System.out.println("IO Exception: " + e.getMessage());
@@ -222,14 +265,17 @@ public class PeerApp {
                     }
 				}
 			}
-            Hashtable<String,Peer> res2 = new Hashtable<String,Peer>(res);
-            System.out.println(res2.toString());
 
-			return res2;
+			return createExchangeData(res);
 		}
+
+
 	}
 
-	class ListeningTask implements Runnable {		//when the peer is created, it will use this thread to listen
+    /**
+     * Creates the XML-RPC listening part.
+     */
+	class ListeningTask implements Runnable {
 		@Override
 		public void run() { 
 			try {
