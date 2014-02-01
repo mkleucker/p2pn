@@ -1,8 +1,6 @@
 package vic;
 
-import org.apache.xmlrpc.WebServer;
-import org.apache.xmlrpc.XmlRpcClient;
-import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;

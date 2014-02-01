@@ -14,13 +14,14 @@ import java.io.InputStreamReader;
 public class Main {
 
     private PeerApp peer;
+    private PeerApp peer2;
 
     private BufferedReader reader;
 
     public Main(String[] args){
         this.reader = new BufferedReader(new InputStreamReader(System.in));
         this.peer = new PeerApp(12, "127.0.0.1", 18523, 9, 9);
-        this.peer = new PeerApp(12, "127.0.0.1", 18524, 9, 9);
+        this.peer2 = new PeerApp(12, "127.0.0.1", 18524, 9, 9);
         this.parseInput();
     }
 
@@ -33,15 +34,12 @@ public class Main {
             if(input.equals("exit")){
                 System.exit(0);
             }
-            if(input.substring(0,5).equals("hello")){
+            if(input.length() >= 5 && input.substring(0,5).equals("hello")){
                 String addressraw = input.substring(6);
-                System.out.println(addressraw);
-
                 String[] address = addressraw.split(":");
 
                 this.peer.hello(address[0], Integer.parseInt(address[1]));
             }
-            this.peer.toString();
             parseInput();
         } catch (IOException ioe) {
             System.out.println("IO error!");
