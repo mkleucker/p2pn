@@ -135,8 +135,8 @@ public class PeerApp {
 
 				// Issue a request
 				@SuppressWarnings("unchecked")
-				HashMap<Integer, Peer> result = (HashMap<Integer, Peer>)client.execute("discovery.hello", params);
-
+                Hashtable<Integer,Peer> result = (Hashtable<Integer,Peer>)client.execute("discovery.hello", params);
+                System.out.println(result);
 				/**
 				 * then add the peers in this vector to the peer list of the current peer;
 				 */
@@ -158,7 +158,7 @@ public class PeerApp {
 	}
 
 	public class helloHandler {
-		public HashMap<Integer, Peer> hello(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt) {
+		public Hashtable<Integer, Peer> hello(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt) {
 			Peer inPeer = new Peer(IdArg, IPArg, portArg, capacityArg);
 			int depth = depthInt;
 			peerList.put(new Integer(inPeer.getId()), inPeer);
@@ -167,7 +167,7 @@ public class PeerApp {
 
 			if(depth <= 0) {
 				res = peerList;
-				return res;
+				return new Hashtable(res);
 			}
 
 			Set<Map.Entry<Integer, Peer>> set = peerList.entrySet();
@@ -189,8 +189,8 @@ public class PeerApp {
 
 						// Issue a request
 						@SuppressWarnings("unchecked")
-						HashMap<Integer, Peer> result = (HashMap<Integer, Peer>)client.execute("discovery.hello", params);
-
+						Hashtable<Integer,Peer> result = (Hashtable<Integer,Peer>) client.execute("discovery.hello", params);
+                        System.out.println(result.toString());
 						/**
 						 * then add the peers in this vector to the peer list of the current peer;
 						 */
@@ -212,7 +212,7 @@ public class PeerApp {
 				}
 			}
 
-			return res;
+			return new Hashtable(res);
 		}
 	}
 
@@ -234,7 +234,7 @@ public class PeerApp {
 				System.out.println("Now accepting requests. (Halt program to stop.)");
                 server.start();
 			} catch (Exception e) {
-				System.out.println("Could not start server: " + e.getMessage(  ));
+				System.out.println("Could not start server: " + e.getMessage());
                 e.printStackTrace();
             }
 		}
