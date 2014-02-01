@@ -21,7 +21,7 @@ public class Main {
     public Main(String[] args){
         this.reader = new BufferedReader(new InputStreamReader(System.in));
         this.peer = new PeerApp(12, "127.0.0.1", 18523, 9, 9);
-        this.peer2 = new PeerApp(12, "127.0.0.1", 18524, 9, 9);
+        this.peer2 = new PeerApp(13, "127.0.0.1", 18524, 9, 9);
         this.parseInput();
     }
 

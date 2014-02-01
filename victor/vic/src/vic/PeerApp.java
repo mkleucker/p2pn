@@ -148,16 +148,19 @@ public class PeerApp {
 
 			} catch (IOException e) {
 				System.out.println("IO Exception: " + e.getMessage());
-			} catch (XmlRpcException e) {
+                e.printStackTrace();
+            } catch (XmlRpcException e) {
 				System.out.println("Exception within XML-RPC: " + e.getMessage());
-			}
+                e.printStackTrace();
+
+            }
 		}
 	}
 
 	public class helloHandler {
-		public HashMap<Integer, Peer> hello(Integer IdArg, String IPArg, Integer portArg, Integer capacityArg, Integer depthInt) {
-			Peer inPeer = new Peer(IdArg.intValue(), IPArg, portArg.intValue(), capacityArg.intValue());
-			int depth = depthInt.intValue();
+		public HashMap<Integer, Peer> hello(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt) {
+			Peer inPeer = new Peer(IdArg, IPArg, portArg, capacityArg);
+			int depth = depthInt;
 			peerList.put(new Integer(inPeer.getId()), inPeer);
 			HashMap<Integer, Peer> res = new HashMap<Integer, Peer>();
 			res.put(new Integer(peer.getId()), peer);
@@ -200,9 +203,12 @@ public class PeerApp {
 
 					} catch (IOException e) {
 						System.out.println("IO Exception: " + e.getMessage());
+                        e.printStackTrace();
 					} catch (XmlRpcException e) {
 						System.out.println("Exception within XML-RPC: " + e.getMessage());
-					}
+                        e.printStackTrace();
+
+                    }
 				}
 			}
 
@@ -226,10 +232,11 @@ public class PeerApp {
 				System.out.println("Registering helloHandler class to discovery...");
 				server.addHandler("discovery", new helloHandler());
 				System.out.println("Now accepting requests. (Halt program to stop.)");
-
+                server.start();
 			} catch (Exception e) {
 				System.out.println("Could not start server: " + e.getMessage(  ));
-			}
+                e.printStackTrace();
+            }
 		}
 	}
 
