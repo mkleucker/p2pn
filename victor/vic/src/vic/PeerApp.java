@@ -90,9 +90,8 @@ public class PeerApp {
 		String ipAux;
 		int portAux;
 		 //Iteration of all the peers in the list of peers
-		Iterator<Map.Entry<Integer, Peer>> iterator = peerList.entrySet().iterator();
-		while(iterator.hasNext()) {			
-			Map.Entry<Integer, Peer> entry = iterator.next();
+
+        for (Map.Entry<Integer, Peer> entry: peerList.entrySet()) {
 			Peer peerAux = entry.getValue();
 			ipAux = peerAux.getIP();
 			portAux = peerAux.getPort();
@@ -140,14 +139,16 @@ public class PeerApp {
 
 				// Issue a request
                 Hashtable result = (Hashtable)client.execute("discovery.hello", createVectorForPeer(peer, maxdepth));
+
+                if(result == null){
+                    return;
+                }
                 System.out.println(result);
 
 				/**
 				 * then add the peers in this vector to the peer list of the current peer;
 				 */
-				Iterator<Map.Entry<Integer, Peer>> iterator = result.entrySet().iterator();
-				while(iterator.hasNext()){
-					Map.Entry<Integer, Peer> entry = iterator.next();
+                for (Map.Entry<Integer, Peer> entry: ((Hashtable<Integer, Peer>) result).entrySet()) {
 					peerList.put(entry.getKey(), entry.getValue());
 				}
 
@@ -230,7 +231,7 @@ public class PeerApp {
 						Object incomingData = (Object) client.execute("discovery.hello",
                                 createVectorForPeer(peer, depthInt-1));
 
-                        Hashtable<String,Vector> result = new Hashtable<String, Vector>();
+                        Hashtable<String,Vector> result;
                         // Check answer
                         if(incomingData instanceof Hashtable)
                         {
