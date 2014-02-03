@@ -148,7 +148,15 @@ public class PeerApp {
 				 * then add the peers in this vector to the peer list of the current peer;
 				 */
                 for (Map.Entry<String, Vector> entry: ((Hashtable<String, Vector>) result).entrySet()) {
-					peerList.put(Integer.getInteger(entry.getKey()), createPeerFromVector(entry.getValue()));
+                	System.out.println("The list before is " + peerList);
+                	System.out.println("The vector is " + entry.getValue());
+                	Peer temp = createPeerFromVector(entry.getValue());
+                	System.out.println("The peer created is " + temp);
+                	System.out.println("The id is " + entry.getKey());
+                	Integer idCreated = Integer.parseInt(entry.getKey());
+                	System.out.println("The id integer is " + idCreated);
+					peerList.put(idCreated, temp);
+					System.out.println("The list after is " + peerList);
 				}
 
 			} catch (IOException e) {
