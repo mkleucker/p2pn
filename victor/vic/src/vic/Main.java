@@ -45,7 +45,7 @@ public class Main {
                 Thread.sleep(1000);
             }
             Thread.sleep(1000);
-            peers.get(0).plist();
+            System.out.println(peers.get(0).plist());
 
             this.parseInput();
 
@@ -76,7 +76,7 @@ public class Main {
             }
 
             if(input.equals("plist")){
-                this.peer.plist();
+                System.out.println(this.peer.plist());
             }
 
             parseInput();

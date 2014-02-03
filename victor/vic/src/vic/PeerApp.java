@@ -43,16 +43,20 @@ public class PeerApp {
 		return peerSet;
 	}
 
-	public void plist() {					//print the peerList on the console
+	public String plist() {					//print the peerList on the console
 		System.out.println("List of peers known to the local peer: ");
+        String str = "";
 		Set<Map.Entry<Integer, Peer>> peerSet = getPeerSet();
 		for (Map.Entry<Integer, Peer> entry: peerSet) {
 			Peer peer = entry.getValue();
-			System.out.print("Name: P" + peer.getId() + "  ");
-			System.out.print("IP: " + peer.getIP() + "  ");
-			System.out.print("Port: " + peer.getPort() + "  ");
-			System.out.println("Capacity: " + peer.getCapacity());
+			str += "Name: P" + peer.getId() + "  ";
+            str += "IP: " + peer.getIP() + "  ";
+            str += "Port: " + peer.getPort() + "  ";
+            str += "Capacity: " + peer.getCapacity();
+            str += "\n";
 		}
+
+        return str;
 	}
 
 	public int getId() {
