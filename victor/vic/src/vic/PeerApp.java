@@ -15,8 +15,6 @@ public class PeerApp {
 	Peer peer;
 	HashMap<Integer, Peer> peerList;
 
-	PrintWriter output;
-	Scanner input;
 	int maxdepth;
 
 	/**
@@ -149,8 +147,8 @@ public class PeerApp {
 				/**
 				 * then add the peers in this vector to the peer list of the current peer;
 				 */
-                for (Map.Entry<Integer, Peer> entry: ((Hashtable<Integer, Peer>) result).entrySet()) {
-					peerList.put(entry.getKey(), entry.getValue());
+                for (Map.Entry<String, Vector> entry: ((Hashtable<String, Vector>) result).entrySet()) {
+					peerList.put(Integer.getInteger(entry.getKey()), createPeerFromVector(entry.getValue()));
 				}
 
 			} catch (IOException e) {
@@ -213,7 +211,7 @@ public class PeerApp {
 
             // Only return local object
             if(depthInt <= 0) {
-                System.out.println("final");h
+                System.out.println("final");
                 return createExchangeData(peerList);
             }
 
@@ -223,8 +221,8 @@ public class PeerApp {
 			for (Map.Entry<Integer, Peer> temp: peerList.entrySet()) {
 				Peer itPeer = temp.getValue();
 
-                System.out.println(itPeer.getId()+ "=="+peer.getId());
-				if(!peer.equals(itPeer)) {
+                System.out.println(itPeer.getId()+ "=="+peer.getId()+"=="+inPeer.getId());
+				if(!itPeer.equals(inPeer)) {
 					try {
 						// Create the client, identifying the server
 						XmlRpcClient client = new XmlRpcClient("http://" + itPeer.getIP() + ':' + itPeer.getPort() + '/');
@@ -269,6 +267,7 @@ public class PeerApp {
 				}
 			}
             System.out.println("called hello");
+            System.out.println(peerList);
             System.out.println(res);
 			return createExchangeData(res);
 		}
