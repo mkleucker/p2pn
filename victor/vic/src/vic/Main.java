@@ -32,6 +32,7 @@ public class Main {
             input = reader.readLine();
             System.out.println(input);
             if(input.equals("exit")){
+                // TODO: Close peer properly.
                 System.exit(0);
             }
             if(input.length() >= 5 && input.substring(0,5).equals("hello")){
@@ -44,6 +45,11 @@ public class Main {
                     this.peer.helloAll();
                 }
             }
+
+            if(input.equals("plist")){
+                this.peer.plist();
+            }
+
             parseInput();
         } catch (IOException ioe) {
             System.out.println("IO error!");
