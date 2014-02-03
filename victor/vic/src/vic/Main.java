@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 /**
  * Main class to later run the peer that also is responsible for
@@ -44,6 +45,7 @@ public class Main {
                 peers.get(0).hello("127.0.0.1", 18524+i);
                 Thread.sleep(1000);
             }
+            
             Thread.sleep(1000);
             System.out.println(peers.get(0).plist());
 
@@ -52,6 +54,14 @@ public class Main {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+    private static String removeSpaces(String cadenaConEspacios) {
+        StringTokenizer tokenizer = new StringTokenizer(cadenaConEspacios); 
+        StringBuilder sbuilder = new StringBuilder(); // string without spaces
+        while(tokenizer.hasMoreTokens()){
+        	sbuilder.append(tokenizer.nextToken());
+        }
+        return sbuilder.toString();
     }
 
     private void parseInput(){
@@ -66,8 +76,10 @@ public class Main {
             }
             if(input.length() >= 5 && input.substring(0,5).equals("hello")){
 
-                String addressraw = input.substring(6);
+                String addressraw = input.substring(5);
+                addressraw = removeSpaces(addressraw); //remove of the spaces
                 String[] address = addressraw.split(":");
+
                 if(address.length == 2){
                     this.peer.hello(address[0], Integer.parseInt(address[1]));
                 }else{
@@ -84,11 +96,10 @@ public class Main {
             System.out.println("IO error!");
             System.exit(1);
         }
-
     }
+    
 
-
-
+    
     /**
      * Default Java init method
      * @param args String array providing peer ID and port.
@@ -100,6 +111,7 @@ public class Main {
             System.err.println("Too few arguments. Make sure to provide the Peer ID and the desired port to run on.");
         }
 
+        //
         Main director = new Main(args);
     }
 }
