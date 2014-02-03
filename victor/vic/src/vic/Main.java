@@ -55,8 +55,8 @@ public class Main {
             e.printStackTrace();
         }
     }
-    private static String removeSpaces(String cadenaConEspacios) {
-        StringTokenizer tokenizer = new StringTokenizer(cadenaConEspacios); 
+    private static String removeSpaces(String StringWithSpaces) {
+        StringTokenizer tokenizer = new StringTokenizer(StringWithSpaces); 
         StringBuilder sbuilder = new StringBuilder(); // string without spaces
         while(tokenizer.hasMoreTokens()){
         	sbuilder.append(tokenizer.nextToken());
