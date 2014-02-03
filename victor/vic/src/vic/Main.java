@@ -4,6 +4,7 @@ package vic;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 /**
  * Main class to later run the peer that also is responsible for
@@ -16,13 +17,35 @@ public class Main {
     private PeerApp peer;
     private PeerApp peer2;
 
+
+
     private BufferedReader reader;
 
     public Main(String[] args){
-        this.reader = new BufferedReader(new InputStreamReader(System.in));
-        this.peer = new PeerApp(12, "127.0.0.1", 18523, 9, 9);
-        this.peer2 = new PeerApp(13, "127.0.0.1", 18524, 9, 9);
-        this.parseInput();
+        try{
+
+            this.reader = new BufferedReader(new InputStreamReader(System.in));
+
+
+            ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
+            for(int i = 0; i < 5; i++){
+                peers.add(new PeerApp(i, "127.0.0.1", 18523+i, 9, 9 ));
+            }
+            this.peer = peers.get(0);
+
+            Thread.sleep(1000);
+            for(int i = 0; i < peers.size()-1; i++){
+                peers.get(0).hello("127.0.0.1", 18524+i);
+                Thread.sleep(1000);
+            }
+            Thread.sleep(1000);
+            peers.get(0).plist();
+
+            this.parseInput();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void parseInput(){
