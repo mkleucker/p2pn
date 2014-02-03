@@ -9,12 +9,14 @@ import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import org.apache.logging.log4j.*;
 
 public class PeerApp {
 
 	Peer peer;
 	HashMap<Integer, Peer> peerList;
 
+    private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
 	int maxdepth;
 
 	/**
@@ -27,6 +29,7 @@ public class PeerApp {
 	 * Constructor of the class PeerApp
 	 */
 	public PeerApp(int id, String ip, int port, int capacity, int max) {
+        logger.info("Started Peer with ID {}", id);
 		peer = new Peer(id, ip, port, capacity);//creation of the Peer
 		peerList = new HashMap<Integer, Peer>();	// initialize the peerList
 		this.maxdepth = max;
@@ -45,10 +48,10 @@ public class PeerApp {
 		Set<Map.Entry<Integer, Peer>> peerSet = getPeerSet();
 		for (Map.Entry<Integer, Peer> entry: peerSet) {
 			Peer peer = entry.getValue();
-			System.out.print("Name: P" + getId() + "  ");
-			System.out.print("IP: " + getIP() + "  ");
-			System.out.print("Port: " + getPort() + "  ");
-			System.out.println("Capacity: " + getCapacity());
+			System.out.print("Name: P" + peer.getId() + "  ");
+			System.out.print("IP: " + peer.getIP() + "  ");
+			System.out.print("Port: " + peer.getPort() + "  ");
+			System.out.println("Capacity: " + peer.getCapacity());
 		}
 	}
 
