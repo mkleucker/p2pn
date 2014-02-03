@@ -39,7 +39,7 @@ public class Main {
 
                 String addressraw = input.substring(6);
                 String[] address = addressraw.split(":");
-                if(address.length > 2){
+                if(address.length == 2){
                     this.peer.hello(address[0], Integer.parseInt(address[1]));
                 }else{
                     this.peer.helloAll();

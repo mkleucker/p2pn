@@ -133,13 +133,14 @@ public class PeerApp {
 		@Override
 		public void run() {
 			try {
+
 				// Create the client, identifying the server
 				XmlRpcClient client = new XmlRpcClient("http://" + ip + ':' + port + '/');
 				System.out.println("Connection established to " + ip + ':' + port);
 
 				// Issue a request
                 Hashtable result = (Hashtable)client.execute("discovery.hello", createVectorForPeer(peer, maxdepth));
-
+                System.out.println(result);
                 if(result == null){
                     return;
                 }
@@ -212,6 +213,7 @@ public class PeerApp {
 
             // Only return local object
             if(depthInt <= 0) {
+                System.out.println("final");h
                 return createExchangeData(peerList);
             }
 
@@ -221,6 +223,7 @@ public class PeerApp {
 			for (Map.Entry<Integer, Peer> temp: peerList.entrySet()) {
 				Peer itPeer = temp.getValue();
 
+                System.out.println(itPeer.getId()+ "=="+peer.getId());
 				if(!peer.equals(itPeer)) {
 					try {
 						// Create the client, identifying the server
@@ -265,7 +268,8 @@ public class PeerApp {
                     }
 				}
 			}
-
+            System.out.println("called hello");
+            System.out.println(res);
 			return createExchangeData(res);
 		}
 
