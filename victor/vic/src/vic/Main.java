@@ -35,10 +35,14 @@ public class Main {
                 System.exit(0);
             }
             if(input.length() >= 5 && input.substring(0,5).equals("hello")){
+
                 String addressraw = input.substring(6);
                 String[] address = addressraw.split(":");
-
-                this.peer.hello(address[0], Integer.parseInt(address[1]));
+                if(address.length > 2){
+                    this.peer.hello(address[0], Integer.parseInt(address[1]));
+                }else{
+                    this.peer.helloAll();
+                }
             }
             parseInput();
         } catch (IOException ioe) {
