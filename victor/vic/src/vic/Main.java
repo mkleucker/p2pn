@@ -1,6 +1,9 @@
 package vic;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,11 +24,14 @@ public class Main {
 
     private BufferedReader reader;
 
+    private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
+
+
     public Main(String[] args){
         try{
+            logger.info("Starting program");
 
             this.reader = new BufferedReader(new InputStreamReader(System.in));
-
 
             ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
             for(int i = 0; i < 5; i++){
@@ -81,9 +87,6 @@ public class Main {
 
     }
 
-    private void issueCommandToPeer(){
-
-    }
 
 
     /**
