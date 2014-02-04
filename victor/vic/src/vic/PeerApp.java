@@ -155,7 +155,7 @@ public class PeerApp {
 				// Issue a request
                 Hashtable result = (Hashtable)client.execute("discovery.hello", createVectorForPeer(peer, maxdepth));
                 if(result == null){
-                    logger.debug("No result from Discovery")
+                    logger.debug("No result from Discovery");
                     return;
                 }
 				/**
@@ -275,8 +275,6 @@ public class PeerApp {
 
 			return createExchangeData(res);
 		}
-
-
 	}
 
     /**
