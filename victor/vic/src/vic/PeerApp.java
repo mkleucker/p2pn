@@ -23,7 +23,10 @@ public class PeerApp {
 	 *used to ensure peers finished saying hello before some 
 	 *other peers come and start to say hello
 	 */
-	Lock lock = new ReentrantLock();	
+	Lock lock = new ReentrantLock();
+
+
+    ListeningTask server;
 
 	/**
 	 * Constructor of the class PeerApp
@@ -34,7 +37,8 @@ public class PeerApp {
 		peerList = new HashMap<Integer, Peer>();	// initialize the peerList
 		this.maxdepth = max;
 
-		Thread listening = new Thread(new ListeningTask());   //start listening to the port
+        this.server = new ListeningTask();
+		Thread listening = new Thread(this.server);   //start listening to the port
 		listening.start();
 	}
 
@@ -106,6 +110,11 @@ public class PeerApp {
 		}		
 	}
 
+    public void destroyPeer(){
+        this.server.shutdown();
+        logger.debug("shutdown server successfull?");
+    }
+
     /**
      * Connects to the specified adress.
      * @param ip IP-Address of the targeted peer.
@@ -129,6 +138,7 @@ public class PeerApp {
 
         String ip;
 		int port;
+        XmlRpcClient client;
 
 		public ConnectionTask(String ip, int port) {
 			this.ip = ip;
@@ -140,7 +150,7 @@ public class PeerApp {
 			try {
 
 				// Create the client, identifying the server
-				XmlRpcClient client = new XmlRpcClient("http://" + ip + ':' + port + '/');
+				this.client = new XmlRpcClient("http://" + ip + ':' + port + '/');
 				System.out.println("Connection established to " + ip + ':' + port);
 
 				// Issue a request
@@ -175,7 +185,6 @@ public class PeerApp {
 
             }
 		}
-
 
 	}
 
@@ -294,12 +303,13 @@ public class PeerApp {
      * Creates the XML-RPC listening part.
      */
 	class ListeningTask implements Runnable {
+        WebServer server;
 		@Override
 		public void run() { 
 			try {
 				// Start the server, using built-in version
 				System.out.println("Attempting to start XML-RPC Server...");
-				WebServer server = new WebServer(getPort());
+				this.server = new WebServer(getPort());
 				System.out.println("Started successfully.");
 
                 // we _do_ want other clients to connect to us
@@ -316,6 +326,11 @@ public class PeerApp {
                 e.printStackTrace();
             }
 		}
+
+        public boolean shutdown(){
+            this.server.shutdown();
+            return true;
+        }
 	}
 
 }
