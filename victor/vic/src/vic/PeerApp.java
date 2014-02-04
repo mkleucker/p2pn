@@ -166,9 +166,11 @@ public class PeerApp {
 				}
 
 			} catch (IOException e) {
-                logger.error(e.getStackTrace());
+                logger.error(e.getMessage());
+                e.printStackTrace();
             } catch (XmlRpcException e) {
-                logger.error(e.getStackTrace());
+                logger.error(e.getMessage());
+                e.printStackTrace();
             }
 		}
 
@@ -266,9 +268,11 @@ public class PeerApp {
 
 
 					} catch (IOException e) {
-						logger.error(e.getStackTrace());
+						logger.error(e.getMessage());
+                        e.printStackTrace();
 					} catch (XmlRpcException e) {
-                        logger.error(e.getStackTrace());
+                        logger.error(e.getMessage());
+                        e.printStackTrace();
                     }
 				}
 			}
