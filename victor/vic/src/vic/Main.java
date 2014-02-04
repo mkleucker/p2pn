@@ -1,6 +1,5 @@
 package vic;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,92 +16,132 @@ import java.util.ArrayList;
  */
 public class Main {
 
-    private PeerApp peer;
-    private PeerApp peer2;
+	private PeerApp peer;
+	private PeerApp peer2;
 
+	private BufferedReader reader;
 
+	private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
 
-    private BufferedReader reader;
+	public Main(String[] args){
+		try{
+			logger.info("Starting program");
 
-    private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
+			this.reader = new BufferedReader(new InputStreamReader(System.in));
 
+			ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
+			for(int i = 0; i < 4; i++){
+				peers.add(new PeerApp(i, "127.0.0.1", 18523 + i, 5, 3));
+			}
+			this.peer = peers.get(0);
 
-    public Main(String[] args){
-        try{
-            logger.info("Starting program");
+			Thread.sleep(1000);
+			peers.get(2).hello("127.0.0.1", 18523 + 3);
+			Thread.sleep(1000);
+			System.out.println(peers.get(0).plist());
+			Thread.sleep(1000);
+			System.out.println(peers.get(1).plist());
+			Thread.sleep(1000);
+			System.out.println(peers.get(2).plist());
+			Thread.sleep(1000);
+			System.out.println(peers.get(3).plist());
+			Thread.sleep(1000);
+			peers.get(1).hello("127.0.0.1", 18523 + 2);
+			Thread.sleep(1000);
+			System.out.println(peers.get(0).plist());
+			Thread.sleep(1000);
+			System.out.println(peers.get(1).plist());
+			Thread.sleep(1000);
+			System.out.println(peers.get(2).plist());
+			Thread.sleep(1000);
+			System.out.println(peers.get(3).plist());
+			Thread.sleep(1000);
+			peers.get(0).hello("127.0.0.1", 18523 + 1);
+			Thread.sleep(1000);
+			System.out.println(peers.get(0).plist());
+			Thread.sleep(1000);
+			System.out.println(peers.get(1).plist());
+			Thread.sleep(1000);
+			System.out.println(peers.get(2).plist());
+			Thread.sleep(1000);
+			System.out.println(peers.get(3).plist());
+			/*
+			for(int i = 0; i < peers.size() - 1; i++){
+				peers.get(0).hello("127.0.0.1", 18524 + i);
+				Thread.sleep(1000);
+			}
 
-            this.reader = new BufferedReader(new InputStreamReader(System.in));
+			for(int i = 1; i < peers.size() - 1; i++){
+				peers.get(1).hello("127.0.0.1", 18524 + i);
+				Thread.sleep(1000);
+			}
 
-            ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
-            for(int i = 0; i < 5; i++){
-                peers.add(new PeerApp(i, "127.0.0.1", 18523+i, 9, 9 ));
-            }
-            this.peer = peers.get(0);
+			for(int i = 2; i < peers.size() - 1; i++){
+				peers.get(2).hello("127.0.0.1", 18524 + i);
+				Thread.sleep(1000);
+			}
+			*/
 
-            Thread.sleep(1000);
-            for(int i = 0; i < peers.size()-1; i++){
-                peers.get(0).hello("127.0.0.1", 18524+i);
-                Thread.sleep(1000);
-            }
-            
-            Thread.sleep(1000);
-            System.out.println(peers.get(0).plist());
+			peers.get(0).plist();
+			peers.get(1).plist();
+			peers.get(2).plist();
+			peers.get(3).plist();
 
-            this.parseInput();
+			Thread.sleep(100);
+//			System.out.println(peers.get(0).plist());
 
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
+			this.parseInput();
 
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+	}
 
-    private void parseInput(){
-        String input;
-        try {
-            System.out.print(">");
-            input = reader.readLine();
-            System.out.println(input);
-            if(input.equals("exit")){
-                // TODO: Close peer properly.
-                System.exit(0);
-            }
-            if(input.length() >= 5 && input.substring(0,5).equals("hello")){
+	private void parseInput(){
+		String input;
+		try {
+			System.out.print(">");
+			input = reader.readLine();
+			System.out.println(input);
+			if(input.equals("exit")) {
+				// TODO: Close peer properly.
+				System.exit(0);
+			}
+			if(input.length() >= 5 && input.substring(0,5).equals("hello")){
 
-                String addressraw = input.substring(5);
-                String[] address = addressraw.split(":");
+				String addressraw = input.substring(5);
+				String[] address = addressraw.split(":");
 
-                if(address.length == 2){
-                    this.peer.hello(address[0].substring(1), Integer.parseInt(address[1]));
-                }else{
-                    this.peer.helloAll();
-                }
-            }
+				if(address.length == 2){
+					this.peer.hello(address[0].substring(1), Integer.parseInt(address[1]));
+				} else {
+					this.peer.helloAll();
+				}
+			}
 
-            if(input.equals("plist")){
-                System.out.println(this.peer.plist());
-            }
+			if(input.equals("plist")){
+				System.out.println(this.peer.plist());
+			}
 
-            parseInput();
-        } catch (IOException ioe) {
-            System.out.println("IO error!");
-            System.exit(1);
-        }
-    }
-    
+			parseInput();
+		} catch (IOException ioe) {
+			System.out.println("IO error!");
+			System.exit(1);
+		}
+	}
 
-    
-    /**
-     * Default Java init method
-     * @param args String array providing peer ID and port.
-     */
-    public static void main(String[] args){
-        System.out.println("Initiating peer...");
+	/**
+	 * Default Java init method
+	 * @param args String array providing peer ID and port.
+	 */
+	public static void main(String[] args){
+		System.out.println("Initiating peer...");
 
-        if(args.length < 2){
-            System.err.println("Too few arguments. Make sure to provide the Peer ID and the desired port to run on.");
-        }
+		if(args.length < 2){
+			System.err.println("Too few arguments. Make sure to provide the Peer ID and the desired port to run on.");
+		}
 
-        //
-        Main director = new Main(args);
-    }
+		//
+		Main director = new Main(args);
+	}
 }
