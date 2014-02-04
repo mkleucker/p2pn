@@ -51,13 +51,23 @@ public class Main {
                 Thread.sleep(1000);
             }
 
+
+
             Thread.sleep(3000);
+
+            logger.debug("Peerlist of P1: {}",this.peer.plist());
+
+
+            PeerApp test0r = new PeerApp(99, "127.0.0.1", 19876, 9, 9);
+            Thread.sleep(1000);
+            test0r.hello(this.peer.getIP(), this.peer.getPort());
+            Thread.sleep(1000);
+            logger.debug("Peerlist of P99: {}", test0r.plist());
+            test0r.destroyPeer();
 
             for (PeerApp peer : peers) {
                 peer.destroyPeer();
             }
-
-            logger.debug(this.peer.plist());
         } catch (Exception e) {
             e.printStackTrace();
         }
