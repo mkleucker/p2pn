@@ -48,8 +48,7 @@ public class PeerApp {
 	}
 
 	public String plist() {					//print the peerList on the console
-		System.out.println("List of peers known to the local peer: ");
-        String str = "";
+        String str = "List of known peers to Peer "+this.getId()+" ("+this.getIP()+":"+this.getPort()+"):\n";
 		Set<Map.Entry<Integer, Peer>> peerSet = getPeerSet();
 		for (Map.Entry<Integer, Peer> entry: peerSet) {
 			Peer peer = entry.getValue();
@@ -151,38 +150,25 @@ public class PeerApp {
 
 				// Create the client, identifying the server
 				this.client = new XmlRpcClient("http://" + ip + ':' + port + '/');
-				System.out.println("Connection established to " + ip + ':' + port);
+                logger.debug("Connection establish to {}:{}", ip, port);
 
 				// Issue a request
                 Hashtable result = (Hashtable)client.execute("discovery.hello", createVectorForPeer(peer, maxdepth));
-                System.out.println(result);
                 if(result == null){
+                    logger.debug("No result from Discovery")
                     return;
                 }
-                System.out.println(result);
-
 				/**
 				 * then add the peers in this vector to the peer list of the current peer;
 				 */
                 for (Map.Entry<String, Vector> entry: ((Hashtable<String, Vector>) result).entrySet()) {
-                	System.out.println("The list before is " + peerList);
-                	System.out.println("The vector is " + entry.getValue());
-                	Peer temp = createPeerFromVector(entry.getValue());
-                	System.out.println("The peer created is " + temp);
-                	System.out.println("The id is " + entry.getKey());
-                	Integer idCreated = Integer.parseInt(entry.getKey());
-                	System.out.println("The id integer is " + idCreated);
-					peerList.put(idCreated, temp);
-					System.out.println("The list after is " + peerList);
+					peerList.put(Integer.parseInt(entry.getKey()), createPeerFromVector(entry.getValue()));
 				}
 
 			} catch (IOException e) {
-				System.out.println("IO Exception: " + e.getMessage());
-                e.printStackTrace();
+                logger.error(e.getStackTrace());
             } catch (XmlRpcException e) {
-				System.out.println("Exception within XML-RPC: " + e.getMessage());
-                e.printStackTrace();
-
+                logger.error(e.getStackTrace());
             }
 		}
 
@@ -235,7 +221,6 @@ public class PeerApp {
 
             // Only return local object
             if(depthInt <= 0) {
-                System.out.println("final");
                 return createExchangeData(peerList);
             }
 
@@ -245,12 +230,12 @@ public class PeerApp {
 			for (Map.Entry<Integer, Peer> temp: peerList.entrySet()) {
 				Peer itPeer = temp.getValue();
 
-                System.out.println(itPeer.getId()+ "=="+peer.getId()+"=="+inPeer.getId());
+
 				if(!itPeer.equals(inPeer)) {
 					try {
 						// Create the client, identifying the server
 						XmlRpcClient client = new XmlRpcClient("http://" + itPeer.getIP() + ':' + itPeer.getPort() + '/');
-						System.out.println("Connection established to " + itPeer.getIP() + ':' + itPeer.getPort());
+						logger.debug("HelloHandler: Connection established to {}:{}",itPeer.getIP(), itPeer.getPort());
 
 						// Issue a request
 						Object incomingData = (Object) client.execute("discovery.hello",
@@ -264,7 +249,7 @@ public class PeerApp {
                         }
                         else
                         {
-                            System.out.println("OTHER");
+                            logger.debug("No valid return value from {}:{}", itPeer.getIP(), itPeer.getPort());
                             return null;
                         }
 
@@ -281,18 +266,13 @@ public class PeerApp {
 
 
 					} catch (IOException e) {
-						System.out.println("IO Exception: " + e.getMessage());
-                        e.printStackTrace();
+						logger.error(e.getStackTrace());
 					} catch (XmlRpcException e) {
-						System.out.println("Exception within XML-RPC: " + e.getMessage());
-                        e.printStackTrace();
-
+                        logger.error(e.getStackTrace());
                     }
 				}
 			}
-            System.out.println("called hello");
-            System.out.println(peerList);
-            System.out.println(res);
+
 			return createExchangeData(res);
 		}
 
@@ -308,22 +288,19 @@ public class PeerApp {
 		public void run() { 
 			try {
 				// Start the server, using built-in version
-				System.out.println("Attempting to start XML-RPC Server...");
 				this.server = new WebServer(getPort());
-				System.out.println("Started successfully.");
 
                 // we _do_ want other clients to connect to us
 				server.setParanoid(false);
 				server.acceptClient(getIP());
 
 				// Register our handler class as discovery
-				System.out.println("Registering helloHandler class to discovery...");
 				server.addHandler("discovery", new HelloHandler());
-				System.out.println("Now accepting requests. (Halt program to stop.)");
                 server.start();
+                logger.debug("Created ListeningTask successfully");
 			} catch (Exception e) {
-				System.out.println("Could not start server: " + e.getMessage());
-                e.printStackTrace();
+				logger.error("Could not start server: " + e.getMessage());
+                logger.error(e.getStackTrace());
             }
 		}
 
