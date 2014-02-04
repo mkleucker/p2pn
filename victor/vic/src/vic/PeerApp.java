@@ -102,6 +102,9 @@ public class PeerApp {
         for (Map.Entry<Integer, Peer> entry: peerList.entrySet()) {
 			Peer peerAux = entry.getValue();
 			ipAux = peerAux.getIP();
+            if (peerAux.getId() == this.peer.getId()) {
+                continue;
+            }
 			portAux = peerAux.getPort();
 			// creation of a connection for every peer in the list of peers
 			Thread connection = new Thread(new ConnectionTask(ipAux, portAux));
@@ -232,6 +235,8 @@ public class PeerApp {
 			for (Map.Entry<Integer, Peer> temp: peerList.entrySet()) {
 				Peer itPeer = temp.getValue();
 
+                if(itPeer.getId() == peer.getId())
+                    continue;
 
 				if(!itPeer.equals(inPeer)) {
 					try {
