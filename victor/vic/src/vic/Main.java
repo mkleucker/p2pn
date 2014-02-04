@@ -42,7 +42,7 @@ public class Main {
 
             ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
             for (int i = 0; i < 5; i++) {
-                peers.add(new PeerApp(i, "127.0.0.1", this.peer.getPort()+1+i, 9, 9));
+                peers.add(new PeerApp(i, "127.0.0.1", this.peer.getPort() + 1 + i, 9, 9));
             }
 
             Thread.sleep(1000);
@@ -53,7 +53,7 @@ public class Main {
 
             Thread.sleep(3000);
 
-            for (PeerApp peer: peers) {
+            for (PeerApp peer : peers) {
                 peer.destroyPeer();
             }
 
@@ -69,9 +69,11 @@ public class Main {
         try {
             System.out.print(">");
             input = reader.readLine();
-            System.out.println(input);
+            if (input == null) {
+                System.exit(0);
+            }
             if (input.equals("exit")) {
-                // TODO: Close peer properly.
+                this.peer.destroyPeer();
                 System.exit(0);
             }
 
