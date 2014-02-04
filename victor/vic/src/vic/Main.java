@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 /**
  * Main class to later run the peer that also is responsible for
@@ -55,14 +54,7 @@ public class Main {
             e.printStackTrace();
         }
     }
-    private static String removeSpaces(String StringWithSpaces) {
-        StringTokenizer tokenizer = new StringTokenizer(StringWithSpaces); 
-        StringBuilder sbuilder = new StringBuilder(); // string without spaces
-        while(tokenizer.hasMoreTokens()){
-        	sbuilder.append(tokenizer.nextToken());
-        }
-        return sbuilder.toString();
-    }
+
 
     private void parseInput(){
         String input;
@@ -77,11 +69,10 @@ public class Main {
             if(input.length() >= 5 && input.substring(0,5).equals("hello")){
 
                 String addressraw = input.substring(5);
-                addressraw = removeSpaces(addressraw); //remove of the spaces
                 String[] address = addressraw.split(":");
 
                 if(address.length == 2){
-                    this.peer.hello(address[0], Integer.parseInt(address[1]));
+                    this.peer.hello(address[0].substring(1), Integer.parseInt(address[1]));
                 }else{
                     this.peer.helloAll();
                 }
