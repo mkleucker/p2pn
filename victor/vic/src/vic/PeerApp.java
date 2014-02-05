@@ -5,7 +5,6 @@ import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -14,14 +13,14 @@ import org.apache.logging.log4j.*;
 public class PeerApp {
 
 	Peer peer;
-	HashMap<Integer, Peer> peerList;
+	Map<Integer, Peer> peerList;
 
     private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
 	int maxdepth;
 
 	/**
-	 *used to ensure peers finished saying hello before some 
-	 *other peers come and start to say hello
+	 *used to ensure peers finished saying ping before some 
+	 *other peers come and start to say ping
 	 */
 	Lock lock = new ReentrantLock();
 
@@ -33,11 +32,11 @@ public class PeerApp {
 	 */
 	public PeerApp(int id, String ip, int port, int capacity, int max) {
         logger.info("Started Peer with ID {}", id);
-		peer = new Peer(id, ip, port, capacity);//creation of the Peer
-		peerList = new HashMap<Integer, Peer>();	// initialize the peerList
+		this.peer = new Peer(id, ip, port, capacity);//creation of the Peer
+		this.peerList =  Collections.synchronizedMap(new HashMap<Integer, Peer>());	// initialize the peerList
 		this.maxdepth = max;
 
-        this.server = new ListeningTask();
+        this.server = new ListeningTask(this.peer, this);
 		Thread listening = new Thread(this.server);   //start listening to the port
 		listening.start();
 	}
@@ -99,7 +98,7 @@ public class PeerApp {
 		int portAux;
 		 //Iteration of all the peers in the list of peers
 
-        for (Map.Entry<Integer, Peer> entry: peerList.entrySet()) {
+        for (Map.Entry<Integer, Peer> entry: new HashMap<Integer,Peer>(this.peerList).entrySet()) {
 			Peer peerAux = entry.getValue();
 			ipAux = peerAux.getIP();
             if (peerAux.getId() == this.peer.getId()) {
@@ -107,7 +106,7 @@ public class PeerApp {
             }
 			portAux = peerAux.getPort();
 			// creation of a connection for every peer in the list of peers
-			Thread connection = new Thread(new ConnectionTask(ipAux, portAux));
+			Thread connection = new Thread(new ConnectionTask(ipAux, portAux, this.peer));
 			connection.start();
 		}		
 	}
@@ -118,12 +117,24 @@ public class PeerApp {
     }
 
     /**
+     * Adds a peer to the Peerlist.
+     * @param peer
+     */
+    public synchronized void addPeer(Peer peer){
+        this.peerList.put(peer.getId(), peer);
+    }
+
+    public synchronized Map<Integer, Peer> getPeerList(){
+        return this.peerList;
+    }
+
+    /**
      * Connects to the specified adress.
      * @param ip IP-Address of the targeted peer.
      * @param port Port of the targeted peer.
      */
-	public void hello(String ip, int port) {
-		Thread connection = new Thread(new ConnectionTask(ip, port));
+	public void ping(String ip, int port) {
+		Thread connection = new Thread(new ConnectionTask(ip, port, this.peer));
 		connection.start();
         // TODO: Add to peerlist
 		/**
@@ -140,11 +151,15 @@ public class PeerApp {
 
         String ip;
 		int port;
+        Peer peer;
+
         XmlRpcClient client;
 
-		public ConnectionTask(String ip, int port) {
+		public ConnectionTask(String ip, int port, Peer peer) {
 			this.ip = ip;
 			this.port = port;
+
+            this.peer = peer;
 		}
 
 		@Override
@@ -153,10 +168,10 @@ public class PeerApp {
 
 				// Create the client, identifying the server
 				this.client = new XmlRpcClient("http://" + ip + ':' + port + '/');
-                logger.debug("Connection establish to {}:{}", ip, port);
+                logger.debug("{} Connection establish to {}:{}", this.peer.getId(), this.ip, this.port);
 
 				// Issue a request
-                Hashtable result = (Hashtable)client.execute("discovery.hello", createVectorForPeer(peer, maxdepth));
+                Vector result = (Vector)client.execute("communication.pong",createVectorForPeer(this.peer, maxdepth));
                 if(result == null){
                     logger.debug("No result from Discovery");
                     return;
@@ -195,7 +210,7 @@ public class PeerApp {
         return params;
     }
 
-    private static Hashtable<String,Vector> createExchangeData(HashMap<Integer,Peer> rawData){
+    private static Hashtable<String,Vector> createExchangeData(Map<Integer,Peer> rawData){
         Hashtable<String, Vector> result = new Hashtable<String, Vector>();
 
         for (Map.Entry<Integer, Peer> entry: rawData.entrySet()) {
@@ -216,23 +231,32 @@ public class PeerApp {
     /**
      * Handler is able to do the handshake with another peer.
      */
-	public class HelloHandler {
-        
-		public Hashtable<String, Vector> hello(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt) {
+	public class CommunicationHandler {
 
+        private Peer peer;
+        private PeerApp app;
+
+        public CommunicationHandler(Peer peer, PeerApp app){
+            this.peer = peer;
+            this.app = app;
+        }
+        
+		public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt) {
+            
             // Create Peer object
-            Peer inPeer = new Peer(IdArg, IPArg, portArg, capacityArg);
-			peerList.put(inPeer.getId(), inPeer); //TODO: Necessary?
+            this.app.addPeer(new Peer(IdArg, IPArg, portArg, capacityArg));
+
+            return createVectorForPeer(this.peer, depthInt-1);
 
             // Only return local object
-            if(depthInt <= 0) {
+            /*if(depthInt <= 0) {
                 return createExchangeData(peerList);
             }
 
 			HashMap<Integer, Peer> res = new HashMap<Integer, Peer>();
 			res.put(peer.getId(), peer); //TODO: Necessary?
 
-			for (Map.Entry<Integer, Peer> temp: peerList.entrySet()) {
+			for (Map.Entry<Integer, Peer> temp: new HashMap<Integer,Peer>(peerList).entrySet()) {
 				Peer itPeer = temp.getValue();
 
                 if(itPeer.getId() == peer.getId())
@@ -242,10 +266,10 @@ public class PeerApp {
 					try {
 						// Create the client, identifying the server
 						XmlRpcClient client = new XmlRpcClient("http://" + itPeer.getIP() + ':' + itPeer.getPort() + '/');
-						logger.debug("HelloHandler: Connection established to {}:{}",itPeer.getIP(), itPeer.getPort());
+						logger.debug("{} CommunicationHandler: Connection established to {}:{}",this.peer.getId(), itPeer.getIP(), itPeer.getPort());
 
 						// Issue a request
-						Object incomingData = (Object) client.execute("discovery.hello",
+						Object incomingData = (Object) client.execute("communication.ping",
                                 createVectorForPeer(peer, depthInt-1));
 
                         Hashtable<String,Vector> result;
@@ -260,9 +284,7 @@ public class PeerApp {
                             return null;
                         }
 
-						/**
-						 * then add the peers in this vector to the peer list of the current peer;
-						 */
+
 
                         for (Map.Entry<String, Vector> entry: result.entrySet()) {
                             Integer id = Integer.parseInt(entry.getKey());
@@ -282,8 +304,13 @@ public class PeerApp {
 				}
 			}
 
-			return createExchangeData(res);
+			return createExchangeData(res);*/
 		}
+
+        public Hashtable<String, Vector> getPeerList(){
+            return createExchangeData(this.app.getPeerList());
+        }
+
 	}
 
     /**
@@ -291,6 +318,14 @@ public class PeerApp {
      */
 	class ListeningTask implements Runnable {
         WebServer server;
+        PeerApp app;
+        Peer peer;
+        
+        public ListeningTask(Peer peer, PeerApp app){
+            this.peer = peer;
+            this.app = app;    
+        }
+        
 		@Override
 		public void run() { 
 			try {
@@ -302,7 +337,7 @@ public class PeerApp {
 				server.acceptClient(getIP());
 
 				// Register our handler class as discovery
-				server.addHandler("discovery", new HelloHandler());
+				server.addHandler("communication", new CommunicationHandler(this.peer, this.app));
                 server.start();
                 logger.debug("Created ListeningTask successfully");
 			} catch (Exception e) {
