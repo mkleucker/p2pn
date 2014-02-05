@@ -1,9 +1,11 @@
-package vic;
+package vic.Tasks;
 
 import org.apache.xmlrpc.XmlRpcClient;
+import vic.Peer;
+import vic.PeerApp;
 
 
-abstract class Task implements Runnable {
+abstract class DefaultTask implements Runnable {
     String ip;
     int port;
     Peer peer;
@@ -11,7 +13,12 @@ abstract class Task implements Runnable {
 
     XmlRpcClient client;
 
-    public Task(String ip, int port, Peer peer, PeerApp app) {
+    public DefaultTask(Peer peer, PeerApp app){
+        this.peer = peer;
+        this.app = app;
+    }
+
+    public DefaultTask(String ip, int port, Peer peer, PeerApp app) {
         this.ip = ip;
         this.port = port;
 
