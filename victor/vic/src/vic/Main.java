@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class Main {
 
-	private PeerApp peer;
+	private PeerApp peer,peer2;
 
 	private BufferedReader reader;
 
@@ -143,9 +143,9 @@ public class Main {
 			if (input.equals("test2")) {
 				this.test2();
 			}
-			if (input.length() >= 5 && input.substring(0, 5).equals("ping")) {
+			if (input.length() >= 4 && input.substring(0, 4).equals("ping")) {
 
-				String addressraw = input.substring(5);
+				String addressraw = input.substring(4);
 				String[] address = addressraw.split(":");
 
 				if (address.length == 2) {
