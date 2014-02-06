@@ -90,21 +90,11 @@ public class PeerApp {
 	}
 
 	public void helloAll() {
-		String ipAux;
-		int portAux;
-		 //Iteration of all the peers in the list of peers
 
-        for (Map.Entry<Integer, Peer> entry: new HashMap<Integer,Peer>(this.peerList).entrySet()) {
-			Peer peerAux = entry.getValue();
-			ipAux = peerAux.getIP();
-            if (peerAux.getId() == this.peer.getId()) {
-                continue;
-            }
-			portAux = peerAux.getPort();
-			// creation of a connection for every peer in the list of peers
-			Thread connection = new Thread(new ConnectionTask(ipAux, portAux, this.peer, this, this.maxDepth));
-			connection.start();
-		}		
+        Thread peerExchange = new Thread(new PeerExchangeTask(this.peer, this));
+        peerExchange.start();
+
+
 	}
 
     public void destroyPeer(){
@@ -125,8 +115,14 @@ public class PeerApp {
         this.addPeer(peer);
     }
 
+    public synchronized void addPeers(Map<String, Vector> data){
+        for(Vector rawPeer : data.values()){
+            this.addPeer(rawPeer);
+        }
+    }
+
     public synchronized Map<Integer, Peer> getPeerList(){
-        return this.peerList;
+        return new HashMap<Integer, Peer>(this.peerList);
     }
 
     /**

@@ -17,8 +17,8 @@ public class ConnectionTask extends DefaultTask {
 
     private static final Logger logger = LogManager.getLogger(ConnectionTask.class.getName());
 
-    public ConnectionTask(String ip, int port, Peer peer, PeerApp app, int maxDepth){
-        super(ip, port, peer, app);
+    public ConnectionTask(String targetIp, int targetPort, Peer peer, PeerApp app, int maxDepth){
+        super(targetIp, targetPort, peer, app);
         this.maxDepth = maxDepth;
     }
 

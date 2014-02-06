@@ -41,8 +41,8 @@ public class Main {
             logger.info("Starting test...");
 
             ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
-            for (int i = 0; i < 5; i++) {
-                peers.add(new PeerApp(i, "127.0.0.1", this.peer.getPort() + 1 + i, 9, 9));
+            for (int i = 1; i < 6; i++) {
+                peers.add(new PeerApp(i, "127.0.0.1", this.peer.getPort() + i, 9, 9));
             }
 
             Thread.sleep(1000);
@@ -65,14 +65,16 @@ public class Main {
 
             test0r.helloAll();
 
-            Thread.sleep(30000);
+            Thread.sleep(10000);
+
+            logger.debug("Peerlist of P99: {}", test0r.plist());
+
+            logger.debug("Peerlist of P{}: {}", this.peer.getId(), this.peer.plist());
+
 
             for (PeerApp peer : peers) {
                 logger.debug("Peerlist of P{}: {}", peer.getId(), peer.plist());
             }
-
-            Thread.sleep(30000);
-
 
             test0r.destroyPeer();
 
