@@ -25,6 +25,12 @@ public class PeerApp {
 
 	/**
 	 * Constructor of the class PeerApp
+	 * 
+	 * @param id
+	 * @param ip
+	 * @param port
+	 * @param capacity
+	 * @param max
 	 */
 	public PeerApp(int id, String ip, int port, int capacity, int max) {
 		logger.info("Started Peer with ID {}", id);
@@ -37,12 +43,22 @@ public class PeerApp {
 		listening.start();
 	}
 
-	public Set<Map.Entry<Integer, Peer>> getPeerSet() {		// return the set of peers in the peerList
+	/**
+	 * Return the set of peers in the peerList
+	 * 
+	 * @return Set of Peers. 
+	 */
+	public Set<Map.Entry<Integer, Peer>> getPeerSet() {		
 		Set<Map.Entry<Integer, Peer>> peerSet = peerList.entrySet();
 		return peerSet;
 	}
 
-	public String plist() {					//print the peerList on the console
+	/**
+	 * String for print the peerList on the console
+	 * 
+	 * @return A string with the right format to be printed as a list in the console. 
+	 */
+	public String plist() {					
 		String str = "List of known peers to Peer "+this.getId()+" ("+this.getIP()+":"+this.getPort()+"):\n";
 		Set<Map.Entry<Integer, Peer>> peerSet = getPeerSet();
 		for (Map.Entry<Integer, Peer> entry: peerSet) {
@@ -89,14 +105,17 @@ public class PeerApp {
 		peer.setCapacity(capacity);
 	}
 
+	/**
+	 * Says hello and creates a connection with all the Peers of the peerlist of our Peer.
+	 */
 	public void helloAll() {
-
 		Thread peerExchange = new Thread(new PeerExchangeTask(this.peer, this));
 		peerExchange.start();
-
-
 	}
 
+	/**
+	 * Destroy the peer  
+	 */
 	public void destroyPeer(){
 		this.server.shutdown();
 		logger.debug("shutdown server successfull?");
@@ -104,29 +123,46 @@ public class PeerApp {
 
 	/**
 	 * Adds a peer to the Peerlist.
+	 * 
 	 * @param peer
 	 */
 	public synchronized void addPeer(Peer peer){
 		this.peerList.put(peer.getId(), peer);
 	}
 
+	
+	/**
+	 * Creates a Peer from a vector and the calls 
+	 * addPeer method for add the peer to the Peerlist.
+	 * 
+	 * @param data
+	 */
 	public synchronized void addPeer(Vector data){
 		Peer peer = createPeerFromVector(data);
 		this.addPeer(peer);
 	}
 
+	/**
+	 * Add a set of peers to the Peerlist.
+	 * 
+	 * @param data
+	 */
 	public synchronized void addPeers(Map<String, Vector> data){
 		for(Vector rawPeer : data.values()){
 			this.addPeer(rawPeer);
 		}
 	}
 
+	/**
+	 * Converts the Map peerlist to an HashMap
+	 */
 	public synchronized Map<Integer, Peer> getPeerList(){
 		return new HashMap<Integer, Peer>(this.peerList);
 	}
 
 	/**
 	 * Connects to the specified adress.
+	 * 
 	 * @param ip IP-Address of the targeted peer.
 	 * @param port Port of the targeted peer.
 	 */
@@ -135,6 +171,13 @@ public class PeerApp {
 		connection.start();
 	}
 
+	/**
+	 * Changes the format of the data for the sending process.
+	 * From a HashMap<Integer,Peer> to a Hashtable<String, Vector>
+	 * 
+	 * @param rawData
+	 * @return Hashtable with the format: Hashtable<String, Vector>
+	 */
 	private static Hashtable<String,Vector> createExchangeData(HashMap<Integer,Peer> rawData){
 		Hashtable<String, Vector> result = new Hashtable<String, Vector>();
 
@@ -148,6 +191,7 @@ public class PeerApp {
 
 	/**
 	 * Creates request parameters for the current peer.
+	 * 
 	 * @return Vector with all parameters
 	 */
 	public static Vector<Object> createVectorForPeer(Peer peer, int depth){
@@ -161,6 +205,13 @@ public class PeerApp {
 		return params;
 	}
 
+	/**
+	 * Changes the format of the data for the sending process.
+	 * From a Map<Integer,Peer> to a Hashtable<String, Vector>
+	 * 
+	 * @param rawData
+	 * @return Hashtable with the format: Hashtable<String, Vector>
+	 */
 	public static Hashtable<String,Vector> createExchangeData(Map<Integer,Peer> rawData){
 		Hashtable<String, Vector> result = new Hashtable<String, Vector>();
 
@@ -172,6 +223,12 @@ public class PeerApp {
 		return result;
 	}
 
+	/**
+	 * Creates a Peer from a Vector. 
+	 * 
+	 * @param data
+	 * @return a new Peer.
+	 */
 	public static Peer createPeerFromVector(Vector data){
 		return new Peer((Integer)data.get(0),
 				(String)data.get(1),

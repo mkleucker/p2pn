@@ -6,8 +6,13 @@ public class Peer {
 	int port; // the port number  
 	int capacity; // the maximum number of neighbors
 	
-	/*
+	/**
 	 * Constructor of the class Peer
+	 * 
+	 * @param id
+	 * @param ip
+	 * @param port
+	 * @param capacity
 	 */
 	Peer(int id, String ip, int port, int capacity){
 		this.id = id; // the id number for each Peer

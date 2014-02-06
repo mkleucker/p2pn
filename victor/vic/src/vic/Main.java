@@ -120,6 +120,9 @@ public class Main {
 	}
 
 
+	/**
+	 * Method for parsing the inputs of the user in the console. 
+	 */
 	private void parseInput() {
 		String input;
 		try {
