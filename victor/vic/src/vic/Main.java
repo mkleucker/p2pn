@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class Main {
 
-	private PeerApp peer,peer2;
+	private PeerApp peer;
 
 	private BufferedReader reader;
 
@@ -25,8 +25,15 @@ public class Main {
 		try {
 			logger.info("Starting program");
 
+
 			this.reader = new BufferedReader(new InputStreamReader(System.in));
-			this.peer = new PeerApp(0, "127.0.0.1", 18523, 9, 9);
+            if(args.length != 2){
+                this.peer = new PeerApp(0, "127.0.0.1", 18523, 9, 9);
+            }else{
+                String ip = args[0];
+                Integer port = Integer.parseInt(args[1]);
+                this.peer = new PeerApp(0, ip, port, 9, 9);
+            }
 
 			this.parseInput();
 
@@ -53,26 +60,26 @@ public class Main {
 
 			Thread.sleep(3000);
 
-			logger.debug("Peerlist of P1: {}", this.peer.plist());
+			logger.info("Peerlist of P1: {}", this.peer.plist());
 
 
 			PeerApp test0r = new PeerApp(99, "127.0.0.1", 19876, 9, 9);
 			Thread.sleep(1000);
 			test0r.ping(this.peer.getIP(), this.peer.getPort());
 			Thread.sleep(1000);
-			logger.debug("Peerlist of P99: {}", test0r.plist());
+			logger.info("Peerlist of P99: {}", test0r.plist());
 
+            logger.info("P99 performing generic hello");
 			test0r.helloAll();
 
 			Thread.sleep(10000);
 
-			logger.debug("Peerlist of P99: {}", test0r.plist());
+			logger.info("Peerlist of P99: {}", test0r.plist());
 
-			logger.debug("Peerlist of P{}: {}", this.peer.getId(), this.peer.plist());
-
+			logger.info("Peerlist of P{}: {}", this.peer.getId(), this.peer.plist());
 
 			for (PeerApp peer : peers) {
-				logger.debug("Peerlist of P{}: {}", peer.getId(), peer.plist());
+				logger.info("Peerlist of P{}: {}", peer.getId(), peer.plist());
 			}
 
 			test0r.destroyPeer();
@@ -101,18 +108,23 @@ public class Main {
 				Thread.sleep(1000);
 			}
 
-			//peers.get(2).ping(peers.get(3).getIP(), peers.get(3).getPort());
 			for (int i = 0; i < 4; i++){
-				//peers.get(i).ping(peers.get(i+1).getIP(), peers.get(i+1).getPort());
+				peers.get(i).ping(peers.get(i+1).getIP(), peers.get(i+1).getPort());
 			}
 
 
-			Thread.sleep(3000);
+			Thread.sleep(1000);
 
-			logger.debug("Peerlist of P1: {}", this.peer.plist());
+            peers.get(peers.size()-1).helloAll();
+
+            Thread.sleep(1000);
+
+
+            logger.info("Peerlist of P{}: {}", this.peer.getId(), this.peer.plist());
 
 			for (PeerApp peer : peers) {
-				peer.destroyPeer();
+                logger.info("Peerlist of P{}: {}", peer.getId(), peer.plist());
+                peer.destroyPeer();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -173,10 +185,9 @@ public class Main {
 	 * @param args String array providing peer ID and port.
 	 */
 	public static void main(String[] args) {
-		System.out.println("Initiating peer...");
 
-		if (args.length < 2) {
-			System.err.println("Too few arguments. Make sure to provide the Peer ID and the desired port to run on.");
+		if (args.length != 2 ) {
+			logger.error("Wrong number of arguments given, will be running in auto mode.");
 		}
 
 		//
