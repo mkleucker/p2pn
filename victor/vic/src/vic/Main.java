@@ -27,12 +27,13 @@ public class Main {
 
 
 			this.reader = new BufferedReader(new InputStreamReader(System.in));
-            if(args.length != 2){
+            if(args.length != 3){
                 this.peer = new PeerApp(0, "127.0.0.1", 18523, 9, 9);
             }else{
-                String ip = args[0];
-                Integer port = Integer.parseInt(args[1]);
-                this.peer = new PeerApp(0, ip, port, 9, 9);
+                int id = Integer.parseInt(args[0]);
+                String ip = args[1];
+                Integer port = Integer.parseInt(args[2]);
+                this.peer = new PeerApp(id, ip, port, 9, 9);
             }
 
 			this.parseInput();
@@ -186,7 +187,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 
-		if (args.length != 2 ) {
+		if (args.length != 3 ) {
 			logger.error("Wrong number of arguments given, will be running in auto mode.");
 		}
 
