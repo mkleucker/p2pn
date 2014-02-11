@@ -10,6 +10,7 @@ public class PeerApp {
 
 	Peer peer;
 	Map<Integer, Peer> peerList;
+    Map<Integer, Peer> neighborList;
 
 	private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
 	int maxDepth;
@@ -35,7 +36,8 @@ public class PeerApp {
 	public PeerApp(int id, String ip, int port, int capacity, int max) {
 		logger.info("Started Peer with ID {}", id);
 		this.peer = new Peer(id, ip, port, capacity);//creation of the Peer
-		this.peerList =  Collections.synchronizedMap(new HashMap<Integer, Peer>());	// initialize the peerList
+		this.peerList =  Collections.synchronizedMap(new HashMap<Integer, Peer>());
+		this.neighborList =  Collections.synchronizedMap(new HashMap<Integer, Peer>());
 		this.maxDepth = max;
 
 		this.server = new ListeningTask(this.peer, this);
