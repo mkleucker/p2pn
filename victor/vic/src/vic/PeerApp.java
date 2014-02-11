@@ -132,6 +132,21 @@ public class PeerApp {
 		this.peerList.put(peer.getId(), peer);
 	}
 
+    /**
+     * Adds a peer to list of neighbors.
+     * @param peer
+     */
+    public synchronized void addNeighbor(Peer peer){
+        this.neighborList.put(peer.getId(), peer);
+    }
+
+    /**
+     * Converts the Map neighborlist to an HashMap
+     */
+    public synchronized Map<Integer, Peer> getNeighborList(){
+        return new HashMap<Integer, Peer>(this.neighborList);
+    }
+
 	
 	/**
 	 * Creates a Peer from a vector and the calls 
