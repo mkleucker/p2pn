@@ -10,8 +10,8 @@ public class PeerApp {
 
 	Peer peer;
 	Map<Integer, Peer> peerList;
-    Map<Integer, Peer> neighborList;
-    Map<Integer, Date> lastSeenList;
+	Map<Integer, Peer> neighborList;
+	Map<Integer, Date> lastSeenList;
 
 	private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
 	int maxDepth;
@@ -39,7 +39,7 @@ public class PeerApp {
 		this.peer = new Peer(id, ip, port, capacity);//creation of the Peer
 		this.peerList =  Collections.synchronizedMap(new HashMap<Integer, Peer>());
 		this.neighborList =  Collections.synchronizedMap(new HashMap<Integer, Peer>());
-        this.lastSeenList = Collections.synchronizedMap(new HashMap<Integer, Date>());
+		this.lastSeenList = Collections.synchronizedMap(new HashMap<Integer, Date>());
 		this.maxDepth = max;
 
 		this.server = new ListeningTask(this.peer, this);
@@ -75,6 +75,18 @@ public class PeerApp {
 		}
 
 		return str;
+	}
+
+	public void startNegotiate () {
+		Set<Map.Entry<Integer, Peer>> peerSet = peerList.entrySet();
+		for (Map.Entry<Integer, Peer> entry: peerSet) {
+			try {
+				Peer itPeer = entry.getValue();
+				ConnectionTask connect = new ConnectionTask(itPeer.getIP(), );
+			} catch (Exception e) {
+				logger.error("Function startNegotiate failed, probably because the peer no longer exists, error message {}", e.getMessage());
+			}
+		}
 	}
 
 	public int getId() {
@@ -134,22 +146,22 @@ public class PeerApp {
 		this.peerList.put(peer.getId(), peer);
 	}
 
-    /**
-     * Adds a peer to list of neighbors.
-     * @param peer
-     */
-    public synchronized void addNeighbor(Peer peer){
-        this.neighborList.put(peer.getId(), peer);
-    }
+	/**
+	 * Adds a peer to list of neighbors.
+	 * @param peer
+	 */
+	public synchronized void addNeighbor(Peer peer){
+		this.neighborList.put(peer.getId(), peer);
+	}
 
-    /**
-     * Converts the Map neighborlist to an HashMap
-     */
-    public synchronized Map<Integer, Peer> getNeighborList(){
-        return new HashMap<Integer, Peer>(this.neighborList);
-    }
+	/**
+	 * Converts the Map neighborlist to an HashMap
+	 */
+	public synchronized Map<Integer, Peer> getNeighborList(){
+		return new HashMap<Integer, Peer>(this.neighborList);
+	}
 
-	
+
 	/**
 	 * Creates a Peer from a vector and the calls 
 	 * addPeer method for add the peer to the Peerlist.
@@ -179,16 +191,16 @@ public class PeerApp {
 		return new HashMap<Integer, Peer>(this.peerList);
 	}
 
-    /**
-     * Remove a peer from all my peer-lists.
-     * @param peer
-     */
-    public synchronized void removePeer(Peer peer){
-        Integer peerId = peer.getId();
-        this.peerList.remove(peerId);
-        this.neighborList.remove(peerId);
-        this.lastSeenList.remove(peerId);
-    }
+	/**
+	 * Remove a peer from all my peer-lists.
+	 * @param peer
+	 */
+	public synchronized void removePeer(Peer peer){
+		Integer peerId = peer.getId();
+		this.peerList.remove(peerId);
+		this.neighborList.remove(peerId);
+		this.lastSeenList.remove(peerId);
+	}
 
 	/**
 	 * Connects to the specified adress.
