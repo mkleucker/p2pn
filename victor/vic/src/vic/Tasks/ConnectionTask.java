@@ -53,8 +53,9 @@ public class ConnectionTask extends DefaultTask {
 
 
 		} catch (IOException e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
+			//logger.error(e.getMessage());
+			//e.printStackTrace();
+            app.removePeer(peer);
 		} catch (XmlRpcException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();

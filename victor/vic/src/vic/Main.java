@@ -35,12 +35,21 @@ public class Main {
                 Integer port = Integer.parseInt(args[2]);
                 this.peer = new PeerApp(id, ip, port, 9, 9);
             }
-
+            
+			checkConnection();
 			this.parseInput();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/*
+	 * Starts a new thread for check the connections
+	 */
+	public void checkConnection(){
+		Thread checkConn = new Thread(new Checking(peer));
+		checkConn.start();
 	}
 
 	private void test() {
@@ -171,7 +180,7 @@ public class Main {
 			if (input.equals("plist")) {
 				System.out.println(this.peer.plist());
 			}
-
+			checkConnection();
 			parseInput();
 		} catch (IOException ioe) {
 			System.out.println("IO error!");

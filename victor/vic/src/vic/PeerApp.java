@@ -334,4 +334,31 @@ public class PeerApp {
             }
         }
     }
+    
+    /**
+	 * Check the connection with all the Peers of the peerList
+	 * and makes and update of the peerlist if there's any peer died. 
+	 * 
+	 */
+	public void checkConnection(){
+		if(randInt(1,5) == 3){
+			for (Map.Entry<Integer, Peer> entry: peerList.entrySet()) {
+				ping(entry.getValue().getIP(),entry.getValue().getPort());					
+			}
+		}
+	}
+	
+	
+	/**
+	 * It returns a random number between min and max parameters. 
+	 * 
+	 * @param min
+	 * @param max
+	 * @return random number
+	 */
+	public static int randInt(int min, int max) {
+	    Random rand = new Random();
+	    int randomNum = rand.nextInt((max - min) + 1) + min;
+	    return randomNum;
+	}
 }
