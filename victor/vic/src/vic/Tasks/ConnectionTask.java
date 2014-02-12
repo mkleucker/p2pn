@@ -14,6 +14,7 @@ import java.util.Vector;
 public class ConnectionTask extends DefaultTask {
 
     private int maxDepth;
+    private boolean neighborRequest;
 
     private static final Logger logger = LogManager.getLogger(ConnectionTask.class.getName());
 
@@ -45,7 +46,6 @@ public class ConnectionTask extends DefaultTask {
             Vector result = (Vector)this.client.execute("communication.pong", params);
             if(result == null){
                 logger.debug("No result from Discovery");
-                return;
             }else{
                 // Add the peer to my peerlist.
                 this.app.addPeer(result);
