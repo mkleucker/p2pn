@@ -302,4 +302,33 @@ public class PeerApp {
 				(Integer) data.get(2),
 				(Integer) data.get(3));
 	}
+
+    public void startNegotiate () {
+        Set<Map.Entry<Integer, Peer>> peerSet = peerList.entrySet();
+        Vector<Peer> peers = new Vector<Peer>();
+        double[] c = new double[peerSet.size()];
+        for (Map.Entry<Integer, Peer> entry: peerSet) {
+            peers.add(entry.getValue());
+        }
+        c[0] = peers[0].getCapacity();
+        for (int i = 1; i < peers.size(); i++) {
+            c[i] = c[i - 1] + peers[i].getCapacity();
+        }
+        for (int i = 0; i < peers.size(); i++) {
+            c[i] = c[i] / c[peers.size() - 1];
+        }
+        double r = Math.random();
+        for (int i = 0; i < peers.size() - 1; i++) {
+            if(r < c[i]) {
+                try {
+                    Peer itPeer = peers[i];
+                    ConnectionTask connect = new ConnectionTask(itPeer.getIP(), itPeer.getPort(), itPeer, this, 1, true);
+                    connect.run();
+                    break;
+                } catch (Exception e) {
+                    logger.error("Function startNegotiate failed, probably because the peer no longer exists, error message {}", e.getMessage());
+                }
+            }
+        }
+    }
 }
