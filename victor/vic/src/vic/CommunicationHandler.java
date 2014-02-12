@@ -20,9 +20,13 @@ public class CommunicationHandler {
     }
 
     public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt) {
+        return this.pong(IdArg, IPArg, portArg, capacityArg, depthInt, false);
+    }
+
+    public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt, boolean neighbornegotiation) {
 
         // Create Peer object
-        this.app.addPeer(new Peer(IdArg, IPArg, portArg, capacityArg));
+        this.app.addPeer(new Peer(IdArg, IPArg, portArg, capacityArg), neighbornegotiation);
 
         return PeerApp.createVectorForPeer(this.peer, depthInt-1);
     }

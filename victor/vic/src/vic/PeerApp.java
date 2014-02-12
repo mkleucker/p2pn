@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.*;
+import vic.Helper.NeighborNegotiationState;
 import vic.Tasks.*;
 
 public class PeerApp {
@@ -12,12 +13,13 @@ public class PeerApp {
 	Map<Integer, Peer> peerList;
     Map<Integer, Peer> neighborList;
     Map<Integer, Date> lastSeenList;
+    Map<Integer, NeighborNegotiationState> openNeighborRequests;
 
 	private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
 	int maxDepth;
 
 	/**
-	 *used to ensure peers finished saying ping before some 
+	 *used to ensure peers finished saying ping before some
 	 *other peers come and start to say ping
 	 */
 	Lock lock = new ReentrantLock();
@@ -27,7 +29,7 @@ public class PeerApp {
 
 	/**
 	 * Constructor of the class PeerApp
-	 * 
+	 *
 	 * @param id
 	 * @param ip
 	 * @param port
@@ -40,6 +42,7 @@ public class PeerApp {
 		this.peerList =  Collections.synchronizedMap(new HashMap<Integer, Peer>());
 		this.neighborList =  Collections.synchronizedMap(new HashMap<Integer, Peer>());
         this.lastSeenList = Collections.synchronizedMap(new HashMap<Integer, Date>());
+        this.openNeighborRequests = Collections.synchronizedMap(new HashMap<Integer, NeighborNegotiationState>());
 		this.maxDepth = max;
 
 		this.server = new ListeningTask(this.peer, this);
@@ -49,20 +52,20 @@ public class PeerApp {
 
 	/**
 	 * Return the set of peers in the peerList
-	 * 
-	 * @return Set of Peers. 
+	 *
+	 * @return Set of Peers.
 	 */
-	public Set<Map.Entry<Integer, Peer>> getPeerSet() {		
+	public Set<Map.Entry<Integer, Peer>> getPeerSet() {
 		Set<Map.Entry<Integer, Peer>> peerSet = peerList.entrySet();
 		return peerSet;
 	}
 
 	/**
 	 * String for print the peerList on the console
-	 * 
-	 * @return A string with the right format to be printed as a list in the console. 
+	 *
+	 * @return A string with the right format to be printed as a list in the console.
 	 */
-	public String plist() {					
+	public String plist() {
 		String str = "List of known peers to Peer "+this.getId()+" ("+this.getIP()+":"+this.getPort()+"):\n";
 		Set<Map.Entry<Integer, Peer>> peerSet = getPeerSet();
 		for (Map.Entry<Integer, Peer> entry: peerSet) {
@@ -118,21 +121,37 @@ public class PeerApp {
 	}
 
 	/**
-	 * Destroy the peer  
+	 * Destroy the peer
 	 */
 	public void destroyPeer(){
 		this.server.shutdown();
 		logger.debug("shutdown server successfull?");
 	}
 
+
+
 	/**
 	 * Adds a peer to the Peerlist.
-	 * 
+	 *
 	 * @param peer
 	 */
-	public synchronized void addPeer(Peer peer){
+    public synchronized void addPeer(Peer peer){
+        this.addPeer(peer, false);
+    }
+
+    public synchronized void addPeer(Peer peer, boolean neighbornegotiation){
 		this.peerList.put(peer.getId(), peer);
         this.lastSeenList.put(peer.getId(), new Date());
+
+        if (this.openNeighborRequests.containsKey(peer.getId()) &&
+                this.openNeighborRequests.get(peer.getId()) == NeighborNegotiationState.REQUEST_SENT ){
+
+//            this.openNeighborRequests.remove(peer.getId());
+//
+//            if(neighbornegotiation){
+//                this.addNeighbor(peer);
+//            }
+        }
 	}
 
     /**
@@ -159,21 +178,22 @@ public class PeerApp {
         return new HashMap<Integer, Peer>(this.neighborList);
     }
 
-	
+
 	/**
-	 * Creates a Peer from a vector and the calls 
+	 * Creates a Peer from a vector and the calls
 	 * addPeer method for add the peer to the Peerlist.
-	 * 
+	 *
 	 * @param data
 	 */
 	public synchronized void addPeer(Vector data){
 		Peer peer = createPeerFromVector(data);
+        // TODO: Check if peer is already in the system.
 		this.addPeer(peer);
 	}
 
 	/**
 	 * Add a set of peers to the Peerlist.
-	 * 
+	 *
 	 * @param data
 	 */
 	public synchronized void addPeers(Map<String, Vector> data){
@@ -199,7 +219,6 @@ public class PeerApp {
         this.neighborList.remove(peerId);
         this.lastSeenList.remove(peerId);
     }
-
     /**
      * Updates the timestamp for th last time a peer has been
      * communicated with.
@@ -211,7 +230,7 @@ public class PeerApp {
 
 	/**
 	 * Connects to the specified adress.
-	 * 
+	 *
 	 * @param ip IP-Address of the targeted peer.
 	 * @param port Port of the targeted peer.
 	 */
@@ -223,7 +242,7 @@ public class PeerApp {
 	/**
 	 * Changes the format of the data for the sending process.
 	 * From a HashMap<Integer,Peer> to a Hashtable<String, Vector>
-	 * 
+	 *
 	 * @param rawData
 	 * @return Hashtable with the format: Hashtable<String, Vector>
 	 */
@@ -240,7 +259,7 @@ public class PeerApp {
 
 	/**
 	 * Creates request parameters for the current peer.
-	 * 
+	 *
 	 * @return Vector with all parameters
 	 */
 	public static Vector<Object> createVectorForPeer(Peer peer, int depth){
@@ -257,7 +276,7 @@ public class PeerApp {
 	/**
 	 * Changes the format of the data for the sending process.
 	 * From a Map<Integer,Peer> to a Hashtable<String, Vector>
-	 * 
+	 *
 	 * @param rawData
 	 * @return Hashtable with the format: Hashtable<String, Vector>
 	 */
@@ -273,8 +292,8 @@ public class PeerApp {
 	}
 
 	/**
-	 * Creates a Peer from a Vector. 
-	 * 
+	 * Creates a Peer from a Vector.
+	 *
 	 * @param data
 	 * @return a new Peer.
 	 */
