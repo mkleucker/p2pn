@@ -132,6 +132,7 @@ public class PeerApp {
 	 */
 	public synchronized void addPeer(Peer peer){
 		this.peerList.put(peer.getId(), peer);
+        this.lastSeenList.put(peer.getId(), new Date());
 	}
 
     /**
@@ -140,6 +141,7 @@ public class PeerApp {
      */
     public synchronized void addNeighbor(Peer peer){
         this.neighborList.put(peer.getId(), peer);
+        this.updateLastSeen(peer);
     }
 
     /**
@@ -188,6 +190,15 @@ public class PeerApp {
         this.peerList.remove(peerId);
         this.neighborList.remove(peerId);
         this.lastSeenList.remove(peerId);
+    }
+
+    /**
+     * Updates the timestamp for th last time a peer has been
+     * communicated with.
+     * @param peer
+     */
+    private void updateLastSeen(Peer peer){
+        this.lastSeenList.put(peer.getId(), new Date());
     }
 
 	/**
