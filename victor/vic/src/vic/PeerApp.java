@@ -187,7 +187,7 @@ public class PeerApp {
         Integer peerId = peer.getId();
         this.peerList.remove(peerId);
         this.neighborList.remove(peerId);
-        this.lastSeenList.remove(peerId)
+        this.lastSeenList.remove(peerId);
     }
 
 	/**
