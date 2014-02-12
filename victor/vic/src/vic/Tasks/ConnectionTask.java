@@ -14,7 +14,6 @@ import java.util.Vector;
 public class ConnectionTask extends DefaultTask {
 
     private int maxDepth;
-    private boolean neighborRequest;
 
     private static final Logger logger = LogManager.getLogger(ConnectionTask.class.getName());
 
@@ -53,12 +52,12 @@ public class ConnectionTask extends DefaultTask {
             }
 
 
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
-        } catch (XmlRpcException e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
-        }
-    }
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+		} catch (XmlRpcException e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+		}
+	}
 }

@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.*;
-import vic.Helper.NeighborNegotiationState;
 import vic.Tasks.*;
 
 public class PeerApp {
@@ -19,7 +18,7 @@ public class PeerApp {
 	int maxDepth;
 
 	/**
-	 *used to ensure peers finished saying ping before some
+	 *used to ensure peers finished saying ping before some 
 	 *other peers come and start to say ping
 	 */
 	Lock lock = new ReentrantLock();
@@ -29,7 +28,7 @@ public class PeerApp {
 
 	/**
 	 * Constructor of the class PeerApp
-	 *
+	 * 
 	 * @param id
 	 * @param ip
 	 * @param port
@@ -52,20 +51,20 @@ public class PeerApp {
 
 	/**
 	 * Return the set of peers in the peerList
-	 *
-	 * @return Set of Peers.
+	 * 
+	 * @return Set of Peers. 
 	 */
-	public Set<Map.Entry<Integer, Peer>> getPeerSet() {
+	public Set<Map.Entry<Integer, Peer>> getPeerSet() {		
 		Set<Map.Entry<Integer, Peer>> peerSet = peerList.entrySet();
 		return peerSet;
 	}
 
 	/**
 	 * String for print the peerList on the console
-	 *
-	 * @return A string with the right format to be printed as a list in the console.
+	 * 
+	 * @return A string with the right format to be printed as a list in the console. 
 	 */
-	public String plist() {
+	public String plist() {					
 		String str = "List of known peers to Peer "+this.getId()+" ("+this.getIP()+":"+this.getPort()+"):\n";
 		Set<Map.Entry<Integer, Peer>> peerSet = getPeerSet();
 		for (Map.Entry<Integer, Peer> entry: peerSet) {
@@ -121,18 +120,16 @@ public class PeerApp {
 	}
 
 	/**
-	 * Destroy the peer
+	 * Destroy the peer  
 	 */
 	public void destroyPeer(){
 		this.server.shutdown();
 		logger.debug("shutdown server successfull?");
 	}
 
-
-
 	/**
 	 * Adds a peer to the Peerlist.
-	 *
+	 * 
 	 * @param peer
 	 */
     public synchronized void addPeer(Peer peer){
@@ -276,7 +273,7 @@ public class PeerApp {
 	/**
 	 * Changes the format of the data for the sending process.
 	 * From a Map<Integer,Peer> to a Hashtable<String, Vector>
-	 *
+	 * 
 	 * @param rawData
 	 * @return Hashtable with the format: Hashtable<String, Vector>
 	 */
@@ -292,8 +289,8 @@ public class PeerApp {
 	}
 
 	/**
-	 * Creates a Peer from a Vector.
-	 *
+	 * Creates a Peer from a Vector. 
+	 * 
 	 * @param data
 	 * @return a new Peer.
 	 */
