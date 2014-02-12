@@ -161,23 +161,31 @@ public class PeerApp {
 	 */
 	public synchronized void addPeer(Peer peer){
 		this.peerList.put(peer.getId(), peer);
+        this.lastSeenList.put(peer.getId(), new Date());
 	}
+    /**
+     * Adds a peer to list of neighbors.
+     * @param peer
+     */
+    public synchronized void addNeighbor(Peer peer){
+        this.neighborList.put(peer.getId(), peer);
+        this.updateLastSeen(peer);
+    }
 
-	/**
-	 * Adds a peer to list of neighbors.
-	 * @param peer
-	 */
-	public synchronized void addNeighbor(Peer peer){
-		this.neighborList.put(peer.getId(), peer);
-	}
+    /**
+     * Returns a copy of the list of lastSeenList.
+     * @return
+     */
+    public synchronized Map<Integer, Date> getLastSeenList(){
+        return new HashMap<Integer, Date>(this.lastSeenList);
+    }
 
-	/**
-	 * Converts the Map neighborlist to an HashMap
-	 */
-	public synchronized Map<Integer, Peer> getNeighborList(){
-		return new HashMap<Integer, Peer>(this.neighborList);
-	}
-
+    /**
+     * Converts the Map neighborlist to an HashMap
+     */
+    public synchronized Map<Integer, Peer> getNeighborList(){
+        return new HashMap<Integer, Peer>(this.neighborList);
+    }
 
 	/**
 	 * Creates a Peer from a vector and the calls 
@@ -218,6 +226,15 @@ public class PeerApp {
 		this.neighborList.remove(peerId);
 		this.lastSeenList.remove(peerId);
 	}
+
+    /**
+     * Updates the timestamp for th last time a peer has been
+     * communicated with.
+     * @param peer
+     */
+    private void updateLastSeen(Peer peer){
+        this.lastSeenList.put(peer.getId(), new Date());
+    }
 
 	/**
 	 * Connects to the specified adress.
