@@ -13,22 +13,56 @@ public class CommunicationHandler {
 
     private static final Logger logger = LogManager.getLogger(CommunicationHandler.class.getName());
 
-
     public CommunicationHandler(Peer peer, PeerApp app){
         this.peer = peer;
         this.app = app;
     }
 
     public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt) {
-        return this.pong(IdArg, IPArg, portArg, capacityArg, depthInt, false);
+        this.app.addPeer(new Peer(IdArg, IPArg, portArg, capacityArg));
+
+        return createLocalReturnValue(peer);
     }
 
-    public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt, boolean neighbornegotiation) {
+    /**
+     * Extension of the regular pong() function. If the flag `neighbornegotiation` is set,
+     * then it signals that the other peer want to be my neighbor. Hence I have to
+     * decide and reply accordingly.
+     *
+     * @param IdArg
+     * @param IPArg
+     * @param portArg
+     * @param capacityArg
+     * @param depthInt
+     * @param neighboranswer
+     * @return
+     */
+    public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt, boolean neighboranswer) {
 
         // Create Peer object
-        this.app.addPeer(new Peer(IdArg, IPArg, portArg, capacityArg), neighbornegotiation);
+        this.app.addPeer(new Peer(IdArg, IPArg, portArg, capacityArg));
 
-        return PeerApp.createVectorForPeer(this.peer, depthInt-1);
+        if(neighboranswer){
+            boolean neighborAnswer = true;
+            // TODO: Call check on answer
+            return createLocalReturnValue(peer, true, neighborAnswer);
+        }
+
+        return createLocalReturnValue(peer);
+
+    }
+
+    private Vector createLocalReturnValue(Peer peer){
+        return this.createLocalReturnValue(peer, false, false);
+    }
+
+    private Vector createLocalReturnValue(Peer peer, boolean isNeighborRequest, boolean neighborRequestAnswer) {
+        Vector data = PeerApp.createVectorForPeer(this.peer, 0);
+        if(isNeighborRequest){
+            data.add(neighborRequestAnswer);
+        }
+        return data;
+
     }
 
     public Hashtable<String, Vector> getPeerList(){
