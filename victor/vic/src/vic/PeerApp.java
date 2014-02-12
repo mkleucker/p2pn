@@ -5,6 +5,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.*;
 import vic.Tasks.*;
+import vic.Helper.*;
 
 public class PeerApp {
 
@@ -12,6 +13,7 @@ public class PeerApp {
 	Map<Integer, Peer> peerList;
     Map<Integer, Peer> neighborList;
     Map<Integer, Date> lastSeenList;
+
     Map<Integer, NeighborNegotiationState> openNeighborRequests;
 
 	private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
