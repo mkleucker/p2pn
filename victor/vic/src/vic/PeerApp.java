@@ -305,12 +305,15 @@ public class PeerApp {
 
     public void startNegotiate () {
         Set<Map.Entry<Integer, Peer>> peerSet = peerList.entrySet();
+        if (peerSet.size() < 1){
+            return;
+        }
         Vector<Peer> peers = new Vector<Peer>();
         double[] c = new double[peerSet.size()];
         for (Map.Entry<Integer, Peer> entry: peerSet) {
             peers.add(entry.getValue());
         }
-        c[0] = peers.get(i).getCapacity();
+        c[0] = peers.get(0).getCapacity();
         for (int i = 1; i < peers.size(); i++) {
             c[i] = c[i - 1] + peers.get(i).getCapacity();
         }
