@@ -11,6 +11,7 @@ public class PeerApp {
 	Peer peer;
 	Map<Integer, Peer> peerList;
     Map<Integer, Peer> neighborList;
+    Map<Integer, Date> lastSeenList;
 
 	private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
 	int maxDepth;
@@ -38,6 +39,7 @@ public class PeerApp {
 		this.peer = new Peer(id, ip, port, capacity);//creation of the Peer
 		this.peerList =  Collections.synchronizedMap(new HashMap<Integer, Peer>());
 		this.neighborList =  Collections.synchronizedMap(new HashMap<Integer, Peer>());
+        this.lastSeenList = Collections.synchronizedMap(new HashMap<Integer, Date>());
 		this.maxDepth = max;
 
 		this.server = new ListeningTask(this.peer, this);
@@ -176,6 +178,17 @@ public class PeerApp {
 	public synchronized Map<Integer, Peer> getPeerList(){
 		return new HashMap<Integer, Peer>(this.peerList);
 	}
+
+    /**
+     * Remove a peer from all my peer-lists.
+     * @param peer
+     */
+    public synchronized void removePeer(Peer peer){
+        Integer peerId = peer.getId();
+        this.peerList.remove(peerId);
+        this.neighborList.remove(peerId);
+        this.lastSeenList.remove(peerId)
+    }
 
 	/**
 	 * Connects to the specified adress.
