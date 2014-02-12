@@ -145,6 +145,14 @@ public class PeerApp {
     }
 
     /**
+     * Returns a copy of the list of lastSeenList.
+     * @return
+     */
+    public synchronized Map<Integer, Date> getLastSeenList(){
+        return new HashMap<Integer, Date>(this.lastSeenList);
+    }
+
+    /**
      * Converts the Map neighborlist to an HashMap
      */
     public synchronized Map<Integer, Peer> getNeighborList(){
