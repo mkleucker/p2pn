@@ -310,9 +310,9 @@ public class PeerApp {
         for (Map.Entry<Integer, Peer> entry: peerSet) {
             peers.add(entry.getValue());
         }
-        c[0] = peers[0].getCapacity();
+        c[0] = peers.get(i).getCapacity();
         for (int i = 1; i < peers.size(); i++) {
-            c[i] = c[i - 1] + peers[i].getCapacity();
+            c[i] = c[i - 1] + peers.get(i).getCapacity();
         }
         for (int i = 0; i < peers.size(); i++) {
             c[i] = c[i] / c[peers.size() - 1];
@@ -321,7 +321,7 @@ public class PeerApp {
         for (int i = 0; i < peers.size() - 1; i++) {
             if(r < c[i]) {
                 try {
-                    Peer itPeer = peers[i];
+                    Peer itPeer = peers.get(i);
                     ConnectionTask connect = new ConnectionTask(itPeer.getIP(), itPeer.getPort(), itPeer, this, 1, true);
                     connect.run();
                     break;
