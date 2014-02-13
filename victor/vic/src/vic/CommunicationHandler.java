@@ -54,7 +54,7 @@ public class CommunicationHandler {
 	}
 
 	public boolean responseNegotiate(Peer inPeer) {
-		if(this.app.neighborList.size() >= this.app.getCapacity()) {
+		if(this.app.neighborList.size() + openNeighborRequests.size() >= this.app.getCapacity()) {
 			return false;
 		}
 		if(Math.random() < (double)((double)inPeer.getCapacity() / (double)this.app.getCapacity())) {
