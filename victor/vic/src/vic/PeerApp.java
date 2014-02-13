@@ -11,10 +11,10 @@ public class PeerApp {
 
 	Peer peer;
 	Map<Integer, Peer> peerList;
-    Map<Integer, Peer> neighborList;
-    Map<Integer, Date> lastSeenList;
+	Map<Integer, Peer> neighborList;
+	Map<Integer, Date> lastSeenList;
 
-    Map<Integer, NeighborNegotiationState> openNeighborRequests;
+	Map<Integer, NeighborNegotiationState> openNeighborRequests;
 
 	private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
 	int maxDepth;
@@ -42,8 +42,8 @@ public class PeerApp {
 		this.peer = new Peer(id, ip, port, capacity);//creation of the Peer
 		this.peerList =  Collections.synchronizedMap(new HashMap<Integer, Peer>());
 		this.neighborList =  Collections.synchronizedMap(new HashMap<Integer, Peer>());
-        this.lastSeenList = Collections.synchronizedMap(new HashMap<Integer, Date>());
-        this.openNeighborRequests = Collections.synchronizedMap(new HashMap<Integer, NeighborNegotiationState>());
+		this.lastSeenList = Collections.synchronizedMap(new HashMap<Integer, Date>());
+		this.openNeighborRequests = Collections.synchronizedMap(new HashMap<Integer, NeighborNegotiationState>());
 		this.maxDepth = max;
 
 		this.server = new ListeningTask(this.peer, this);
@@ -134,48 +134,48 @@ public class PeerApp {
 	 * 
 	 * @param peer
 	 */
-    public synchronized void addPeer(Peer peer){
-        this.addPeer(peer, false);
-    }
-
-    public synchronized void addPeer(Peer peer, boolean neighbornegotiation){
-		this.peerList.put(peer.getId(), peer);
-        this.lastSeenList.put(peer.getId(), new Date());
-
-        if (this.openNeighborRequests.containsKey(peer.getId()) &&
-                this.openNeighborRequests.get(peer.getId()) == NeighborNegotiationState.REQUEST_SENT ){
-
-//            this.openNeighborRequests.remove(peer.getId());
-//
-//            if(neighbornegotiation){
-//                this.addNeighbor(peer);
-//            }
-        }
+	public synchronized void addPeer(Peer peer){
+		this.addPeer(peer, false);
 	}
 
-    /**
-     * Adds a peer to list of neighbors.
-     * @param peer
-     */
-    public synchronized void addNeighbor(Peer peer){
-        this.neighborList.put(peer.getId(), peer);
-        this.updateLastSeen(peer);
-    }
+	public synchronized void addPeer(Peer peer, boolean neighbornegotiation){
+		this.peerList.put(peer.getId(), peer);
+		this.lastSeenList.put(peer.getId(), new Date());
 
-    /**
-     * Returns a copy of the list of lastSeenList.
-     * @return
-     */
-    public synchronized Map<Integer, Date> getLastSeenList(){
-        return new HashMap<Integer, Date>(this.lastSeenList);
-    }
+		if (this.openNeighborRequests.containsKey(peer.getId()) &&
+				this.openNeighborRequests.get(peer.getId()) == NeighborNegotiationState.REQUEST_SENT ){
 
-    /**
-     * Converts the Map neighborlist to an HashMap
-     */
-    public synchronized Map<Integer, Peer> getNeighborList(){
-        return new HashMap<Integer, Peer>(this.neighborList);
-    }
+			//            this.openNeighborRequests.remove(peer.getId());
+			//
+			//            if(neighbornegotiation){
+			//                this.addNeighbor(peer);
+			//            }
+				}
+	}
+
+	/**
+	 * Adds a peer to list of neighbors.
+	 * @param peer
+	 */
+	public synchronized void addNeighbor(Peer peer){
+		this.neighborList.put(peer.getId(), peer);
+		this.updateLastSeen(peer);
+	}
+
+	/**
+	 * Returns a copy of the list of lastSeenList.
+	 * @return
+	 */
+	public synchronized Map<Integer, Date> getLastSeenList(){
+		return new HashMap<Integer, Date>(this.lastSeenList);
+	}
+
+	/**
+	 * Converts the Map neighborlist to an HashMap
+	 */
+	public synchronized Map<Integer, Peer> getNeighborList(){
+		return new HashMap<Integer, Peer>(this.neighborList);
+	}
 
 
 	/**
@@ -186,7 +186,7 @@ public class PeerApp {
 	 */
 	public synchronized void addPeer(Vector data){
 		Peer peer = createPeerFromVector(data);
-        // TODO: Check if peer is already in the system.
+		// TODO: Check if peer is already in the system.
 		this.addPeer(peer);
 	}
 
@@ -208,24 +208,24 @@ public class PeerApp {
 		return new HashMap<Integer, Peer>(this.peerList);
 	}
 
-    /**
-     * Remove a peer from all my peer-lists.
-     * @param peer
-     */
-    public synchronized void removePeer(Peer peer){
-        Integer peerId = peer.getId();
-        this.peerList.remove(peerId);
-        this.neighborList.remove(peerId);
-        this.lastSeenList.remove(peerId);
-    }
-    /**
-     * Updates the timestamp for th last time a peer has been
-     * communicated with.
-     * @param peer
-     */
-    private void updateLastSeen(Peer peer){
-        this.lastSeenList.put(peer.getId(), new Date());
-    }
+	/**
+	 * Remove a peer from all my peer-lists.
+	 * @param peer
+	 */
+	public synchronized void removePeer(Peer peer){
+		Integer peerId = peer.getId();
+		this.peerList.remove(peerId);
+		this.neighborList.remove(peerId);
+		this.lastSeenList.remove(peerId);
+	}
+	/**
+	 * Updates the timestamp for th last time a peer has been
+	 * communicated with.
+	 * @param peer
+	 */
+	private void updateLastSeen(Peer peer){
+		this.lastSeenList.put(peer.getId(), new Date());
+	}
 
 	/**
 	 * Connects to the specified adress.
@@ -303,39 +303,39 @@ public class PeerApp {
 				(Integer) data.get(3));
 	}
 
-    public void startNegotiate () {
-        Set<Map.Entry<Integer, Peer>> peerSet = peerList.entrySet();
-        if (peerSet.size() < 1){
-            return;
-        }
-        Vector<Peer> peers = new Vector<Peer>();
-        double[] c = new double[peerSet.size()];
-        for (Map.Entry<Integer, Peer> entry: peerSet) {
-            peers.add(entry.getValue());
-        }
-        c[0] = peers.get(0).getCapacity();
-        for (int i = 1; i < peers.size(); i++) {
-            c[i] = c[i - 1] + peers.get(i).getCapacity();
-        }
-        for (int i = 0; i < peers.size(); i++) {
-            c[i] = c[i] / c[peers.size() - 1];
-        }
-        double r = Math.random();
-        for (int i = 0; i < peers.size() - 1; i++) {
-            if(r < c[i]) {
-                try {
-                    Peer itPeer = peers.get(i);
-                    ConnectionTask connect = new ConnectionTask(itPeer.getIP(), itPeer.getPort(), itPeer, this, 1, true);
-                    connect.run();
-                    break;
-                } catch (Exception e) {
-                    logger.error("Function startNegotiate failed, probably because the peer no longer exists, error message {}", e.getMessage());
-                }
-            }
-        }
-    }
-    
-    /**
+	public void startNegotiate () {
+		Set<Map.Entry<Integer, Peer>> peerSet = peerList.entrySet();
+		if (peerSet.size() < 1){
+			return;
+		}
+		Vector<Peer> peers = new Vector<Peer>();
+		double[] c = new double[peerSet.size()];
+		for (Map.Entry<Integer, Peer> entry: peerSet) {
+			peers.add(entry.getValue());
+		}
+		c[0] = peers.get(0).getCapacity();
+		for (int i = 1; i < peers.size(); i++) {
+			c[i] = c[i - 1] + peers.get(i).getCapacity();
+		}
+		for (int i = 0; i < peers.size(); i++) {
+			c[i] = c[i] / c[peers.size() - 1];
+		}
+		double r = Math.random();
+		for (int i = 0; i < peers.size() - 1; i++) {
+			if(r < c[i]) {
+				try {
+					Peer itPeer = peers.get(i);
+					ConnectionTask connect = new ConnectionTask(itPeer.getIP(), itPeer.getPort(), itPeer, this, 1, true);
+					connect.run();
+					break;
+				} catch (Exception e) {
+					logger.error("Function startNegotiate failed, probably because the peer no longer exists, error message {}", e.getMessage());
+				}
+			}
+		}
+	}
+
+	/**
 	 * Check the connection with all the Peers of the peerList
 	 * and makes and update of the peerlist if there's any peer died. 
 	 * 
@@ -347,8 +347,8 @@ public class PeerApp {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * It returns a random number between min and max parameters. 
 	 * 
@@ -357,8 +357,8 @@ public class PeerApp {
 	 * @return random number
 	 */
 	public static int randInt(int min, int max) {
-	    Random rand = new Random();
-	    int randomNum = rand.nextInt((max - min) + 1) + min;
-	    return randomNum;
+		Random rand = new Random();
+		int randomNum = rand.nextInt((max - min) + 1) + min;
+		return randomNum;
 	}
 }
