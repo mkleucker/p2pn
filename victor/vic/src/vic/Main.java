@@ -141,6 +141,27 @@ public class Main {
 		}
 	}
 
+    private void test3(){
+        try{
+            PeerApp p2 = new PeerApp(2, "127.0.0.1", this.peer.getPort()+1, 9, 9);
+            Thread.sleep(1000);
+            logger.info("Created P2");
+            this.peer.becomeNeighbor(p2.getIP(), p2.getPort());
+            logger.info("P1 tries to become neighbor of P2...");
+            Thread.sleep(1000);
+
+            logger.info("Peerlist of P0: {}", this.peer.plist());
+            logger.info("Neighborlist of P0: {}", this.peer.nlist());
+
+            logger.info("Peerlist of P2: {}", p2.plist());
+            logger.info("Neighborlist of P2: {}", p2.nlist());
+
+            p2.destroyPeer();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
 	/**
 	 * Method for parsing the inputs of the user in the console. 
@@ -166,6 +187,11 @@ public class Main {
 			if (input.equals("test2")) {
 				this.test2();
 			}
+
+            if (input.equals("test3")){
+                this.test3();
+            }
+
 			if (input.length() >= 5 && input.substring(0, 5).equals("hello")) {
 
 				String addressraw = input.substring(5);
@@ -177,6 +203,7 @@ public class Main {
 					this.peer.helloAll();
 				}
 			}
+
 
 			if (input.equals("plist")) {
 				System.out.println(this.peer.plist());

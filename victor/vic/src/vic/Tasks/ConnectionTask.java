@@ -49,8 +49,8 @@ public class ConnectionTask extends DefaultTask {
             if(result == null){
                 logger.debug("No result from Discovery");
             }else{
-                // Add the peer to my peerlist.
-                this.app.addPeer(result);
+                // Process the answer.
+                this.app.receiveConnectionAnswer(result);
             }
 
 

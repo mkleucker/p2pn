@@ -42,18 +42,23 @@ public class CommunicationHandler {
 	 * @param portArg Port of the Peer that called this function
 	 * @param capacityArg Capacity of the Peer that called this function
 	 * @param depthInt Max. recursion of the Peer that called this function
-	 * @param neighboranswer Flag whether the requesting Peer wants to be our neighbor
+	 * @param isNeighborRequest Flag whether the requesting Peer wants to be our neighbor
 	 * @return Vector containing the
 	 */
-	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt, boolean neighboranswer) {
+	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt, boolean isNeighborRequest) {
+        logger.debug("Called pong with request");
 
 		// Create Peer object
 		Peer inPeer = new Peer(IdArg, IPArg, portArg, capacityArg);
 		this.app.addPeer(inPeer);
 
-		if(neighboranswer){
+		if(isNeighborRequest){
 			boolean neighborAnswer = responseNegotiate(inPeer);
-			// TODO: Call check on answer
+            if(neighborAnswer){
+                this.app.addNeighbor(inPeer, neighborAnswer);
+            }
+            logger.debug("Answering neighbor request from {}:{} with {}", IPArg, portArg, neighborAnswer);
+            // TODO: Call check on answer
 			return createLocalReturnValue(true, neighborAnswer);
 		}
 
