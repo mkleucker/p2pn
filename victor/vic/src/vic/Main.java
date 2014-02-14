@@ -145,7 +145,8 @@ public class Main {
 	/**
 	 * Method for parsing the inputs of the user in the console. 
 	 */
-	private void parseInput() {
+	@SuppressWarnings("InfiniteRecursion")
+    private void parseInput() {
 		String input;
 		try {
 			System.out.print(">");
@@ -200,7 +201,6 @@ public class Main {
 			logger.error("Wrong number of arguments given, will be running in auto mode.");
 		}
 
-		//
-		Main director = new Main(args);
-	}
+		new Main(args);
+    }
 }

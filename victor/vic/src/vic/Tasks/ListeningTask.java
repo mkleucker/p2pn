@@ -7,9 +7,6 @@ import vic.CommunicationHandler;
 import vic.Peer;
 import vic.PeerApp;
 
-/**
- * Created by max on 06.02.14.
- */
 public class ListeningTask extends DefaultTask{
     WebServer server;
 

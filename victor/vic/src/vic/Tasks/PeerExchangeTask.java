@@ -10,9 +10,7 @@ import vic.PeerApp;
 import java.io.IOException;
 import java.util.*;
 
-/**
- * Created by max on 06.02.14.
- */
+
 public class PeerExchangeTask extends DefaultTask {
 
     private static final Logger logger = LogManager.getLogger(PeerExchangeTask.class.getName());

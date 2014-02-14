@@ -3,9 +3,7 @@ package vic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Hashtable;
 import java.util.Vector;
-
 
 public class CommunicationHandler {
 	private Peer peer;
@@ -18,10 +16,19 @@ public class CommunicationHandler {
 		this.app = app;
 	}
 
+    /**
+     * Answers a XML-RPCall by a different Peer as part of our Protocol.
+     *
+     * @param IdArg ID of the Peer that called this function
+     * @param IPArg IP of the Peer that called this function
+     * @param portArg Port of the Peer that called this function
+     * @param capacityArg Capacity of the Peer that called this function
+     * @param depthInt Max. recursion of the Peer that called this function
+     * @return Vector containing the
+     */
 	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt) {
 		this.app.addPeer(new Peer(IdArg, IPArg, portArg, capacityArg));
-
-		return createLocalReturnValue(peer);
+		return createLocalReturnValue();
 	}
 
 	/**
@@ -29,13 +36,13 @@ public class CommunicationHandler {
 	 * then it signals that the other peer want to be my neighbor. Hence I have to
 	 * decide and reply accordingly.
 	 *
-	 * @param IdArg
-	 * @param IPArg
-	 * @param portArg
-	 * @param capacityArg
-	 * @param depthInt
-	 * @param neighboranswer
-	 * @return
+	 * @param IdArg ID of the Peer that called this function
+	 * @param IPArg IP of the Peer that called this function
+	 * @param portArg Port of the Peer that called this function
+	 * @param capacityArg Capacity of the Peer that called this function
+	 * @param depthInt Max. recursion of the Peer that called this function
+	 * @param neighboranswer Flag whether the requesting Peer wants to be our neighbor
+	 * @return Vector containing the
 	 */
 	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt, boolean neighboranswer) {
 
@@ -46,37 +53,30 @@ public class CommunicationHandler {
 		if(neighboranswer){
 			boolean neighborAnswer = responseNegotiate(inPeer);
 			// TODO: Call check on answer
-			return createLocalReturnValue(peer, true, neighborAnswer);
+			return createLocalReturnValue(true, neighborAnswer);
 		}
 
-		return createLocalReturnValue(peer);
+		return createLocalReturnValue();
 
 	}
 
 	public boolean responseNegotiate(Peer inPeer) {
-		if(this.app.neighborList.size() + openNeighborRequests.size() >= this.app.getCapacity()) {
+		if(this.app.neighborList.size() + this.app.openNeighborRequests.size() >= this.app.getCapacity()) {
 			return false;
 		}
-		if(Math.random() < (double)((double)inPeer.getCapacity() / (double)this.app.getCapacity())) {
-			return true;
-		}
-		return false;
+        return Math.random() < (double) ((double) inPeer.getCapacity() / (double) this.app.getCapacity());
+    }
+
+	private Vector createLocalReturnValue(){
+		return this.createLocalReturnValue(false, false);
 	}
 
-	private Vector createLocalReturnValue(Peer peer){
-		return this.createLocalReturnValue(peer, false, false);
-	}
-
-	private Vector createLocalReturnValue(Peer peer, boolean isNeighborRequest, boolean neighborRequestAnswer) {
+	private Vector createLocalReturnValue(boolean isNeighborRequest, boolean neighborRequestAnswer) {
 		Vector data = PeerApp.createVectorForPeer(this.peer, 0);
 		if(isNeighborRequest){
 			data.add(neighborRequestAnswer);
 		}
 		return data;
 
-	}
-
-	public Hashtable<String, Vector> getPeerList(){
-		return PeerApp.createExchangeData(this.app.getPeerList());
 	}
 }

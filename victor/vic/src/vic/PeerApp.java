@@ -13,29 +13,21 @@ public class PeerApp {
 	Map<Integer, Peer> peerList;
 	Map<Integer, Peer> neighborList;
 	Map<Integer, Date> lastSeenList;
-
 	Map<String, NeighborNegotiationState> openNeighborRequests;
 
 	private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
 	int maxDepth;
-
-	/**
-	 *used to ensure peers finished saying ping before some 
-	 *other peers come and start to say ping
-	 */
-	Lock lock = new ReentrantLock();
-
 
 	ListeningTask server;
 
 	/**
 	 * Constructor of the class PeerApp
 	 * 
-	 * @param id
-	 * @param ip
-	 * @param port
-	 * @param capacity
-	 * @param max
+	 * @param id ID of the Peer
+	 * @param ip IP Address of the Peer
+	 * @param port Port on which this Peer listens
+	 * @param capacity Capacity of this Peer
+	 * @param max Max. recursion depth
 	 */
 	public PeerApp(int id, String ip, int port, int capacity, int max) {
 		logger.info("Started Peer with ID {}", id);
@@ -57,8 +49,7 @@ public class PeerApp {
 	 * @return Set of Peers. 
 	 */
 	public Set<Map.Entry<Integer, Peer>> getPeerSet() {		
-		Set<Map.Entry<Integer, Peer>> peerSet = peerList.entrySet();
-		return peerSet;
+		return peerList.entrySet();
 	}
 
 	/**
@@ -91,10 +82,6 @@ public class PeerApp {
 
 	public String getIP() {
 		return peer.getIP();
-	}
-
-	public void setIP(String ip) {
-		peer.setIP(ip);
 	}
 
 	public int getPort() {
@@ -132,18 +119,14 @@ public class PeerApp {
 	/**
 	 * Adds a peer to the Peerlist.
 	 * 
-	 * @param peer
+	 * @param peer Peer object to add to registry.
 	 */
 	public synchronized void addPeer(Peer peer){
-		this.addPeer(peer, false);
-	}
-
-	public synchronized void addPeer(Peer peer, boolean neighbornegotiation){
 		this.peerList.put(peer.getId(), peer);
 		this.lastSeenList.put(peer.getId(), new Date());
 
-		if (this.openNeighborRequests.containsKey(peer.getId()) &&
-				this.openNeighborRequests.get(peer.getId()) == NeighborNegotiationState.REQUEST_SENT ){
+		if (this.openNeighborRequests.containsKey(peer.getIP()+':'+peer.getPort()) &&
+				this.openNeighborRequests.get(peer.getIP()+':'+peer.getPort()) == NeighborNegotiationState.REQUEST_SENT ){
 
 			//            this.openNeighborRequests.remove(peer.getId());
 			//
@@ -155,7 +138,7 @@ public class PeerApp {
 
 	/**
 	 * Adds a peer to list of neighbors.
-	 * @param peer
+	 * @param peer Peer object to add to the neighbor list
 	 */
 	public synchronized void addNeighbor(Peer peer){
 		this.neighborList.put(peer.getId(), peer);
@@ -164,7 +147,7 @@ public class PeerApp {
 
 	/**
 	 * Returns a copy of the list of lastSeenList.
-	 * @return
+	 * @return HashMap containing all LastSeen information
 	 */
 	public synchronized Map<Integer, Date> getLastSeenList(){
 		return new HashMap<Integer, Date>(this.lastSeenList);
@@ -185,7 +168,7 @@ public class PeerApp {
 	 * Creates a Peer from a vector and the calls
 	 * addPeer method for add the peer to the Peerlist.
 	 *
-	 * @param data
+	 * @param data Single Vector object containing the data of a Peer.
 	 */
 	public synchronized void addPeer(Vector data){
 		Peer peer = createPeerFromVector(data);
@@ -196,7 +179,7 @@ public class PeerApp {
 	/**
 	 * Add a set of peers to the Peerlist.
 	 *
-	 * @param data
+	 * @param data Map of String - Vector pairs, where the Vector is a representation of a Peer.
 	 */
 	public synchronized void addPeers(Map<String, Vector> data){
 		for(Vector rawPeer : data.values()){
@@ -213,7 +196,7 @@ public class PeerApp {
 
 	/**
 	 * Remove a peer from all my peer-lists.
-	 * @param peer
+	 * @param peer Peer object to remove form my registry
 	 */
 	public synchronized void removePeer(Peer peer){
 		Integer peerId = peer.getId();
@@ -224,7 +207,7 @@ public class PeerApp {
 	/**
 	 * Updates the timestamp for th last time a peer has been
 	 * communicated with.
-	 * @param peer
+	 * @param peer Peer object to update timestamp on
 	 */
 	private void updateLastSeen(Peer peer){
 		this.lastSeenList.put(peer.getId(), new Date());
@@ -245,7 +228,7 @@ public class PeerApp {
 	 * Changes the format of the data for the sending process.
 	 * From a HashMap<Integer,Peer> to a Hashtable<String, Vector>
 	 *
-	 * @param rawData
+	 * @param rawData HashMap of Integer - Peer pairs
 	 * @return Hashtable with the format: Hashtable<String, Vector>
 	 */
 	private static Hashtable<String,Vector> createExchangeData(HashMap<Integer,Peer> rawData){
@@ -279,7 +262,7 @@ public class PeerApp {
 	 * Changes the format of the data for the sending process.
 	 * From a Map<Integer,Peer> to a Hashtable<String, Vector>
 	 * 
-	 * @param rawData
+	 * @param rawData Map of Peers in their Vector representation.
 	 * @return Hashtable with the format: Hashtable<String, Vector>
 	 */
 	public static Hashtable<String,Vector> createExchangeData(Map<Integer,Peer> rawData){
@@ -296,7 +279,7 @@ public class PeerApp {
 	/**
 	 * Creates a Peer from a Vector. 
 	 * 
-	 * @param data
+	 * @param data Vector representation of a peer
 	 * @return a new Peer.
 	 */
 	public static Peer createPeerFromVector(Vector data){
@@ -305,6 +288,7 @@ public class PeerApp {
 				(Integer) data.get(2),
 				(Integer) data.get(3));
 	}
+
 
 	public void startNegotiate () {
 		Set<Map.Entry<Integer, Peer>> peerSet = peerList.entrySet();
@@ -355,13 +339,12 @@ public class PeerApp {
 	/**
 	 * It returns a random number between min and max parameters. 
 	 * 
-	 * @param min
-	 * @param max
+	 * @param min Lower boundary for radnom number
+	 * @param max Upper boundary for random number
 	 * @return random number
 	 */
 	public static int randInt(int min, int max) {
 		Random rand = new Random();
-		int randomNum = rand.nextInt((max - min) + 1) + min;
-		return randomNum;
+		return rand.nextInt((max - min) + 1) + min;
 	}
 }

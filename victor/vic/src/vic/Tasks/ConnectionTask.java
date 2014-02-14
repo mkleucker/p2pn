@@ -38,10 +38,10 @@ public class ConnectionTask extends DefaultTask {
 
             // Issue a request
 
-            Vector params = PeerApp.createVectorForPeer(this.peer, this.maxDepth);
+            Vector<Object> params = PeerApp.createVectorForPeer(this.peer, this.maxDepth);
 
             if(neighborRequest){
-                params.add(neighborRequest);
+                params.add(true); // Set flag for Neighbor Request
                 app.setNeighborRequest(ip + ":" + port, NeighborNegotiationState.REQUEST_SENT);
             }
 
