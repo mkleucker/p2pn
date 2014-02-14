@@ -9,20 +9,16 @@ public class Peer {
 	/**
 	 * Constructor of the class Peer
 	 * 
-	 * @param id
-	 * @param ip
-	 * @param port
-	 * @param capacity
+	 * @param id ID of the peer
+	 * @param ip IP of the peer
+	 * @param port Port of the peer
+	 * @param capacity Capacity of the peer
 	 */
-	Peer(int id, String ip, int port, int capacity){
+	public Peer(int id, String ip, int port, int capacity){
 		this.id = id; // the id number for each Peer
 		this.ip = ip; // the IP 
 		this.port = port; // the port number  
 		this.capacity = capacity; // the maximum number of neighbors
-	}
-	
-	Peer(){
-		
 	}
 		
 	public int getId() {
@@ -35,10 +31,6 @@ public class Peer {
 
 	public String getIP() {
 		return ip;
-	}
-
-	public void setIP(String ip) {
-		this.ip = ip;
 	}
 
 	public int getPort() {
@@ -58,8 +50,6 @@ public class Peer {
 	}
 	
 	public boolean equals(Peer p) {
-		if(p.getId() == getId())
-			return true;
-		return false;
+		return p.getId() == this.getId();
 	}
 }
