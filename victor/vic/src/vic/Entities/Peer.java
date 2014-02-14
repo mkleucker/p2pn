@@ -1,4 +1,4 @@
-package vic;
+package vic.Entities;
 
 public class Peer {
 	int id; // the id number for each Peer

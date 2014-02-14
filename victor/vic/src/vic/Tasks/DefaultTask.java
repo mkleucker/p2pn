@@ -1,7 +1,7 @@
 package vic.Tasks;
 
 import org.apache.xmlrpc.XmlRpcClient;
-import vic.Peer;
+import vic.Entities.Peer;
 import vic.PeerApp;
 
 

@@ -1,9 +1,9 @@
 package vic;
 
 import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+
 import org.apache.logging.log4j.*;
+import vic.Entities.Peer;
 import vic.Tasks.*;
 import vic.Helper.*;
 

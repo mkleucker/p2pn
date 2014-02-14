@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
 import vic.Helper.NeighborNegotiationState;
-import vic.Peer;
+import vic.Entities.Peer;
 import vic.PeerApp;
 
 import java.io.IOException;

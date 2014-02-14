@@ -2,6 +2,7 @@ package vic;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import vic.Entities.Peer;
 
 import java.util.Vector;
 
