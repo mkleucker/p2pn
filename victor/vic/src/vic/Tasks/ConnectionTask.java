@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
+import vic.Helper.NeighborNegotiationState;
 import vic.Peer;
 import vic.PeerApp;
 
@@ -41,6 +42,7 @@ public class ConnectionTask extends DefaultTask {
 
             if(neighborRequest){
                 params.add(neighborRequest);
+                app.setNeighborRequest(ip + ":" + port, NeighborNegotiationState.REQUEST_SENT);
             }
 
             Vector result = (Vector)this.client.execute("communication.pong", params);
@@ -55,7 +57,7 @@ public class ConnectionTask extends DefaultTask {
 		} catch (IOException e) {
 			//logger.error(e.getMessage());
 			//e.printStackTrace();
-            app.removePeer(peer);
+            //app.removePeer(peer);
 		} catch (XmlRpcException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();

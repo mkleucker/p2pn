@@ -14,7 +14,7 @@ public class PeerApp {
 	Map<Integer, Peer> neighborList;
 	Map<Integer, Date> lastSeenList;
 
-	Map<Integer, NeighborNegotiationState> openNeighborRequests;
+	Map<String, NeighborNegotiationState> openNeighborRequests;
 
 	private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
 	int maxDepth;
@@ -43,7 +43,7 @@ public class PeerApp {
 		this.peerList =  Collections.synchronizedMap(new HashMap<Integer, Peer>());
 		this.neighborList =  Collections.synchronizedMap(new HashMap<Integer, Peer>());
 		this.lastSeenList = Collections.synchronizedMap(new HashMap<Integer, Date>());
-		this.openNeighborRequests = Collections.synchronizedMap(new HashMap<Integer, NeighborNegotiationState>());
+		this.openNeighborRequests = Collections.synchronizedMap(new HashMap<String, NeighborNegotiationState>());
 		this.maxDepth = max;
 
 		this.server = new ListeningTask(this.peer, this);
@@ -177,6 +177,9 @@ public class PeerApp {
 		return new HashMap<Integer, Peer>(this.neighborList);
 	}
 
+    public synchronized void setNeighborRequest(String address, NeighborNegotiationState state){
+        this.openNeighborRequests.put(address, state);
+    }
 
 	/**
 	 * Creates a Peer from a vector and the calls
