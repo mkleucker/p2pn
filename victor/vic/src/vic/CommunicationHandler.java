@@ -4,7 +4,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import vic.Entities.Peer;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 public class CommunicationHandler {
@@ -87,7 +89,22 @@ public class CommunicationHandler {
 
 	}
 
+    /**
+     * Answers the call to `communication.getPeerList`
+     *
+     * @return String-Peer pairs of all known peers.
+     */
     public Hashtable<String, Vector> getPeerList(){
         return PeerApp.createExchangeData(this.app.getPeerList());
+    }
+
+    /**
+     * Answers the call to `communication.getNeighborList`
+     *
+     * @return List with all Neighbors in vector representation
+     */
+    public List<Vector> getNeighborList(){
+        Hashtable<String, Vector> data  = PeerApp.createExchangeData(this.app.getNeighborList());
+        return new ArrayList<Vector>(data.values());
     }
 }
