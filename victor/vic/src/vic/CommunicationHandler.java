@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import vic.Entities.Peer;
 
+import java.util.Hashtable;
 import java.util.Vector;
 
 public class CommunicationHandler {
@@ -85,4 +86,8 @@ public class CommunicationHandler {
 		return data;
 
 	}
+
+    public Hashtable<String, Vector> getPeerList(){
+        return PeerApp.createExchangeData(this.app.getPeerList());
+    }
 }
