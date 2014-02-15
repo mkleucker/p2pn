@@ -7,7 +7,7 @@ import vic.CommunicationHandler;
 import vic.Entities.Peer;
 import vic.PeerApp;
 
-public class ListeningTask extends DefaultTask{
+public class ListeningTask extends DefaultAsyncTask {
     WebServer server;
 
     private static final Logger logger = LogManager.getLogger(ListeningTask.class.getName());

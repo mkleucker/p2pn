@@ -9,7 +9,7 @@ import vic.PeerApp;
 import java.util.*;
 
 
-public class PeerExchangeTask extends DefaultTask {
+public class PeerExchangeTask extends DefaultAsyncTask {
 
     private static final Logger logger = LogManager.getLogger(PeerExchangeTask.class.getName());
     private boolean recursiveSearch;

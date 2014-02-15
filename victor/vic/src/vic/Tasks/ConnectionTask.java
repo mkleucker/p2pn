@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Vector;
 
 
-public class ConnectionTask extends DefaultTask {
+public class ConnectionTask extends DefaultAsyncTask {
 
     private int maxDepth;
     private boolean neighborRequest;
