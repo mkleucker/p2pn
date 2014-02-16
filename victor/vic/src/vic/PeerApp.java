@@ -17,6 +17,9 @@ public class PeerApp {
 	Map<Integer, Date> lastSeenList;
 	Map<String, NeighborNegotiationState> openNeighborRequests;
 
+	public static double[] POWERLAWCUMULATIVE = new double[10];
+	public static double ALPHA;
+
 	private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
 
 	ListeningTask server;
@@ -24,12 +27,52 @@ public class PeerApp {
 	/**
 	 * Constructor of the class PeerApp
 	 *
-     * @param id       ID of the Peer
-     * @param ip       IP Address of the Peer
-     * @param port     Port on which this Peer listens
-     * @param capacity Capacity of this Peer
-     */
+	 * @param id       ID of the Peer
+	 * @param ip       IP Address of the Peer
+	 * @param port     Port on which this Peer listens
+	 * @param capacity Capacity of this Peer
+	 */
 	public PeerApp(int id, String ip, int port, int capacity) {
+		logger.info("Started Peer with ID {}", id);
+		this.peer = new Peer(id, ip, port, capacity);//creation of the Peer
+		this.peerList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
+		this.neighborList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
+		this.lastSeenList = Collections.synchronizedMap(new HashMap<Integer, Date>());
+		this.openNeighborRequests = Collections.synchronizedMap(new HashMap<String, NeighborNegotiationState>());
+
+		this.server = new ListeningTask(this.peer, this);
+		Thread listening = new Thread(this.server);   //start listening to the port
+		listening.start();
+	}
+
+
+	/**
+	 * Constructor of the class PeerApp with capacity randomly drawn
+	 *
+	 * @param id       ID of the Peer
+	 * @param ip       IP Address of the Peer
+	 * @param port     Port on which this Peer listens
+	 */
+	public PeerApp(int id, String ip, int port) {
+		int capacity;
+		ALPHA = 0.6;
+		POWERLAWCUMULATIVE[0] = Math.pow(ALPHA, 1);
+		for (int i = 1; i < 10; i++) {
+			POWERLAWCUMULATIVE[i] = POWERLAWCUMULATIVE[i - 1] + Math.pow(ALPHA, i + 1);
+		}
+
+		for (int i = 1; i < 10; i++) {
+			POWERLAWCUMULATIVE[i] /= POWERLAWCUMULATIVE[9];
+		}
+
+		double r = Math.random();
+		for (int i = 0; i < 10; i++) {
+			if (r <= POWERLAWCUMULATIVE[i]) {
+				capacity = i;
+				break;
+			}
+		}
+
 		logger.info("Started Peer with ID {}", id);
 		this.peer = new Peer(id, ip, port, capacity);//creation of the Peer
 		this.peerList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
