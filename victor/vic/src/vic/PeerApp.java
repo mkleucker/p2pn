@@ -54,7 +54,7 @@ public class PeerApp {
 	 * @param port     Port on which this Peer listens
 	 */
 	public PeerApp(int id, String ip, int port) {
-		int capacity;
+		int capacity = 0;
 		ALPHA = 0.6;
 		POWERLAWCUMULATIVE[0] = Math.pow(ALPHA, 1);
 		for (int i = 1; i < 10; i++) {

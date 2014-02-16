@@ -59,7 +59,7 @@ public class Main {
 			logger.info("Starting test...");
 
 			ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
-			for (int i = 1; i < 6; i++) {
+			for (int i = 1; i < 2; i++) {
 				peers.add(new PeerApp(i, "127.0.0.1", this.peer.getPort() + i, 9));
 			}
 
@@ -78,6 +78,7 @@ public class Main {
 			PeerApp test0r = new PeerApp(99, "127.0.0.1", 19876, 9);
 			Thread.sleep(1000);
 			test0r.ping(this.peer.getIP(), this.peer.getPort());
+			
 			Thread.sleep(1000);
 			logger.info("Peerlist of P99: {}", test0r.plist());
 
