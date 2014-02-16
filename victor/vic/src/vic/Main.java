@@ -28,12 +28,12 @@ public class Main {
 
 			this.reader = new BufferedReader(new InputStreamReader(System.in));
 			if(args.length != 3){
-				this.peer = new PeerApp(0, "127.0.0.1", 18523, 9, 9);
+				this.peer = new PeerApp(0, "127.0.0.1", 18523, 9);
 			}else{
 				int id = Integer.parseInt(args[0]);
 				String ip = args[1];
 				Integer port = Integer.parseInt(args[2]);
-				this.peer = new PeerApp(id, ip, port, 9, 9);
+				this.peer = new PeerApp(id, ip, port, 9);
 			}
 
 			checkConnection();
@@ -58,7 +58,7 @@ public class Main {
 
 			ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
 			for (int i = 1; i < 6; i++) {
-				peers.add(new PeerApp(i, "127.0.0.1", this.peer.getPort() + i, 9, 9));
+				peers.add(new PeerApp(i, "127.0.0.1", this.peer.getPort() + i, 9));
 			}
 
 			Thread.sleep(1000);
@@ -73,7 +73,7 @@ public class Main {
 			logger.info("Peerlist of P1: {}", this.peer.plist());
 
 
-			PeerApp test0r = new PeerApp(99, "127.0.0.1", 19876, 9, 9);
+			PeerApp test0r = new PeerApp(99, "127.0.0.1", 19876, 9);
 			Thread.sleep(1000);
 			test0r.ping(this.peer.getIP(), this.peer.getPort());
 			Thread.sleep(1000);
@@ -109,7 +109,7 @@ public class Main {
 
 			ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
 			for (int i = 0; i < 5; i++) {
-				peers.add(new PeerApp(i, "127.0.0.1", this.peer.getPort() + 1 + i, 9, 9));
+				peers.add(new PeerApp(i, "127.0.0.1", this.peer.getPort() + 1 + i, 9));
 			}
 
 			Thread.sleep(1000);
@@ -143,7 +143,7 @@ public class Main {
 
 	private void test3(){
 		try{
-			PeerApp p2 = new PeerApp(2, "127.0.0.1", this.peer.getPort()+1, 9, 9);
+			PeerApp p2 = new PeerApp(2, "127.0.0.1", this.peer.getPort()+1, 9);
 			Thread.sleep(1000);
 			logger.info("Created P2");
 			this.peer.becomeNeighbor(p2.getIP(), p2.getPort());
@@ -162,6 +162,13 @@ public class Main {
 		}
 	}
 
+
+    private void testNeighborhood(){
+        ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
+        for (int i = 1; i < 50; i++){
+            peers.add(new PeerApp(i, "127.0.0.1", 9,9));
+        }
+    }
 
 	/**
 	 * Method for parsing the inputs of the user in the console. 
@@ -190,6 +197,10 @@ public class Main {
 
 			if (input.equals("test3")){
 				this.test3();
+			}
+
+            if (input.equals("testn")){
+				this.testNeighborhood();
 			}
 
 			if (input.length() >= 5 && input.substring(0, 5).equals("hello")) {

@@ -16,27 +16,24 @@ public class PeerApp {
 	Map<String, NeighborNegotiationState> openNeighborRequests;
 
 	private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
-	int maxDepth;
 
 	ListeningTask server;
 
 	/**
 	 * Constructor of the class PeerApp
 	 *
-	 * @param id       ID of the Peer
-	 * @param ip       IP Address of the Peer
-	 * @param port     Port on which this Peer listens
-	 * @param capacity Capacity of this Peer
-	 * @param max      Max. recursion depth
-	 */
-	public PeerApp(int id, String ip, int port, int capacity, int max) {
+     * @param id       ID of the Peer
+     * @param ip       IP Address of the Peer
+     * @param port     Port on which this Peer listens
+     * @param capacity Capacity of this Peer
+     */
+	public PeerApp(int id, String ip, int port, int capacity) {
 		logger.info("Started Peer with ID {}", id);
 		this.peer = new Peer(id, ip, port, capacity);//creation of the Peer
 		this.peerList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
 		this.neighborList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
 		this.lastSeenList = Collections.synchronizedMap(new HashMap<Integer, Date>());
 		this.openNeighborRequests = Collections.synchronizedMap(new HashMap<String, NeighborNegotiationState>());
-		this.maxDepth = max;
 
 		this.server = new ListeningTask(this.peer, this);
 		Thread listening = new Thread(this.server);   //start listening to the port
@@ -256,7 +253,7 @@ public class PeerApp {
 	 * @param port Port of the targeted peer.
 	 */
 	public void ping(String ip, int port) {
-		Thread connection = new Thread(new ConnectionTask(ip, port, this.peer, this, this.maxDepth));
+		Thread connection = new Thread(new ConnectionTask(ip, port, this.peer, this));
 		connection.start();
 	}
 
@@ -272,7 +269,7 @@ public class PeerApp {
 
 		for (Map.Entry<Integer, Peer> entry : rawData.entrySet()) {
 			// TODO: fix depth parameter
-			result.put(Integer.toString(entry.getKey()), createVectorForPeer(entry.getValue(), 0));
+			result.put(Integer.toString(entry.getKey()), createVectorForPeer(entry.getValue()));
 		}
 
 		return result;
@@ -283,13 +280,12 @@ public class PeerApp {
 	 *
 	 * @return Vector with all parameters
 	 */
-	public static Vector<Object> createVectorForPeer(Peer peer, int depth) {
+	public static Vector<Object> createVectorForPeer(Peer peer) {
 		Vector<Object> params = new Vector<Object>();
 		params.addElement(peer.getId());
 		params.addElement(peer.getIP());
 		params.addElement(peer.getPort());
 		params.addElement(peer.getCapacity());
-		params.addElement(depth);
 
 		return params;
 	}
@@ -306,7 +302,7 @@ public class PeerApp {
 
 		for (Map.Entry<Integer, Peer> entry : rawData.entrySet()) {
 			// TODO: fix depth parameter
-			result.put(Integer.toString(entry.getKey()), createVectorForPeer(entry.getValue(), 0));
+			result.put(Integer.toString(entry.getKey()), createVectorForPeer(entry.getValue()));
 		}
 
 		return result;
@@ -347,7 +343,7 @@ public class PeerApp {
 			if (r < c[i]) {
 				try {
 					Peer itPeer = peers.get(i);
-					ConnectionTask connect = new ConnectionTask(itPeer.getIP(), itPeer.getPort(), itPeer, this, 1, true);
+					ConnectionTask connect = new ConnectionTask(itPeer.getIP(), itPeer.getPort(), itPeer, this, true);
 					connect.run();
 					break;
 				} catch (Exception e) {
@@ -358,7 +354,7 @@ public class PeerApp {
 	}
 
 	public void becomeNeighbor(String ip, int port) {
-		Thread connection = new Thread(new ConnectionTask(ip, port, this.peer, this, this.maxDepth, true));
+		Thread connection = new Thread(new ConnectionTask(ip, port, this.peer, this, true));
 		connection.start();
 	}
 

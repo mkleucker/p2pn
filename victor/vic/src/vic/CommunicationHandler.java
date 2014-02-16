@@ -81,7 +81,7 @@ public class CommunicationHandler {
 	}
 
 	private Vector createLocalReturnValue(boolean isNeighborRequest, boolean neighborRequestAnswer) {
-		Vector data = PeerApp.createVectorForPeer(this.peer, 0);
+		Vector data = PeerApp.createVectorForPeer(this.peer);
 		if(isNeighborRequest){
 			data.add(neighborRequestAnswer);
 		}
