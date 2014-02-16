@@ -20,6 +20,9 @@ public class PeerApp {
 	Map<Integer, Date> lastSeenList;
 	Map<String, NeighborNegotiationState> openNeighborRequests;
 
+	public static double[] POWERLAWCUMULATIVE = new double[10];
+	public static double ALPHA;
+
 	private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
 
 	ListeningTask server;
@@ -34,6 +37,46 @@ public class PeerApp {
 	 */
 	public PeerApp(int id, String ip, int port, int capacity) {
 		logger.info("Started Peer with ID {} (Capacity: {})", id, capacity);
+		this.peer = new Peer(id, ip, port, capacity);//creation of the Peer
+		this.peerList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
+		this.neighborList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
+		this.lastSeenList = Collections.synchronizedMap(new HashMap<Integer, Date>());
+		this.openNeighborRequests = Collections.synchronizedMap(new HashMap<String, NeighborNegotiationState>());
+
+		this.server = new ListeningTask(this.peer, this);
+		Thread listening = new Thread(this.server);   //start listening to the port
+		listening.start();
+	}
+
+
+	/**
+	 * Constructor of the class PeerApp with capacity randomly drawn
+	 *
+	 * @param id       ID of the Peer
+	 * @param ip       IP Address of the Peer
+	 * @param port     Port on which this Peer listens
+	 */
+	public PeerApp(int id, String ip, int port) {
+		int capacity = 0;
+		ALPHA = 0.6;
+		POWERLAWCUMULATIVE[0] = Math.pow(ALPHA, 1);
+		for (int i = 1; i < 10; i++) {
+			POWERLAWCUMULATIVE[i] = POWERLAWCUMULATIVE[i - 1] + Math.pow(ALPHA, i + 1);
+		}
+
+		for (int i = 1; i < 10; i++) {
+			POWERLAWCUMULATIVE[i] /= POWERLAWCUMULATIVE[9];
+		}
+
+		double r = Math.random();
+		for (int i = 0; i < 10; i++) {
+			if (r <= POWERLAWCUMULATIVE[i]) {
+				capacity = i;
+				break;
+			}
+		}
+
+		logger.info("Started Peer with ID {}", id);
 		this.peer = new Peer(id, ip, port, capacity);//creation of the Peer
 		this.peerList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
 		this.neighborList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
@@ -394,7 +437,36 @@ public class PeerApp {
 			}
 		}
 
+		output.println("graph network {");
 		for (int i = 0; i < pv.size(); i++) {
+			output.println("      \"P" + pv.get(i).getId() + '(' + pv.get(i).getCapacity() + ")\";");
 		}
+		if (peers == null) {
+			Set<Map.Entry<Integer, Peer>> neighborSet = this.getNeighborList().entrySet();
+			for (Map.Entry<Integer, Peer> entry : neighborSet) {
+				Peer itPeer = entry.getValue();
+				output.println("      \"P" + pv.get(0).getId() + '(' + pv.get(0).getCapacity() + ")\" -- " + "\"P" + itPeer.getId() + '(' + itPeer.getCapacity() + ")\";");
+			}
+		} else {
+			MapNeighborhoodTask nbTask = new MapNeighborhoodTask(this.peer, this);
+			HashMap<Peer, ArrayList<Peer>> topo = nbTask.getTopology();
+			for (int i = 0; i < pv.size(); i++) {
+				ArrayList<Peer> nl = topo.get(pv.get(i));
+				for (int j = 0; j < nl.size(); j++) {
+					if (!pv.get(i).smallerThan(nl.get(j)))
+						continue;
+					boolean contains = false;
+					for (int k = 0; k < pv.size(); k++) {
+						if(nl.get(j).equals(pv.get(k))) {
+							contains = true;
+						}
+					}
+					if (contains) {
+						output.println("      \"P" + pv.get(i).getId() + '(' + pv.get(i).getCapacity() + ")\" -- " + "\"P" + nl.get(j).getId() + '(' + nl.get(j).getCapacity() + ")\";");
+					}
+				}
+			}
+		}
+		output.println("}");
 	}
 }
