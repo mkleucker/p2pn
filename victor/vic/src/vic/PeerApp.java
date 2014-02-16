@@ -362,8 +362,35 @@ public class PeerApp {
 		connection.start();
 	}
 
-	public void nlistGraph(ArrayList<peer> peers, String dir) {
+	public void nlistGraph(ArrayList<Peer> peers, String dir) {
+		PrintWriter output;
+		if (dir.isEmpty()) {
+			output = new PrintWriter(System.out);
+		} else {
+			String fileName = dir.substring(3, dir.length());
+			output = new PrintWriter(fileName);
+		}
+		Vector<Peer> pvTemp = new Vector<Peer>();
+		Vector<Peer> pv = new Vector<Peer>();
 		if (peers == null) {
+			pv.add(this.peer);
+		} else {
+			for (int i = 0; i < peers.size(); i++) {
+				pvTemp.add(peers.get(i));
+			}
+			int min;
+			for (int i = 0; i < pvTemp.size(); i++) {
+				min = 0;
+				for (int j = 1; j < pvTemp.size()) {
+					if (pvTemp.get(j).smallerThan(pvTemp.get(min))) {
+						min = j;
+					}
+				}
+				pv.add(pvTemp.get(min));
+			}
+		}
+
+		for (int i = 0; i < pv.size(); i++) {
 		}
 	}
 }
