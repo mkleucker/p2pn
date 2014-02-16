@@ -1,13 +1,16 @@
 package vic;
 
-import java.util.*;
-import java.io.PrintWriter;
-import java.io.IOException;
-
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import vic.Entities.Peer;
-import vic.Tasks.*;
-import vic.Helper.*;
+import vic.Helper.NeighborNegotiationState;
+import vic.Tasks.ConnectionTask;
+import vic.Tasks.ListeningTask;
+import vic.Tasks.PeerExchangeTask;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
 
 public class PeerApp {
 
@@ -24,13 +27,13 @@ public class PeerApp {
 	/**
 	 * Constructor of the class PeerApp
 	 *
-     * @param id       ID of the Peer
-     * @param ip       IP Address of the Peer
-     * @param port     Port on which this Peer listens
-     * @param capacity Capacity of this Peer
-     */
+	 * @param id       ID of the Peer
+	 * @param ip       IP Address of the Peer
+	 * @param port     Port on which this Peer listens
+	 * @param capacity Capacity of this Peer
+	 */
 	public PeerApp(int id, String ip, int port, int capacity) {
-		logger.info("Started Peer with ID {}", id);
+		logger.info("Started Peer with ID {} (Capacity: {})", id, capacity);
 		this.peer = new Peer(id, ip, port, capacity);//creation of the Peer
 		this.peerList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
 		this.neighborList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
@@ -130,7 +133,7 @@ public class PeerApp {
 	/**
 	 * Destroy the peer
 	 */
-	public void destroyPeer() {
+	public void destroy() {
 		this.server.shutdown();
 		logger.debug("shutdown server successfull?");
 	}
@@ -156,7 +159,10 @@ public class PeerApp {
 		if (this.openNeighborRequests.containsKey(peer.getIP() + ':' + peer.getPort()) && this.openNeighborRequests.get(peer.getIP() + ':' + peer.getPort()) == NeighborNegotiationState.REQUEST_SENT) {
 			this.openNeighborRequests.remove(peer.getIP() + ":" + peer.getPort());
 		}
-		if(success){
+		if (success) {
+			if (this.getId() == 1) {
+				System.out.println("waaaa");
+			}
 			this.neighborList.put(peer.getId(), peer);
 			this.updateLastSeen(peer);
 		}
@@ -195,15 +201,15 @@ public class PeerApp {
 	}
 
 
-	public synchronized void receiveConnectionAnswer(Vector data){
+	public synchronized void receiveConnectionAnswer(Vector data) {
 		logger.debug("Received Connection answer with length {}", data.size());
-		if(data.size() == 6){
+		if (data.size() == 6) {
 			boolean neighborResponse = (Boolean) data.get(5);
 			data.setSize(4);
 			Peer peer = createPeerFromVector(data);
 			this.addPeer(peer);
 			this.addNeighbor(peer, neighborResponse);
-		}else{
+		} else {
 			this.addPeer(createPeerFromVector(data));
 		}
 	}

@@ -2,7 +2,6 @@ package vic;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import vic.Entities.Peer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -94,10 +93,10 @@ public class Main {
 				logger.info("Peerlist of P{}: {}", peer.getId(), peer.plist());
 			}
 
-			test0r.destroyPeer();
+			test0r.destroy();
 
 			for (PeerApp peer : peers) {
-				peer.destroyPeer();
+				peer.destroy();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -136,7 +135,7 @@ public class Main {
 
 			for (PeerApp peer : peers) {
 				logger.info("Peerlist of P{}: {}", peer.getId(), peer.plist());
-				peer.destroyPeer();
+				peer.destroy();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -158,7 +157,7 @@ public class Main {
 			logger.info("Peerlist of P2: {}", p2.plist());
 			logger.info("Neighborlist of P2: {}", p2.nlist());
 
-			p2.destroyPeer();
+			p2.destroy();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -168,16 +167,16 @@ public class Main {
 	private void testNeighborhood() {
 		try {
 
+			Random rand = new Random();
 
 			ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
-			int numOfPeers = 50;
+			int numOfPeers = 5;
 			int port = this.peer.getPort();
 			for (int i = 1; i < numOfPeers; i++) {
-				peers.add(new PeerApp(i, "127.0.0.1", port + i, 9));
+				peers.add(new PeerApp(i, "127.0.0.1", port + i, rand.nextInt(9)+1));
 			}
 			Thread.sleep(5000);
 
-			Random rand = new Random();
 			for (PeerApp peer : peers) {
 				int numberOfConnections = rand.nextInt(numOfPeers);
 				System.out.println(numberOfConnections);
@@ -187,9 +186,22 @@ public class Main {
 			}
 
 			Thread.sleep(5000);
+
+			for (PeerApp peer : peers) {
+				peer.startNegotiate();
+			}
+
+			Thread.sleep(5000);
+
 			for (PeerApp peer : peers) {
 				System.out.println(peer.plist());
-				peer.destroyPeer();
+				System.out.println(peer.nlist());
+			}
+
+			Thread.sleep(5000);
+
+			for (PeerApp peer : peers) {
+				peer.destroy();
 			}
 		} catch (Exception e) {
 
@@ -209,7 +221,7 @@ public class Main {
 				System.exit(0);
 			}
 			if (input.equals("exit")) {
-				this.peer.destroyPeer();
+				this.peer.destroy();
 				System.exit(0);
 			}
 
