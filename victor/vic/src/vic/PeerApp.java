@@ -1,6 +1,7 @@
 package vic;
 
 import java.util.*;
+import java.io.PrintWriter;
 
 import org.apache.logging.log4j.*;
 import vic.Entities.Peer;
@@ -358,7 +359,7 @@ public class PeerApp {
 		connection.start();
 	}
 
-	public void nlistGraph(ArrayList<Peer> peers, String dir) {
+	public void nlistGraph(ArrayList<Peer> peers, String dir) throws IOException {
 		PrintWriter output;
 		if (dir.isEmpty()) {
 			output = new PrintWriter(System.out);
