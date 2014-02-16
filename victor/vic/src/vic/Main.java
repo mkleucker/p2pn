@@ -27,15 +27,15 @@ public class Main {
 
 
 			this.reader = new BufferedReader(new InputStreamReader(System.in));
-            if(args.length != 3){
-                this.peer = new PeerApp(0, "127.0.0.1", 18523, 9, 9);
-            }else{
-                int id = Integer.parseInt(args[0]);
-                String ip = args[1];
-                Integer port = Integer.parseInt(args[2]);
-                this.peer = new PeerApp(id, ip, port, 9, 9);
-            }
-            
+			if(args.length != 3){
+				this.peer = new PeerApp(0, "127.0.0.1", 18523, 9, 9);
+			}else{
+				int id = Integer.parseInt(args[0]);
+				String ip = args[1];
+				Integer port = Integer.parseInt(args[2]);
+				this.peer = new PeerApp(id, ip, port, 9, 9);
+			}
+
 			checkConnection();
 			this.parseInput();
 
@@ -43,7 +43,7 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/*
 	 * Starts a new thread for check the connections
 	 */
@@ -79,7 +79,7 @@ public class Main {
 			Thread.sleep(1000);
 			logger.info("Peerlist of P99: {}", test0r.plist());
 
-            logger.info("P99 performing generic hello");
+			logger.info("P99 performing generic hello");
 			test0r.helloAll();
 
 			Thread.sleep(10000);
@@ -125,49 +125,49 @@ public class Main {
 
 			Thread.sleep(1000);
 
-            peers.get(peers.size()-1).helloAll();
+			peers.get(peers.size()-1).helloAll();
 
-            Thread.sleep(1000);
+			Thread.sleep(1000);
 
 
-            logger.info("Peerlist of P{}: {}", this.peer.getId(), this.peer.plist());
+			logger.info("Peerlist of P{}: {}", this.peer.getId(), this.peer.plist());
 
 			for (PeerApp peer : peers) {
-                logger.info("Peerlist of P{}: {}", peer.getId(), peer.plist());
-                peer.destroyPeer();
+				logger.info("Peerlist of P{}: {}", peer.getId(), peer.plist());
+				peer.destroyPeer();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-    private void test3(){
-        try{
-            PeerApp p2 = new PeerApp(2, "127.0.0.1", this.peer.getPort()+1, 9, 9);
-            Thread.sleep(1000);
-            logger.info("Created P2");
-            this.peer.becomeNeighbor(p2.getIP(), p2.getPort());
-            logger.info("P1 tries to become neighbor of P2...");
-            Thread.sleep(1000);
+	private void test3(){
+		try{
+			PeerApp p2 = new PeerApp(2, "127.0.0.1", this.peer.getPort()+1, 9, 9);
+			Thread.sleep(1000);
+			logger.info("Created P2");
+			this.peer.becomeNeighbor(p2.getIP(), p2.getPort());
+			logger.info("P1 tries to become neighbor of P2...");
+			Thread.sleep(1000);
 
-            logger.info("Peerlist of P0: {}", this.peer.plist());
-            logger.info("Neighborlist of P0: {}", this.peer.nlist());
+			logger.info("Peerlist of P0: {}", this.peer.plist());
+			logger.info("Neighborlist of P0: {}", this.peer.nlist());
 
-            logger.info("Peerlist of P2: {}", p2.plist());
-            logger.info("Neighborlist of P2: {}", p2.nlist());
+			logger.info("Peerlist of P2: {}", p2.plist());
+			logger.info("Neighborlist of P2: {}", p2.nlist());
 
-            p2.destroyPeer();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
+			p2.destroyPeer();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
 
 
 	/**
 	 * Method for parsing the inputs of the user in the console. 
 	 */
 	@SuppressWarnings("InfiniteRecursion")
-    private void parseInput() {
+	private void parseInput() {
 		String input;
 		try {
 			System.out.print(">");
@@ -188,9 +188,9 @@ public class Main {
 				this.test2();
 			}
 
-            if (input.equals("test3")){
-                this.test3();
-            }
+			if (input.equals("test3")){
+				this.test3();
+			}
 
 			if (input.length() >= 5 && input.substring(0, 5).equals("hello")) {
 
@@ -229,5 +229,5 @@ public class Main {
 		}
 
 		new Main(args);
-    }
+	}
 }
