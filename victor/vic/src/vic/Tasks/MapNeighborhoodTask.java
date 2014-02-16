@@ -22,6 +22,7 @@ public class MapNeighborhoodTask extends DefaultTask {
     public MapNeighborhoodTask(Peer peer, PeerApp app) {
         super(peer, app);
         this.data = new HashMap<Peer, ArrayList<Peer>>();
+        this.data.put(peer, new ArrayList<Peer>(this.app.getNeighborList().values()));
         this.toDo = new HashSet<Peer>(this.app.getPeerList().values());
         execute();
     }
@@ -58,9 +59,9 @@ public class MapNeighborhoodTask extends DefaultTask {
                 }
 
                 data.put(peer, connections);
-                toDo.remove(peer);
-            }
 
+            }
+            toDo.remove(peer);
         }
         execute();
     }
