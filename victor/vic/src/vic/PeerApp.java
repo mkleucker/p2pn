@@ -377,7 +377,7 @@ public class PeerApp {
 			int min;
 			for (int i = 0; i < pvTemp.size(); i++) {
 				min = 0;
-				for (int j = 1; j < pvTemp.size()) {
+				for (int j = 1; j < pvTemp.size(); j++) {
 					if (pvTemp.get(j).smallerThan(pvTemp.get(min))) {
 						min = j;
 					}
