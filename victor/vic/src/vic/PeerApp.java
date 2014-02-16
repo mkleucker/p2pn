@@ -2,10 +2,12 @@ package vic;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import vic.Entities.Peer;
 import vic.Helper.NeighborNegotiationState;
 import vic.Tasks.ConnectionTask;
 import vic.Tasks.ListeningTask;
+import vic.Tasks.MapNeighborhoodTask;
 import vic.Tasks.PeerExchangeTask;
 
 import java.io.IOException;
