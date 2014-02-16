@@ -2,6 +2,7 @@ package vic;
 
 import java.util.*;
 import java.io.PrintWriter;
+import java.io.IOException;
 
 import org.apache.logging.log4j.*;
 import vic.Entities.Peer;
