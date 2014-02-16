@@ -6,9 +6,7 @@ import org.apache.xmlrpc.XmlRpcClient;
 import vic.Entities.Peer;
 import vic.PeerApp;
 
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 
 public class MapNeighborhoodTask extends DefaultTask {

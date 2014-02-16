@@ -14,18 +14,16 @@ import java.util.Vector;
 
 public class ConnectionTask extends DefaultAsyncTask {
 
-    private int maxDepth;
     private boolean neighborRequest;
 
     private static final Logger logger = LogManager.getLogger(ConnectionTask.class.getName());
 
-    public ConnectionTask(String targetIp, int targetPort, Peer peer, PeerApp app, int maxDepth){
-        this(targetIp, targetPort, peer, app, maxDepth, false);
+    public ConnectionTask(String targetIp, int targetPort, Peer peer, PeerApp app){
+        this(targetIp, targetPort, peer, app, false);
     }
 
-    public ConnectionTask(String targetIp, int targetPort, Peer peer, PeerApp app, int maxDepth, boolean neighborRequest){
+    public ConnectionTask(String targetIp, int targetPort, Peer peer, PeerApp app, boolean neighborRequest){
         super(targetIp, targetPort, peer, app);
-        this.maxDepth = maxDepth;
         this.neighborRequest = neighborRequest;
     }
 
@@ -38,7 +36,7 @@ public class ConnectionTask extends DefaultAsyncTask {
 
             // Issue a request
 
-            Vector<Object> params = PeerApp.createVectorForPeer(this.peer, this.maxDepth);
+            Vector<Object> params = PeerApp.createVectorForPeer(this.peer);
 
             if(neighborRequest){
                 params.add(true); // Set flag for Neighbor Request
