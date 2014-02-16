@@ -2,11 +2,13 @@ package vic;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import vic.Entities.Peer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Main class to later run the peer that also is responsible for
@@ -27,9 +29,9 @@ public class Main {
 
 
 			this.reader = new BufferedReader(new InputStreamReader(System.in));
-			if(args.length != 3){
+			if (args.length != 3) {
 				this.peer = new PeerApp(0, "127.0.0.1", 18523, 9);
-			}else{
+			} else {
 				int id = Integer.parseInt(args[0]);
 				String ip = args[1];
 				Integer port = Integer.parseInt(args[2]);
@@ -47,7 +49,7 @@ public class Main {
 	/*
 	 * Starts a new thread for check the connections
 	 */
-	public void checkConnection(){
+	public void checkConnection() {
 		Thread checkConn = new Thread(new Checking(peer));
 		checkConn.start();
 	}
@@ -118,14 +120,14 @@ public class Main {
 				Thread.sleep(1000);
 			}
 
-			for (int i = 0; i < 4; i++){
-				peers.get(i).ping(peers.get(i+1).getIP(), peers.get(i+1).getPort());
+			for (int i = 0; i < 4; i++) {
+				peers.get(i).ping(peers.get(i + 1).getIP(), peers.get(i + 1).getPort());
 			}
 
 
 			Thread.sleep(1000);
 
-			peers.get(peers.size()-1).helloAll();
+			peers.get(peers.size() - 1).helloAll();
 
 			Thread.sleep(1000);
 
@@ -141,9 +143,9 @@ public class Main {
 		}
 	}
 
-	private void test3(){
-		try{
-			PeerApp p2 = new PeerApp(2, "127.0.0.1", this.peer.getPort()+1, 9);
+	private void test3() {
+		try {
+			PeerApp p2 = new PeerApp(2, "127.0.0.1", this.peer.getPort() + 1, 9);
 			Thread.sleep(1000);
 			logger.info("Created P2");
 			this.peer.becomeNeighbor(p2.getIP(), p2.getPort());
@@ -157,21 +159,45 @@ public class Main {
 			logger.info("Neighborlist of P2: {}", p2.nlist());
 
 			p2.destroyPeer();
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 
-    private void testNeighborhood(){
-        ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
-        for (int i = 1; i < 50; i++){
-            peers.add(new PeerApp(i, "127.0.0.1", 9,9));
-        }
-    }
+	private void testNeighborhood() {
+		try {
+
+
+			ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
+			int numOfPeers = 50;
+			int port = this.peer.getPort();
+			for (int i = 1; i < numOfPeers; i++) {
+				peers.add(new PeerApp(i, "127.0.0.1", port + i, 9));
+			}
+			Thread.sleep(5000);
+
+			Random rand = new Random();
+			for (PeerApp peer : peers) {
+				int numberOfConnections = rand.nextInt(numOfPeers);
+				System.out.println(numberOfConnections);
+				for (int i = 0; i < numberOfConnections; i++) {
+					peer.ping("127.0.0.1", peers.get(rand.nextInt(peers.size())).getPort());
+				}
+			}
+
+			Thread.sleep(5000);
+			for (PeerApp peer : peers) {
+				System.out.println(peer.plist());
+				peer.destroyPeer();
+			}
+		} catch (Exception e) {
+
+		}
+	}
 
 	/**
-	 * Method for parsing the inputs of the user in the console. 
+	 * Method for parsing the inputs of the user in the console.
 	 */
 	@SuppressWarnings("InfiniteRecursion")
 	private void parseInput() {
@@ -195,11 +221,11 @@ public class Main {
 				this.test2();
 			}
 
-			if (input.equals("test3")){
+			if (input.equals("test3")) {
 				this.test3();
 			}
 
-            if (input.equals("testn")){
+			if (input.equals("testn")) {
 				this.testNeighborhood();
 			}
 
@@ -235,7 +261,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 
-		if (args.length != 3 ) {
+		if (args.length != 3) {
 			logger.error("Wrong number of arguments given, will be running in auto mode.");
 		}
 
