@@ -23,14 +23,14 @@ public class CommunicationHandler {
     /**
      * Answers a XML-RPCall by a different Peer as part of our Protocol.
      *
+     *
      * @param IdArg ID of the Peer that called this function
      * @param IPArg IP of the Peer that called this function
      * @param portArg Port of the Peer that called this function
      * @param capacityArg Capacity of the Peer that called this function
-     * @param depthInt Max. recursion of the Peer that called this function
      * @return Vector containing the
      */
-	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt) {
+	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg) {
 		this.app.addPeer(new Peer(IdArg, IPArg, portArg, capacityArg));
 		return createLocalReturnValue();
 	}
@@ -40,15 +40,15 @@ public class CommunicationHandler {
 	 * then it signals that the other peer want to be my neighbor. Hence I have to
 	 * decide and reply accordingly.
 	 *
+	 *
 	 * @param IdArg ID of the Peer that called this function
 	 * @param IPArg IP of the Peer that called this function
 	 * @param portArg Port of the Peer that called this function
 	 * @param capacityArg Capacity of the Peer that called this function
-	 * @param depthInt Max. recursion of the Peer that called this function
 	 * @param isNeighborRequest Flag whether the requesting Peer wants to be our neighbor
 	 * @return Vector containing the
 	 */
-	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, int depthInt, boolean isNeighborRequest) {
+	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, boolean isNeighborRequest) {
         logger.debug("Called pong with request");
 
 		// Create Peer object
