@@ -388,7 +388,36 @@ public class PeerApp {
 			}
 		}
 
+		output.println("graph network {");
 		for (int i = 0; i < pv.size(); i++) {
+			output.println("      \"P" + pv.get(i).getId() + '(' + pv.get(i).getCapacity() + ")\";");
 		}
+		if (peers == null) {
+			Set<Map.Entry<Integer, Peer>> neighborSet = this.getNeighborList().entrySet();
+			for (Map.Entry<Integer, Peer> entry : neighborSet) {
+				Peer itPeer = entry.getValue();
+				output.println("      \"P" + pv.get(0).getId() + '(' + pv.get(0).getCapacity() + ")\" -- " + "\"P" + itPeer.getId() + '(' + itPeer.getCapacity() + ")\";");
+			}
+		} else {
+			MapNeighborhoodTask nbTask = new MapNeighborhoodTask(this.peer, this);
+			HashMap<Peer, ArrayList<Peer>> topo = nbTask.getTopology();
+			for (int i = 0; i < pv.size(); i++) {
+				ArrayList<Peer> nl = topo.get(pv.get(i));
+				for (int j = 0; j < nl.size(); j++) {
+					if (!pv.get(i).smallerThan(nl.get(j)))
+						continue;
+					boolean contains = false;
+					for (int k = 0; k < pv.size(); k++) {
+						if(nl.get(j).equals(pv.get(k))) {
+							contains = true;
+						}
+					}
+					if (contains) {
+						output.println("      \"P" + pv.get(i).getId() + '(' + pv.get(i).getCapacity() + ")\" -- " + "\"P" + nl.get(j).getId() + '(' + nl.get(j).getCapacity() + ")\";");
+					}
+				}
+			}
+		}
+		output.println("}");
 	}
 }
