@@ -52,4 +52,8 @@ public class Peer {
 	public boolean equals(Peer p) {
 		return p.getId() == this.getId();
 	}
+
+	public boolean smallerThan(Peer p) {
+		return p.getId() > this.getId();
+	}
 }
