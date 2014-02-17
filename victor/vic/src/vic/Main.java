@@ -3,6 +3,8 @@ package vic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import vic.Entities.Peer;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -104,6 +106,53 @@ public class Main {
 		}
 	}
 
+	// the same as test but without the destruction of the peers
+	
+	private void test0() {
+		try {
+			logger.info("Starting test...");
+
+			ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
+			for (int i = 1; i < 2; i++) {
+				peers.add(new PeerApp(i, "127.0.0.1", this.peer.getPort() + i, 9));
+			}
+
+			Thread.sleep(1000);
+			for (PeerApp peer : peers) {
+				this.peer.ping(peer.getIP(), peer.getPort());
+				Thread.sleep(1000);
+			}
+
+
+			Thread.sleep(3000);
+
+			logger.info("Peerlist of P1: {}", this.peer.plist());
+
+
+			PeerApp test0r = new PeerApp(99, "127.0.0.1", 19876, 9);
+			Thread.sleep(1000);
+			test0r.ping(this.peer.getIP(), this.peer.getPort());
+			
+			Thread.sleep(1000);
+			logger.info("Peerlist of P99: {}", test0r.plist());
+
+			logger.info("P99 performing generic hello");
+			test0r.helloAll();
+
+			Thread.sleep(10000);
+
+			logger.info("Peerlist of P99: {}", test0r.plist());
+
+			logger.info("Peerlist of P{}: {}", this.peer.getId(), this.peer.plist());
+
+			for (PeerApp peer : peers) {
+				logger.info("Peerlist of P{}: {}", peer.getId(), peer.plist());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public void test2() {
 		try {
@@ -241,6 +290,10 @@ public class Main {
 			if (input.equals("testn")) {
 				this.testNeighborhood();
 			}
+			
+			if (input.equals("test0")) {
+				this.test0();
+			}
 
 			if (input.length() >= 5 && input.substring(0, 5).equals("hello")) {
 
@@ -258,8 +311,56 @@ public class Main {
 			if (input.equals("plist")) {
 				System.out.println(this.peer.plist());
 			}
-			checkConnection();
-			parseInput();
+
+			if (input.length() >= 5 && input.substring(0, 5).equals("nlist")){					
+
+					//     example entries 
+					// nlist p1 p99 -o output.dot
+					// nlist p1 -o output.dot
+					// nlist 
+
+					ArrayList<Peer> listPeers = null;
+					String nameFile = null;									
+					String addrRaw = input.substring(5);
+					String[] addr = addrRaw.split("-o");
+					
+					// with the list of peers and the name of the file
+					if(addr.length == 2){
+						addr[0].substring(1).replace("p","");
+						addr[0].substring(1).replace("P","");
+						String[] peersParsed = addr[0].split(" ");
+						nameFile = addr[1].substring(1);
+						listPeers = new ArrayList<Peer>();
+						for(int i = 1; i<peersParsed.length; i++){
+							String a1 = peersParsed[i]; 
+							a1 = a1.replace("P", "");
+							a1 = a1.replace("p", "");					
+							int a = Integer.parseInt(a1);							
+								try {
+									int idAux = peer.getPeerList().get(a).getId();								
+									if(a == idAux){
+										listPeers.add(peer.getPeerList().get(a));
+									}
+								} catch (java.lang.NullPointerException e) {
+									//temp print
+									System.out.println(a + " : is not in the peer list.");
+								}												
+						}						
+					}
+					
+					// without any arguments
+					else if(addr.length == 0){
+						//temp print
+						System.out.println("arguments missing");
+					}
+					//temp print
+					System.out.println("check" + listPeers.size() + nameFile);
+					
+					peer.nlistGraph(listPeers, nameFile);
+										
+				}
+				checkConnection();
+				parseInput();
 		} catch (IOException ioe) {
 			System.out.println("IO error!");
 			System.exit(1);

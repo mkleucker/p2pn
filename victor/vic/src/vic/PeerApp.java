@@ -413,7 +413,7 @@ public class PeerApp {
 
 	public void nlistGraph(ArrayList<Peer> peers, String dir) throws IOException {
 		PrintWriter output;
-		if (dir.isEmpty()) {
+		if (dir == null) {
 			output = new PrintWriter(System.out);
 		} else {
 			String fileName = dir.substring(3, dir.length());
