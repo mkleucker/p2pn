@@ -103,8 +103,8 @@ public class CommunicationHandler {
      *
      * @return List with all Neighbors in vector representation
      */
-    public List<Vector> getNeighborList(){
+    public Vector<Vector> getNeighborList(){
         Hashtable<String, Vector> data  = PeerApp.createExchangeData(this.app.getNeighborList());
-        return new ArrayList<Vector>(data.values());
+        return new Vector<Vector>(data.values());
     }
 }

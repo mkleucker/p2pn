@@ -29,19 +29,19 @@ public class MapNeighborhoodTask extends DefaultTask {
 		return this.data;
 	}
 
-	private void execute() {
+	private synchronized void execute() {
 		if (this.toDo.size() == 0){
 			return;
 		}
 
-		for (Peer peer : this.toDo) {
+		for (Peer peer : new HashSet<Peer>(this.toDo)) {
 			if (!data.containsKey(peer)) { // Peer wasn't visited yet
 
 				ArrayList<Peer> connections = new ArrayList<Peer>();
 				try {
 					XmlRpcClient client = new XmlRpcClient("http://" + peer.getIP() + ':' + peer.getPort() + '/');
 
-					List<Vector> result = (List<Vector>) client.execute("communication.getNeighborList", new Vector(0));
+					Vector<Vector> result = (Vector<Vector>) client.execute("communication.getNeighborList", new Vector(0));
 					if (result != null) {
 						for (Vector v : result) {
 							Peer newPeer = PeerApp.createPeerFromVector(v);
