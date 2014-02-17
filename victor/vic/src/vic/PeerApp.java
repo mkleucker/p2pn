@@ -12,6 +12,7 @@ import vic.Tasks.PeerExchangeTask;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class PeerApp {
@@ -421,17 +422,21 @@ public class PeerApp {
 	}
 
 	public void nlistGraph(int[] peers, String dir) throws IOException {
+		System.out.println("CAONIMA");
+
 		PrintWriter output;
 		if (dir == null) {
 			output = new PrintWriter(System.out);
+			System.out.println("CAONIMA");
 		} else {
-			String fileName = dir.substring(3, dir.length());
+			String fileName = dir.substring(0, dir.length());
 			output = new PrintWriter(fileName);
+			System.out.println(fileName + "FUCK");
 		}
 
 		output.println("graph network {");
 
-		if (peers.length == 0) {
+		if (peers == null) {
 			output.println("      \"P" + this.peer.getId() + '(' + this.peer.getCapacity() + ")\";");
 			Set<Map.Entry<Integer, Peer>> neighborSet = this.getNeighborList().entrySet();
 			for (Map.Entry<Integer, Peer> entry : neighborSet) {
@@ -443,10 +448,10 @@ public class PeerApp {
 			MapNeighborhoodTask nbTask = new MapNeighborhoodTask(this.peer, this);
 			HashMap<Peer, ArrayList<Peer>> topo = nbTask.getTopology();
 
-			Array.sort(peers);
+			Arrays.sort(peers);
 			Set<Peer> ps = topo.keySet();
 			for (int i = 0; i < peers.length; i++) {
-				for (Peers itPeer: ps) {
+				for (Peer itPeer: ps) {
 					if (itPeer.getId() == peers[i])
 						pv.add(itPeer);
 				}

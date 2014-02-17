@@ -317,19 +317,36 @@ public class Main {
 					// nlist p1 p99 -o output.dot
 					// nlist p1 -o output.dot
 					// nlist 
-
 										
 					String addrRaw = input.substring(5);
-					String[] addr = addrRaw.split("-o");
-					Integer[] listPeers = null;
+					String[] addr;
+					addr = addrRaw.split("-o");
+					
+					int[] listPeers = null;
 					String nameFile = null;				
 					
+					System.out.println("addr length: " + addr.length + addr[0] + "**"  + addr[1]);
+					// without any arguments
+					if(input.length() == 5){
+						//temp print
+						//System.out.println("arguments missing");
+						listPeers = null;
+						nameFile = null;
+						
+					}
+					
+					// with only one argument
+					else if(addr.length == 1){
+						nameFile = addr[1].substring(1);
+						System.out.println("Caso con solo nombre" + nameFile);					
+					}
+					
 					// with the list of peers and the name of the file
-					if(addr.length == 2){
+					else if(addr.length == 2){
 						addr[0].substring(1).replace("p","");
 						addr[0].substring(1).replace("P","");
 						String[] peersParsed = addr[0].split(" ");
-						listPeers = new Integer[peersParsed.length];
+						listPeers = new int[peersParsed.length];
 						nameFile = addr[1].substring(1);
 						int j = 0;
 						for(int i = 1; i<peersParsed.length; i++){
@@ -340,16 +357,11 @@ public class Main {
 							listPeers[j] = a;							
 							j++;
 						}						
-					}
+					}					
 					
-					// without any arguments
-					else if(addr.length == 0){
-						//temp print
-						//System.out.println("arguments missing");						
-					}
 					//temp print
 					//System.out.println("check: size: " + listPeers.size() + ", nameFile: "+ nameFile);
-					//peer.nlistGraph(listPeers, nameFile);	
+					peer.nlistGraph(listPeers, nameFile);	
 				}
 				checkConnection();
 				parseInput();
