@@ -318,23 +318,27 @@ public class Main {
 					// nlist p1 -o output.dot
 					// nlist 
 
-					Integer[] listPeers = null;
-					String nameFile = null;									
+										
 					String addrRaw = input.substring(5);
 					String[] addr = addrRaw.split("-o");
+					Integer[] listPeers = null;
+					String nameFile = null;				
 					
 					// with the list of peers and the name of the file
 					if(addr.length == 2){
 						addr[0].substring(1).replace("p","");
 						addr[0].substring(1).replace("P","");
 						String[] peersParsed = addr[0].split(" ");
+						listPeers = new Integer[peersParsed.length];
 						nameFile = addr[1].substring(1);
+						int j = 0;
 						for(int i = 1; i<peersParsed.length; i++){
 							String a1 = peersParsed[i]; 
 							a1 = a1.replace("P", "");
 							a1 = a1.replace("p", "");					
 							int a = Integer.parseInt(a1);							
-							listPeers[i-1] = a;
+							listPeers[j] = a;							
+							j++;
 						}						
 					}
 					
@@ -345,7 +349,7 @@ public class Main {
 					}
 					//temp print
 					//System.out.println("check: size: " + listPeers.size() + ", nameFile: "+ nameFile);
-					peer.nlistGraph(listPeers, nameFile);	
+					//peer.nlistGraph(listPeers, nameFile);	
 				}
 				checkConnection();
 				parseInput();
