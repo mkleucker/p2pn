@@ -307,7 +307,6 @@ public class Main {
 				}
 			}
 
-
 			if (input.equals("plist")) {
 				System.out.println(this.peer.plist());
 			}
@@ -319,7 +318,7 @@ public class Main {
 					// nlist p1 -o output.dot
 					// nlist 
 
-					ArrayList<Peer> listPeers = null;
+					Integer[] listPeers = null;
 					String nameFile = null;									
 					String addrRaw = input.substring(5);
 					String[] addr = addrRaw.split("-o");
@@ -330,34 +329,23 @@ public class Main {
 						addr[0].substring(1).replace("P","");
 						String[] peersParsed = addr[0].split(" ");
 						nameFile = addr[1].substring(1);
-						listPeers = new ArrayList<Peer>();
 						for(int i = 1; i<peersParsed.length; i++){
 							String a1 = peersParsed[i]; 
 							a1 = a1.replace("P", "");
 							a1 = a1.replace("p", "");					
 							int a = Integer.parseInt(a1);							
-								try {
-									int idAux = peer.getPeerList().get(a).getId();								
-									if(a == idAux){
-										listPeers.add(peer.getPeerList().get(a));
-									}
-								} catch (java.lang.NullPointerException e) {
-									//temp print
-									System.out.println(a + " : is not in the peer list.");
-								}												
+							listPeers[i-1] = a;
 						}						
 					}
 					
 					// without any arguments
 					else if(addr.length == 0){
 						//temp print
-						System.out.println("arguments missing");
+						//System.out.println("arguments missing");						
 					}
 					//temp print
-					System.out.println("check" + listPeers.size() + nameFile);
-					
-					peer.nlistGraph(listPeers, nameFile);
-										
+					//System.out.println("check: size: " + listPeers.size() + ", nameFile: "+ nameFile);
+					peer.nlistGraph(listPeers, nameFile);	
 				}
 				checkConnection();
 				parseInput();
