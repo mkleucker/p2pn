@@ -12,7 +12,6 @@ import vic.Tasks.PeerExchangeTask;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class PeerApp {
@@ -249,8 +248,8 @@ public class PeerApp {
 
 	public synchronized void receiveConnectionAnswer(Vector data) {
 		logger.debug("Received Connection answer with length {}", data.size());
-		if (data.size() == 6) {
-			boolean neighborResponse = (Boolean) data.get(5);
+		if (data.size() == 5) {
+			boolean neighborResponse = (Boolean) data.get(4);
 			data.setSize(4);
 			Peer peer = createPeerFromVector(data);
 			this.addPeer(peer);
@@ -378,7 +377,11 @@ public class PeerApp {
 	public void startNegotiate() {
 
 		Vector<Peer> peers = new Vector<Peer>();
-		peers.addAll(this.peerList.values());
+		Set<Map.Entry<Integer, Peer>> set = this.peerList.entrySet();
+		for (Map.Entry<Integer, Peer> entry: set) {
+			if (!entry.getValue().equals(this.peer))
+				peers.add(entry.getValue());
+		}
 
 		if (peers.size() == 0){
 			return;
@@ -400,6 +403,7 @@ public class PeerApp {
 			c[i] = c[i] / c[peers.size() - 1];
 		}
 
+		logger.info("inside of the startNegotiate function");
 		double r = Math.random();
 		int contacted = 0;
 
@@ -409,6 +413,7 @@ public class PeerApp {
 				contacted++;
 				try {
 					this.becomeNeighbor(itPeer.getIP(), itPeer.getPort());
+					logger.info("Start to negotiate from peer " + this.peer.getId() + " to peer " + itPeer.getId());
 				} catch (Exception e) {
 					logger.error("Function startNegotiate failed, probably because the peer no longer exists, error message {}", e.getMessage());
 				}

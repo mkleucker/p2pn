@@ -71,7 +71,7 @@ public class Main {
 			}
 
 
-			Thread.sleep(3000);
+			Thread.sleep(1000);
 
 			logger.info("Peerlist of P1: {}", this.peer.plist());
 
@@ -86,7 +86,7 @@ public class Main {
 			logger.info("P99 performing generic hello");
 			test0r.helloAll();
 
-			Thread.sleep(10000);
+			Thread.sleep(1000);
 
 			logger.info("Peerlist of P99: {}", test0r.plist());
 
@@ -124,7 +124,7 @@ public class Main {
 			}
 
 
-			Thread.sleep(3000);
+			Thread.sleep(1000);
 
 			logger.info("Peerlist of P1: {}", this.peer.plist());
 
@@ -139,7 +139,7 @@ public class Main {
 			logger.info("P99 performing generic hello");
 			test0r.helloAll();
 
-			Thread.sleep(10000);
+			Thread.sleep(1000);
 
 			logger.info("Peerlist of P99: {}", test0r.plist());
 
@@ -220,12 +220,12 @@ public class Main {
 			Random rand = new Random();
 
 			ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
-			int numOfPeers = 5;
+			int numOfPeers = 4;
 			int port = this.peer.getPort();
 			for (int i = 1; i < numOfPeers; i++) {
 				peers.add(new PeerApp(i, "127.0.0.1", port + i, rand.nextInt(9)+1));
 			}
-			Thread.sleep(5000);
+			Thread.sleep(3000);
 
 			for (PeerApp peer : peers) {
 				int numberOfConnections = rand.nextInt(numOfPeers);
@@ -235,20 +235,26 @@ public class Main {
 				}
 			}
 
-			Thread.sleep(5000);
+			Thread.sleep(4000);
+
+			for (PeerApp peer : peers) {
+				logger.info("{}", peer.plist());
+			}
+
+			Thread.sleep(4000);
 
 			for (PeerApp peer : peers) {
 				peer.startNegotiate();
 			}
 
-			Thread.sleep(5000);
+			Thread.sleep(4000);
 
 			for (PeerApp peer : peers) {
 				System.out.println(peer.plist());
 				System.out.println(peer.nlist());
 			}
 
-			Thread.sleep(5000);
+			Thread.sleep(4000);
 
 			for (PeerApp peer : peers) {
 				peer.destroy();

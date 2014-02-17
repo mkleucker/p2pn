@@ -4,9 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import vic.Entities.Peer;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Vector;
 
 public class CommunicationHandler {
@@ -20,16 +18,16 @@ public class CommunicationHandler {
 		this.app = app;
 	}
 
-    /**
-     * Answers a XML-RPCall by a different Peer as part of our Protocol.
-     *
-     *
-     * @param IdArg ID of the Peer that called this function
-     * @param IPArg IP of the Peer that called this function
-     * @param portArg Port of the Peer that called this function
-     * @param capacityArg Capacity of the Peer that called this function
-     * @return Vector containing the
-     */
+	/**
+	 * Answers a XML-RPCall by a different Peer as part of our Protocol.
+	 *
+	 *
+	 * @param IdArg ID of the Peer that called this function
+	 * @param IPArg IP of the Peer that called this function
+	 * @param portArg Port of the Peer that called this function
+	 * @param capacityArg Capacity of the Peer that called this function
+	 * @return Vector containing the
+	 */
 	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg) {
 		this.app.addPeer(new Peer(IdArg, IPArg, portArg, capacityArg));
 		return createLocalReturnValue();
@@ -49,7 +47,7 @@ public class CommunicationHandler {
 	 * @return Vector containing the
 	 */
 	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, boolean isNeighborRequest) {
-        logger.debug("Called pong with request");
+		logger.debug("Called pong with request");
 
 		// Create Peer object
 		Peer inPeer = new Peer(IdArg, IPArg, portArg, capacityArg);
@@ -57,11 +55,11 @@ public class CommunicationHandler {
 
 		if(isNeighborRequest){
 			boolean neighborAnswer = responseNegotiate(inPeer);
-            if(neighborAnswer){
-                this.app.addNeighbor(inPeer, neighborAnswer);
-            }
-            logger.debug("Answering neighbor request from {}:{} with {}", IPArg, portArg, neighborAnswer);
-            // TODO: Call check on answer
+			if(neighborAnswer){
+				this.app.addNeighbor(inPeer, neighborAnswer);
+			}
+			logger.debug("Answering neighbor request from {}:{} with {}", IPArg, portArg, neighborAnswer);
+			// TODO: Call check on answer
 			return createLocalReturnValue(true, neighborAnswer);
 		}
 
@@ -73,8 +71,8 @@ public class CommunicationHandler {
 		if(this.app.neighborList.size() + this.app.openNeighborRequests.size() >= this.app.getCapacity()) {
 			return false;
 		}
-        return Math.random() < (double) ((double) inPeer.getCapacity() / (double) this.app.getCapacity());
-    }
+		return Math.random() < (double) ((double) inPeer.getCapacity() / (double) this.app.getCapacity());
+	}
 
 	private Vector createLocalReturnValue(){
 		return this.createLocalReturnValue(false, false);
@@ -82,29 +80,29 @@ public class CommunicationHandler {
 
 	private Vector createLocalReturnValue(boolean isNeighborRequest, boolean neighborRequestAnswer) {
 		Vector data = PeerApp.createVectorForPeer(this.peer);
+		System.out.println("The length of the return value is " + data.size() + data);
 		if(isNeighborRequest){
 			data.add(neighborRequestAnswer);
 		}
 		return data;
-
 	}
 
-    /**
-     * Answers the call to `communication.getPeerList`
-     *
-     * @return String-Peer pairs of all known peers.
-     */
-    public Hashtable<String, Vector> getPeerList(){
-        return PeerApp.createExchangeData(this.app.getPeerList());
-    }
+	/**
+	 * Answers the call to `communication.getPeerList`
+	 *
+	 * @return String-Peer pairs of all known peers.
+	 */
+	public Hashtable<String, Vector> getPeerList(){
+		return PeerApp.createExchangeData(this.app.getPeerList());
+	}
 
-    /**
-     * Answers the call to `communication.getNeighborList`
-     *
-     * @return List with all Neighbors in vector representation
-     */
-    public Vector<Vector> getNeighborList(){
-        Hashtable<String, Vector> data  = PeerApp.createExchangeData(this.app.getNeighborList());
-        return new Vector<Vector>(data.values());
-    }
+	/**
+	 * Answers the call to `communication.getNeighborList`
+	 *
+	 * @return List with all Neighbors in vector representation
+	 */
+	public Vector<Vector> getNeighborList(){
+		Hashtable<String, Vector> data  = PeerApp.createExchangeData(this.app.getNeighborList());
+		return new Vector<Vector>(data.values());
+	}
 }
