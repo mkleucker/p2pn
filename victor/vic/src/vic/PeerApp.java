@@ -411,7 +411,7 @@ public class PeerApp {
 		connection.start();
 	}
 
-	public void nlistGraph(ArrayList<Peer> peers, String dir) throws IOException {
+	public void nlistGraph(int[] peers, String dir) throws IOException {
 		PrintWriter output;
 		if (dir == null) {
 			output = new PrintWriter(System.out);
@@ -419,39 +419,34 @@ public class PeerApp {
 			String fileName = dir.substring(3, dir.length());
 			output = new PrintWriter(fileName);
 		}
-		Vector<Peer> pvTemp = new Vector<Peer>();
-		Vector<Peer> pv = new Vector<Peer>();
-		if (peers == null) {
-			pv.add(this.peer);
-		} else {
-			for (int i = 0; i < peers.size(); i++) {
-				pvTemp.add(peers.get(i));
-			}
-			int min;
-			for (int i = 0; i < pvTemp.size(); i++) {
-				min = 0;
-				for (int j = 1; j < pvTemp.size(); j++) {
-					if (pvTemp.get(j).smallerThan(pvTemp.get(min))) {
-						min = j;
-					}
-				}
-				pv.add(pvTemp.get(min));
-			}
-		}
 
 		output.println("graph network {");
-		for (int i = 0; i < pv.size(); i++) {
-			output.println("      \"P" + pv.get(i).getId() + '(' + pv.get(i).getCapacity() + ")\";");
-		}
-		if (peers == null) {
+
+		if (peers.length == 0) {
+			output.println("      \"P" + this.peer.getId() + '(' + this.peer.getCapacity() + ")\";");
 			Set<Map.Entry<Integer, Peer>> neighborSet = this.getNeighborList().entrySet();
 			for (Map.Entry<Integer, Peer> entry : neighborSet) {
 				Peer itPeer = entry.getValue();
-				output.println("      \"P" + pv.get(0).getId() + '(' + pv.get(0).getCapacity() + ")\" -- " + "\"P" + itPeer.getId() + '(' + itPeer.getCapacity() + ")\";");
+				output.println("      \"P" + this.peer.getId() + '(' + this.peer.getCapacity() + ")\" -- " + "\"P" + itPeer.getId() + '(' + itPeer.getCapacity() + ")\";");
 			}
 		} else {
+			Vector<Peer> pv = new Vector<Peer>();
 			MapNeighborhoodTask nbTask = new MapNeighborhoodTask(this.peer, this);
 			HashMap<Peer, ArrayList<Peer>> topo = nbTask.getTopology();
+
+			Array.sort(peers);
+			Set<Peer> ps = topo.keySet();
+			for (int i = 0; i < peers.length; i++) {
+				for (Peers itPeer: ps) {
+					if (itPeer.getId() == peers[i])
+						pv.add(itPeer);
+				}
+			}
+
+			for (int i = 0; i < pv.size(); i++) {
+				output.println("      \"P" + pv.get(i).getId() + '(' + pv.get(i).getCapacity() + ")\";");
+			}
+
 			for (int i = 0; i < pv.size(); i++) {
 				ArrayList<Peer> nl = topo.get(pv.get(i));
 				for (int j = 0; j < nl.size(); j++) {
@@ -470,5 +465,6 @@ public class PeerApp {
 			}
 		}
 		output.println("}");
+		output.close();
 	}
 }
