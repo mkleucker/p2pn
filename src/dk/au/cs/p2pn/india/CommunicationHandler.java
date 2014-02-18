@@ -10,7 +10,7 @@ public class CommunicationHandler {
 	private Peer peer;
 	private PeerApp app;
 
-	private static final Logger logger = LogManager.getLogger(CommunicationHandler.class.getName());
+	private static final Logger logger = LogManager.getLogger(CommunicationHandler.class.getSimpleName());
 
 	public CommunicationHandler(Peer peer, PeerApp app){
 		this.peer = peer;

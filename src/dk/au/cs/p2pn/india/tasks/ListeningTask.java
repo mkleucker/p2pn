@@ -10,7 +10,7 @@ import org.apache.xmlrpc.WebServer;
 public class ListeningTask extends DefaultAsyncTask {
     WebServer server;
 
-    private static final Logger logger = LogManager.getLogger(ListeningTask.class.getName());
+    private static final Logger logger = LogManager.getLogger(ListeningTask.class.getSimpleName());
 
 
     public ListeningTask(Peer peer, PeerApp app){

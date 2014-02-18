@@ -11,7 +11,7 @@ import java.util.*;
 
 public class MapNeighborhoodTask extends DefaultTask {
 
-	private static final Logger logger = LogManager.getLogger(MapNeighborhoodTask.class.getName());
+	private static final Logger logger = LogManager.getLogger(MapNeighborhoodTask.class.getSimpleName());
 
 	private HashMap<Peer, ArrayList<Peer>> data;
 	private HashSet<Peer> toDo;

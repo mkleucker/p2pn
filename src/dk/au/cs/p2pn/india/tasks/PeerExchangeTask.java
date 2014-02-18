@@ -11,7 +11,7 @@ import java.util.*;
 
 public class PeerExchangeTask extends DefaultAsyncTask {
 
-    private static final Logger logger = LogManager.getLogger(PeerExchangeTask.class.getName());
+    private static final Logger logger = LogManager.getLogger(PeerExchangeTask.class.getSimpleName());
     private boolean recursiveSearch;
 
 

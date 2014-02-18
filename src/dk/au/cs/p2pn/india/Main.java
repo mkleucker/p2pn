@@ -20,7 +20,7 @@ public class Main {
 
 	private BufferedReader reader;
 
-	private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
+	private static final Logger logger = LogManager.getLogger(PeerApp.class.getSimpleName());
 
 	public Main(String[] args) {
 		try {

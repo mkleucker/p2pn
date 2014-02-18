@@ -23,7 +23,7 @@ public class PeerApp {
 	public static double[] POWERLAWCUMULATIVE = new double[10];
 	public static double ALPHA;
 
-	private static final Logger logger = LogManager.getLogger(PeerApp.class.getName());
+	private static final Logger logger = LogManager.getLogger(PeerApp.class.getSimpleName());
 
 	ListeningTask server;
 

@@ -16,7 +16,7 @@ public class ConnectionTask extends DefaultAsyncTask {
 
     private boolean neighborRequest;
 
-    private static final Logger logger = LogManager.getLogger(ConnectionTask.class.getName());
+    private static final Logger logger = LogManager.getLogger(ConnectionTask.class.getSimpleName());
 
     public ConnectionTask(String targetIp, int targetPort, Peer peer, PeerApp app){
         this(targetIp, targetPort, peer, app, false);

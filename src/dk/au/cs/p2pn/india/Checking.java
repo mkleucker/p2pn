@@ -11,7 +11,7 @@ public class Checking implements Runnable {
 
 	PeerApp peerApp;
 
-	private static final Logger logger = LogManager.getLogger(Checking.class.getName());
+	private static final Logger logger = LogManager.getLogger(Checking.class.getSimpleName());
 
 
 	public Checking(PeerApp app) {
