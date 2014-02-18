@@ -417,7 +417,7 @@ public class PeerApp {
 	}
 
 	public void becomeNeighbor(String ip, int port) {
-		new BecomeNeighborTask(ip, port, this.peer, this);
+		new BecomeNeighborTask(ip, port, this.peer, this).execute();
 	}
 
 	public void nlistGraph(int[] peers, String dir) throws IOException {

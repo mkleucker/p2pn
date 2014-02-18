@@ -21,7 +21,7 @@ public class BecomeNeighborTask extends DefaultTask {
 		super(targetIp, targetPort, peer, app);
 	}
 
-	public void execute(){
+	public boolean execute(){
 		try {
 
 			// Create the client, identifying the server
@@ -39,10 +39,13 @@ public class BecomeNeighborTask extends DefaultTask {
 			Vector result = (Vector)this.client.execute("communication.pong", params);
 			if(result == null){
 				logger.debug("No result from Discovery");
+				return false;
 			}else{
 				// Process the answer.
 				this.app.receiveConnectionAnswer(result);
+				return (boolean) result.get(4);
 			}
+
 
 
 		} catch (IOException e) {
@@ -54,5 +57,7 @@ public class BecomeNeighborTask extends DefaultTask {
 			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
+
+		return false;
 	}
 }
