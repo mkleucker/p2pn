@@ -6,9 +6,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
-/**
- * Created by max on 18/02/14.
- */
+
 public class CommunicationConverter {
 
 	/**

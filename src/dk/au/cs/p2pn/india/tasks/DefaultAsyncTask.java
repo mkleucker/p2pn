@@ -14,7 +14,7 @@ abstract class DefaultAsyncTask extends DefaultTask implements Runnable {
         super(peer, app);
     }
 
-    public DefaultAsyncTask(String ip, int port, Peer peer, PeerApp app) {
+    public DefaultAsyncTask(String ip, int port, PeerApp app) {
         super(ip, port, app);
     }
 

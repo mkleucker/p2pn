@@ -279,7 +279,7 @@ public class PeerApp {
 	 * @param port Port of the targeted peer.
 	 */
 	public void ping(String ip, int port) {
-		Thread connection = new Thread(new ConnectionAsyncTask(ip, port, this.peer, this));
+		Thread connection = new Thread(new ConnectionAsyncTask(ip, port, this));
 		connection.start();
 	}
 

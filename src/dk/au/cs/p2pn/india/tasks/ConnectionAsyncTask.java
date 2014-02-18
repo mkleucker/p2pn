@@ -1,9 +1,8 @@
 package dk.au.cs.p2pn.india.tasks;
 
-import dk.au.cs.p2pn.india.helper.CommunicationConverter;
-import dk.au.cs.p2pn.india.helper.NeighborNegotiationState;
 import dk.au.cs.p2pn.india.Peer;
 import dk.au.cs.p2pn.india.PeerApp;
+import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcClient;
@@ -17,8 +16,8 @@ public class ConnectionAsyncTask extends DefaultAsyncTask {
 
     private static final Logger logger = LogManager.getLogger(ConnectionAsyncTask.class.getSimpleName());
 
-    public ConnectionAsyncTask(String targetIp, int targetPort, Peer peer, PeerApp app){
-        super(targetIp, targetPort, peer, app);
+    public ConnectionAsyncTask(String targetIp, int targetPort, PeerApp app){
+        super(targetIp, targetPort, app);
     }
 
     public void run(){
