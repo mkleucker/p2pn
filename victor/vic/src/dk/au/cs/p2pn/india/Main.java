@@ -1,9 +1,7 @@
-package vic;
+package dk.au.cs.p2pn.india;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import vic.Entities.Peer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -229,9 +227,10 @@ public class Main {
 
 			for (PeerApp peer : peers) {
 				int numberOfConnections = rand.nextInt(numOfPeers);
-				System.out.println(numberOfConnections);
 				for (int i = 0; i < numberOfConnections; i++) {
-					peer.ping("127.0.0.1", peers.get(rand.nextInt(peers.size())).getPort());
+					int p = rand.nextInt(peers.size());
+					if (p != peer.getId())
+						peer.ping("127.0.0.1", peers.get(p).getPort());
 				}
 			}
 
@@ -323,6 +322,7 @@ public class Main {
 					// nlist p1 p99 -o output.dot
 					// nlist p1 -o output.dot
 					// nlist 
+
 										
 					String addrRaw = input.substring(5);
 					String[] addr;

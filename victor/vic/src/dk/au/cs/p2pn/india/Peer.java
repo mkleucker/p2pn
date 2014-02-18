@@ -1,4 +1,4 @@
-package vic.Entities;
+package dk.au.cs.p2pn.india;
 
 public class Peer {
 	int id; // the id number for each Peer

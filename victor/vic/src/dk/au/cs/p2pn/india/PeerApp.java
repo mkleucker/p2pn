@@ -1,14 +1,7 @@
-package vic;
+package dk.au.cs.p2pn.india;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import vic.Entities.Peer;
-import vic.Helper.NeighborNegotiationState;
-import vic.Tasks.ConnectionTask;
-import vic.Tasks.ListeningTask;
-import vic.Tasks.MapNeighborhoodTask;
-import vic.Tasks.PeerExchangeTask;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -125,7 +118,7 @@ public class PeerApp {
 	 * @return A string with the right format to be printed as a list in the console.
 	 */
 	public String nlist() {
-		String str = "List of neighbors to Peer " + this.getId() + " (" + this.getIP() + ":" + this.getPort() + "):\n";
+		String str = "List of neighbors to Peer " + this.getId() + " (" + this.getIP() + ":" + this.getPort() + " / Capacity: "+this.getCapacity()+"):\n";
 		Set<Map.Entry<Integer, Peer>> peerSet = this.getNeighborList().entrySet();
 		for (Map.Entry<Integer, Peer> entry : peerSet) {
 			Peer peer = entry.getValue();

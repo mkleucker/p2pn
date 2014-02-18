@@ -1,12 +1,9 @@
-package vic.Tasks;
+package dk.au.cs.p2pn.india;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
-import vic.Helper.NeighborNegotiationState;
-import vic.Entities.Peer;
-import vic.PeerApp;
 
 import java.io.IOException;
 import java.util.Vector;

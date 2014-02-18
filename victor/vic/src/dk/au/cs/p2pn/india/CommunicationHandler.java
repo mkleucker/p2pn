@@ -1,8 +1,7 @@
-package vic;
+package dk.au.cs.p2pn.india;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import vic.Entities.Peer;
 
 import java.util.Hashtable;
 import java.util.Vector;

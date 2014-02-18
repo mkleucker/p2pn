@@ -1,9 +1,7 @@
-package vic.Tasks;
+package dk.au.cs.p2pn.india;
 
 
 import org.apache.xmlrpc.XmlRpcClient;
-import vic.Entities.Peer;
-import vic.PeerApp;
 
 abstract public class DefaultTask {
 	String ip;

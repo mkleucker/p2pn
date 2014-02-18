@@ -1,10 +1,8 @@
-package vic.Tasks;
+package dk.au.cs.p2pn.india;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcClient;
-import vic.Entities.Peer;
-import vic.PeerApp;
 
 import java.util.*;
 
