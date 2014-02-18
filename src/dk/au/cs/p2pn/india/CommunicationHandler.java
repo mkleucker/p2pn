@@ -19,7 +19,7 @@ public class CommunicationHandler {
 	}
 
 	/**
-	 * Answers a XML-RPCall by a different Peer as part of our Protocol.
+	 * XML-RPC: Answers a XML-RPCall by a different Peer as part of our Protocol.
 	 *
 	 *
 	 * @param IdArg ID of the Peer that called this function
@@ -28,13 +28,14 @@ public class CommunicationHandler {
 	 * @param capacityArg Capacity of the Peer that called this function
 	 * @return Vector containing the
 	 */
+	@SuppressWarnings("unused")
 	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg) {
 		this.app.addPeer(new Peer(IdArg, IPArg, portArg, capacityArg));
 		return createLocalReturnValue();
 	}
 
 	/**
-	 * Extension of the regular pong() function. If the flag `neighbornegotiation` is set,
+	 * XML-RPC: Extension of the regular pong() function. If the flag `neighbornegotiation` is set,
 	 * then it signals that the other peer want to be my neighbor. Hence I have to
 	 * decide and reply accordingly.
 	 *
@@ -46,6 +47,7 @@ public class CommunicationHandler {
 	 * @param isNeighborRequest Flag whether the requesting Peer wants to be our neighbor
 	 * @return Vector containing the
 	 */
+	@SuppressWarnings("unused")
 	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, boolean isNeighborRequest) {
 		logger.debug("Called pong with request");
 
@@ -88,19 +90,21 @@ public class CommunicationHandler {
 	}
 
 	/**
-	 * Answers the call to `communication.getPeerList`
+	 * XML-RPC: Answers the call to `communication.getPeerList`
 	 *
 	 * @return String-Peer pairs of all known peers.
 	 */
+	@SuppressWarnings("unused")
 	public Hashtable<String, Vector> getPeerList(){
 		return CommunicationConverter.createVector(this.app.getPeerList());
 	}
 
 	/**
-	 * Answers the call to `communication.getNeighborList`
+	 * XML-RPC: Answers the call to `communication.getNeighborList`
 	 *
 	 * @return List with all Neighbors in vector representation
 	 */
+	@SuppressWarnings("unused")
 	public Vector<Vector> getNeighborList(){
 		Hashtable<String, Vector> data  = CommunicationConverter.createVector(this.app.getNeighborList());
 		return new Vector<Vector>(data.values());
