@@ -2,6 +2,7 @@ package dk.au.cs.p2pn.india.tasks;
 
 import dk.au.cs.p2pn.india.Peer;
 import dk.au.cs.p2pn.india.PeerApp;
+import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcClient;
@@ -52,7 +53,7 @@ public class PeerExchangeTask extends DefaultAsyncTask {
                     } else {
                         // Add the peer to my peerlist.
                         for (Map.Entry<String, Vector> resultEntry : result.entrySet()){
-                            foundPeers.put(resultEntry.getKey(), PeerApp.createPeerFromVector(resultEntry.getValue()));
+                            foundPeers.put(resultEntry.getKey(), CommunicationConverter.createPeer(resultEntry.getValue()));
                         }
                     }
 

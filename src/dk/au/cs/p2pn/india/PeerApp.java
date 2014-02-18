@@ -1,5 +1,6 @@
 package dk.au.cs.p2pn.india;
 
+import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.helper.NeighborNegotiationState;
 import dk.au.cs.p2pn.india.tasks.*;
 import org.apache.logging.log4j.LogManager;
@@ -235,7 +236,7 @@ public class PeerApp {
 	 * @param data Single Vector object containing the data of a Peer.
 	 */
 	public synchronized void addPeer(Vector data) {
-		Peer peer = createPeerFromVector(data);
+		Peer peer = CommunicationConverter.createPeer(data);
 		this.addPeer(peer);
 		// TODO: Check if peer is already in the system.
 	}
@@ -246,11 +247,11 @@ public class PeerApp {
 		if (data.size() == 5) {
 			boolean neighborResponse = (Boolean) data.get(4);
 			data.setSize(4);
-			Peer peer = createPeerFromVector(data);
+			Peer peer = CommunicationConverter.createPeer(data);
 			this.addPeer(peer);
 			this.addNeighbor(peer, neighborResponse);
 		} else {
-			this.addPeer(createPeerFromVector(data));
+			this.addPeer(CommunicationConverter.createPeer(data));
 		}
 	}
 
@@ -317,57 +318,12 @@ public class PeerApp {
 
 		for (Map.Entry<Integer, Peer> entry : rawData.entrySet()) {
 			// TODO: fix depth parameter
-			result.put(Integer.toString(entry.getKey()), createVectorForPeer(entry.getValue()));
+			result.put(Integer.toString(entry.getKey()), CommunicationConverter.createVector(entry.getValue()));
 		}
 
 		return result;
 	}
 
-	/**
-	 * Creates request parameters for the current peer.
-	 *
-	 * @return Vector with all parameters
-	 */
-	public static Vector<Object> createVectorForPeer(Peer peer) {
-		Vector<Object> params = new Vector<Object>();
-		params.addElement(peer.getId());
-		params.addElement(peer.getIP());
-		params.addElement(peer.getPort());
-		params.addElement(peer.getCapacity());
-
-		return params;
-	}
-
-	/**
-	 * Changes the format of the data for the sending process.
-	 * From a Map<Integer,Peer> to a Hashtable<String, Vector>
-	 *
-	 * @param rawData Map of Peers in their Vector representation.
-	 * @return Hashtable with the format: Hashtable<String, Vector>
-	 */
-	public static Hashtable<String, Vector> createExchangeData(Map<Integer, Peer> rawData) {
-		Hashtable<String, Vector> result = new Hashtable<String, Vector>();
-
-		for (Map.Entry<Integer, Peer> entry : rawData.entrySet()) {
-			// TODO: fix depth parameter
-			result.put(Integer.toString(entry.getKey()), createVectorForPeer(entry.getValue()));
-		}
-
-		return result;
-	}
-
-	/**
-	 * Creates a Peer from a Vector.
-	 *
-	 * @param data Vector representation of a peer
-	 * @return a new Peer.
-	 */
-	public static Peer createPeerFromVector(Vector data) {
-		return new Peer((Integer) data.get(0),
-				(String) data.get(1),
-				(Integer) data.get(2),
-				(Integer) data.get(3));
-	}
 
 	public void startNegotiate() {
 

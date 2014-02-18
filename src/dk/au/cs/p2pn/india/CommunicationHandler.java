@@ -1,5 +1,6 @@
 package dk.au.cs.p2pn.india;
 
+import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -78,7 +79,7 @@ public class CommunicationHandler {
 	}
 
 	private Vector createLocalReturnValue(boolean isNeighborRequest, boolean neighborRequestAnswer) {
-		Vector data = PeerApp.createVectorForPeer(this.peer);
+		Vector data = CommunicationConverter.createVector(this.peer);
 		System.out.println("The length of the return value is " + data.size() + data);
 		if(isNeighborRequest){
 			data.add(neighborRequestAnswer);
@@ -92,7 +93,7 @@ public class CommunicationHandler {
 	 * @return String-Peer pairs of all known peers.
 	 */
 	public Hashtable<String, Vector> getPeerList(){
-		return PeerApp.createExchangeData(this.app.getPeerList());
+		return CommunicationConverter.createVector(this.app.getPeerList());
 	}
 
 	/**
@@ -101,7 +102,7 @@ public class CommunicationHandler {
 	 * @return List with all Neighbors in vector representation
 	 */
 	public Vector<Vector> getNeighborList(){
-		Hashtable<String, Vector> data  = PeerApp.createExchangeData(this.app.getNeighborList());
+		Hashtable<String, Vector> data  = CommunicationConverter.createVector(this.app.getNeighborList());
 		return new Vector<Vector>(data.values());
 	}
 }

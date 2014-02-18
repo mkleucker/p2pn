@@ -1,5 +1,6 @@
 package dk.au.cs.p2pn.india.tasks;
 
+import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.helper.NeighborNegotiationState;
 import dk.au.cs.p2pn.india.Peer;
 import dk.au.cs.p2pn.india.PeerApp;
@@ -27,9 +28,7 @@ public class ConnectionAsyncTask extends DefaultAsyncTask {
             this.client = new XmlRpcClient("http://" + ip + ':' + port + '/');
             logger.debug("{} Connection establish to {}:{}", this.peer.getId(), this.ip, this.port);
 
-            Vector<Object> params = PeerApp.createVectorForPeer(this.peer);
-
-
+            Vector<Object> params = CommunicationConverter.createVector(this.peer);
             Vector result = (Vector)this.client.execute("communication.pong", params);
             if(result == null){
                 logger.debug("No result from Discovery");

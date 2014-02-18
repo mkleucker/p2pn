@@ -3,6 +3,7 @@ package dk.au.cs.p2pn.india.tasks;
 
 import dk.au.cs.p2pn.india.Peer;
 import dk.au.cs.p2pn.india.PeerApp;
+import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.helper.NeighborNegotiationState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,11 +31,9 @@ public class BecomeNeighborTask extends DefaultTask {
 
 			// Issue a request
 
-			Vector<Object> params = PeerApp.createVectorForPeer(this.peer);
+			Vector<Object> params = CommunicationConverter.createVector(this.peer, true);
 
-			params.add(true); // Set flag for Neighbor Request
 			app.setNeighborRequest(ip + ":" + port, NeighborNegotiationState.REQUEST_SENT);
-
 
 			Vector result = (Vector)this.client.execute("communication.pong", params);
 			if(result == null){
