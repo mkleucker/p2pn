@@ -194,10 +194,10 @@ public class Main {
 		try {
 			PeerApp p2 = new PeerApp(2, "127.0.0.1", this.peer.getPort() + 1, 9);
 			Thread.sleep(1000);
-			logger.info("Created P2");
-			this.peer.becomeNeighbor(p2.getIP(), p2.getPort());
-			logger.info("P1 tries to become neighbor of P2...");
-			Thread.sleep(1000);
+//			logger.info("Created P2");
+//			this.peer.becomeNeighbor(p2.getIP(), p2.getPort());
+//			logger.info("P1 tries to become neighbor of P2...");
+//			Thread.sleep(1000);
 
 			logger.info("Peerlist of P0: {}", this.peer.plist());
 			logger.info("Neighborlist of P0: {}", this.peer.nlist());
