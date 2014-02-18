@@ -15,8 +15,8 @@ import java.util.Vector;
 public class NegotiationTask extends DefaultAsyncTask {
 	private static final Logger logger = LogManager.getLogger(NegotiationTask.class.getSimpleName());
 
-	public NegotiationTask(Peer peer, PeerApp app){
-		super(peer, app);
+	public NegotiationTask(PeerApp app){
+		super(app);
 	}
 
 
@@ -76,6 +76,6 @@ public class NegotiationTask extends DefaultAsyncTask {
 	}
 
 	private void becomeNeighbor(String ip, int port) {
-		new BecomeNeighborTask(ip, port, this.peer, this.app).execute();
+		new BecomeNeighborTask(ip, port, this.app).execute();
 	}
 }

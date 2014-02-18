@@ -15,6 +15,7 @@ abstract public class DefaultTask {
 
 	public DefaultTask(PeerApp app){
 		this.app = app;
+		this.peer = app.getPeer();
 	}
 
 	public DefaultTask(Peer peer, PeerApp app){
@@ -22,11 +23,11 @@ abstract public class DefaultTask {
 		this.app = app;
 	}
 
-	public DefaultTask(String ip, int port, Peer peer, PeerApp app) {
+	public DefaultTask(String ip, int port, PeerApp app) {
 		this.ip = ip;
 		this.port = port;
 
-		this.peer = peer;
+		this.peer = app.getPeer();
 		this.app = app;
 	}
 

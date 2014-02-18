@@ -68,10 +68,10 @@ public class CommunicationHandler {
 	}
 
 	public boolean responseNegotiate(Peer inPeer) {
-		if(this.app.neighborList.size() + this.app.openNeighborRequests.size() >= this.app.getCapacity()) {
+		if(this.app.neighborList.size() + this.app.openNeighborRequests.size() >= this.app.getPeer().getCapacity()) {
 			return false;
 		}
-		return Math.random() < (double) ((double) inPeer.getCapacity() / (double) this.app.getCapacity());
+		return Math.random() < (double) ((double) inPeer.getCapacity() / (double) this.app.getPeer().getCapacity());
 	}
 
 	private Vector createLocalReturnValue(){

@@ -59,12 +59,12 @@ public class Main {
 
 			ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
 			for (int i = 1; i < 2; i++) {
-				peers.add(new PeerApp(i, "127.0.0.1", this.peer.getPort() + i, 9));
+				peers.add(new PeerApp(i, "127.0.0.1", this.peer.getPeer().getPort() + i, 9));
 			}
 
 			Thread.sleep(1000);
 			for (PeerApp peer : peers) {
-				this.peer.ping(peer.getIP(), peer.getPort());
+				this.peer.ping(peer.getPeer().getIP(), peer.getPeer().getPort());
 				Thread.sleep(1000);
 			}
 
@@ -76,7 +76,7 @@ public class Main {
 
 			PeerApp test0r = new PeerApp(99, "127.0.0.1", 19876, 9);
 			Thread.sleep(1000);
-			test0r.ping(this.peer.getIP(), this.peer.getPort());
+			test0r.ping(this.peer.getPeer().getIP(), this.peer.getPeer().getPort());
 			
 			Thread.sleep(1000);
 			logger.info("Peerlist of P99: {}", test0r.plist());
@@ -88,10 +88,10 @@ public class Main {
 
 			logger.info("Peerlist of P99: {}", test0r.plist());
 
-			logger.info("Peerlist of P{}: {}", this.peer.getId(), this.peer.plist());
+			logger.info("Peerlist of P{}: {}", this.peer.getPeer().getId(), this.peer.plist());
 
 			for (PeerApp peer : peers) {
-				logger.info("Peerlist of P{}: {}", peer.getId(), peer.plist());
+				logger.info("Peerlist of P{}: {}", peer.getPeer().getId(), peer.plist());
 			}
 
 			test0r.destroy();
@@ -112,12 +112,12 @@ public class Main {
 
 			ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
 			for (int i = 1; i < 2; i++) {
-				peers.add(new PeerApp(i, "127.0.0.1", this.peer.getPort() + i, 9));
+				peers.add(new PeerApp(i, "127.0.0.1", this.peer.getPeer().getPort() + i, 9));
 			}
 
 			Thread.sleep(1000);
 			for (PeerApp peer : peers) {
-				this.peer.ping(peer.getIP(), peer.getPort());
+				this.peer.ping(peer.getPeer().getIP(), peer.getPeer().getPort());
 				Thread.sleep(1000);
 			}
 
@@ -129,7 +129,7 @@ public class Main {
 
 			PeerApp test0r = new PeerApp(99, "127.0.0.1", 19876, 9);
 			Thread.sleep(1000);
-			test0r.ping(this.peer.getIP(), this.peer.getPort());
+			test0r.ping(this.peer.getPeer().getIP(), this.peer.getPeer().getPort());
 			
 			Thread.sleep(1000);
 			logger.info("Peerlist of P99: {}", test0r.plist());
@@ -141,10 +141,10 @@ public class Main {
 
 			logger.info("Peerlist of P99: {}", test0r.plist());
 
-			logger.info("Peerlist of P{}: {}", this.peer.getId(), this.peer.plist());
+			logger.info("Peerlist of P{}: {}", this.peer.getPeer().getId(), this.peer.plist());
 
 			for (PeerApp peer : peers) {
-				logger.info("Peerlist of P{}: {}", peer.getId(), peer.plist());
+				logger.info("Peerlist of P{}: {}", peer.getPeer().getId(), peer.plist());
 			}
 
 		} catch (Exception e) {
@@ -158,17 +158,17 @@ public class Main {
 
 			ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
 			for (int i = 0; i < 5; i++) {
-				peers.add(new PeerApp(i, "127.0.0.1", this.peer.getPort() + 1 + i, 9));
+				peers.add(new PeerApp(i, "127.0.0.1", this.peer.getPeer().getPort() + 1 + i, 9));
 			}
 
 			Thread.sleep(1000);
 			for (PeerApp peer : peers) {
-				this.peer.ping(peer.getIP(), peer.getPort());
+				this.peer.ping(peer.getPeer().getIP(), peer.getPeer().getPort());
 				Thread.sleep(1000);
 			}
 
 			for (int i = 0; i < 4; i++) {
-				peers.get(i).ping(peers.get(i + 1).getIP(), peers.get(i + 1).getPort());
+				peers.get(i).ping(peers.get(i + 1).getPeer().getIP(), peers.get(i + 1).getPeer().getPort());
 			}
 
 
@@ -179,10 +179,10 @@ public class Main {
 			Thread.sleep(1000);
 
 
-			logger.info("Peerlist of P{}: {}", this.peer.getId(), this.peer.plist());
+			logger.info("Peerlist of P{}: {}", this.peer.getPeer().getId(), this.peer.plist());
 
 			for (PeerApp peer : peers) {
-				logger.info("Peerlist of P{}: {}", peer.getId(), peer.plist());
+				logger.info("Peerlist of P{}: {}", peer.getPeer().getId(), peer.plist());
 				peer.destroy();
 			}
 		} catch (Exception e) {
@@ -192,7 +192,7 @@ public class Main {
 
 	private void test3() {
 		try {
-			PeerApp p2 = new PeerApp(2, "127.0.0.1", this.peer.getPort() + 1, 9);
+			PeerApp p2 = new PeerApp(2, "127.0.0.1", this.peer.getPeer().getPort() + 1, 9);
 			Thread.sleep(1000);
 //			logger.info("Created P2");
 //			this.peer.becomeNeighbor(p2.getIP(), p2.getPort());
@@ -219,7 +219,7 @@ public class Main {
 
 			ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
 			int numOfPeers = 4;
-			int port = this.peer.getPort();
+			int port = this.peer.getPeer().getPort();
 			for (int i = 1; i < numOfPeers; i++) {
 				peers.add(new PeerApp(i, "127.0.0.1", port + i, rand.nextInt(9)+1));
 			}
@@ -229,8 +229,8 @@ public class Main {
 				int numberOfConnections = rand.nextInt(numOfPeers);
 				for (int i = 0; i < numberOfConnections; i++) {
 					int p = rand.nextInt(peers.size());
-					if (p != peer.getId())
-						peer.ping("127.0.0.1", peers.get(p).getPort());
+					if (p != peer.getPeer().getId())
+						peer.ping("127.0.0.1", peers.get(p).getPeer().getPort());
 				}
 			}
 

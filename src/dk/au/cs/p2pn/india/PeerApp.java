@@ -101,7 +101,7 @@ public class PeerApp {
 	 * @return A string with the right format to be printed as a list in the console.
 	 */
 	public String plist() {
-		String str = "List of known peers to Peer " + this.getId() + " (" + this.getIP() + ":" + this.getPort() + "):\n";
+		String str = "List of known peers to Peer " + this.peer.getId() + " (" + this.peer.getIP() + ":" + this.peer.getPort() + "):\n";
 		Set<Map.Entry<Integer, Peer>> peerSet = getPeerSet();
 		for (Map.Entry<Integer, Peer> entry : peerSet) {
 			Peer peer = entry.getValue();
@@ -121,7 +121,7 @@ public class PeerApp {
 	 * @return A string with the right format to be printed as a list in the console.
 	 */
 	public String nlist() {
-		String str = "List of neighbors to Peer " + this.getId() + " (" + this.getIP() + ":" + this.getPort() + " / Capacity: "+this.getCapacity()+"):\n";
+		String str = "List of neighbors to Peer " + this.peer.getId() + " (" + this.peer.getIP() + ":" + this.peer.getPort() + " / Capacity: "+this.peer.getCapacity()+"):\n";
 		Set<Map.Entry<Integer, Peer>> peerSet = this.getNeighborList().entrySet();
 		for (Map.Entry<Integer, Peer> entry : peerSet) {
 			Peer peer = entry.getValue();
@@ -139,33 +139,6 @@ public class PeerApp {
 		return this.peer;
 	}
 
-	public int getId() {
-		return peer.getId();
-	}
-
-	public void setId(int id) {
-		peer.setId(id);
-	}
-
-	public String getIP() {
-		return peer.getIP();
-	}
-
-	public int getPort() {
-		return peer.getPort();
-	}
-
-	public void setPort(int port) {
-		peer.setPort(port);
-	}
-
-	public int getCapacity() {
-		return peer.getCapacity();
-	}
-
-	public void setCapacity(int capacity) {
-		peer.setCapacity(capacity);
-	}
 
 	/**
 	 * Says hello and creates a connection with all the Peers of the peerlist of our Peer.
@@ -205,7 +178,7 @@ public class PeerApp {
 			this.openNeighborRequests.remove(peer.getIP() + ":" + peer.getPort());
 		}
 		if (success) {
-			if (this.getId() == 1) {
+			if (this.peer.getId() == 1) {
 				System.out.println("waaaa");
 			}
 			this.neighborList.put(peer.getId(), peer);
@@ -310,27 +283,9 @@ public class PeerApp {
 		connection.start();
 	}
 
-	/**
-	 * Changes the format of the data for the sending process.
-	 * From a HashMap<Integer,Peer> to a Hashtable<String, Vector>
-	 *
-	 * @param rawData HashMap of Integer - Peer pairs
-	 * @return Hashtable with the format: Hashtable<String, Vector>
-	 */
-	private static Hashtable<String, Vector> createExchangeData(HashMap<Integer, Peer> rawData) {
-		Hashtable<String, Vector> result = new Hashtable<String, Vector>();
-
-		for (Map.Entry<Integer, Peer> entry : rawData.entrySet()) {
-			// TODO: fix depth parameter
-			result.put(Integer.toString(entry.getKey()), CommunicationConverter.createVector(entry.getValue()));
-		}
-
-		return result;
-	}
-
 
 	public void startNegotiate() {
-		Thread negotiation = new Thread(new NegotiationTask(this.peer, this));
+		Thread negotiation = new Thread(new NegotiationTask(this));
 		negotiation.start();
 	}
 
@@ -363,15 +318,15 @@ public class PeerApp {
 
 			Arrays.sort(peers);
 			Set<Peer> ps = topo.keySet();
-			for (int i = 0; i < peers.length; i++) {
-				for (Peer itPeer: ps) {
-					if (itPeer.getId() == peers[i])
+			for (int peer1 : peers) {
+				for (Peer itPeer : ps) {
+					if (itPeer.getId() == peer1)
 						pv.add(itPeer);
 				}
 			}
 
-			for (int i = 0; i < pv.size(); i++) {
-				output.println("      \"P" + pv.get(i).getId() + '(' + pv.get(i).getCapacity() + ")\";");
+			for (Peer aPv : pv) {
+				output.println("      \"P" + aPv.getId() + '(' + aPv.getCapacity() + ")\";");
 			}
 
 			for (int i = 0; i < pv.size(); i++) {
@@ -380,8 +335,8 @@ public class PeerApp {
 					if (!pv.get(i).smallerThan(nl.get(j)))
 						continue;
 					boolean contains = false;
-					for (int k = 0; k < pv.size(); k++) {
-						if(nl.get(j).equals(pv.get(k))) {
+					for (Peer aPv : pv) {
+						if (nl.get(j).equals(aPv)) {
 							contains = true;
 						}
 					}

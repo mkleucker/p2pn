@@ -18,8 +18,8 @@ public class BecomeNeighborTask extends DefaultTask {
 
 	private static final Logger logger = LogManager.getLogger(BecomeNeighborTask.class.getSimpleName());
 
-	public BecomeNeighborTask(String targetIp, int targetPort, Peer peer, PeerApp app){
-		super(targetIp, targetPort, peer, app);
+	public BecomeNeighborTask(String targetIp, int targetPort, PeerApp app){
+		super(targetIp, targetPort, app);
 	}
 
 	public boolean execute(){
@@ -42,7 +42,7 @@ public class BecomeNeighborTask extends DefaultTask {
 			}else{
 				// Process the answer.
 				this.app.receiveConnectionAnswer(result);
-				return (boolean) result.get(4);
+				return (Boolean) result.get(4);
 			}
 
 

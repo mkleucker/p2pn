@@ -7,7 +7,7 @@ import dk.au.cs.p2pn.india.PeerApp;
 abstract class DefaultAsyncTask extends DefaultTask implements Runnable {
 
 	public DefaultAsyncTask(PeerApp app){
-		super(app);
+		super(app.getPeer(), app);
 	}
 
     public DefaultAsyncTask(Peer peer, PeerApp app){
@@ -15,7 +15,7 @@ abstract class DefaultAsyncTask extends DefaultTask implements Runnable {
     }
 
     public DefaultAsyncTask(String ip, int port, Peer peer, PeerApp app) {
-        super(ip, port, peer, app);
+        super(ip, port, app);
     }
 
     @Override
