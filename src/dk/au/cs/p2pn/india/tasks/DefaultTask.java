@@ -13,6 +13,10 @@ abstract public class DefaultTask {
 
 	XmlRpcClient client;
 
+	public DefaultTask(PeerApp app){
+		this.app = app;
+	}
+
 	public DefaultTask(Peer peer, PeerApp app){
 		this.peer = peer;
 		this.app = app;

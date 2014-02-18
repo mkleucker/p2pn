@@ -135,6 +135,10 @@ public class PeerApp {
 		return str;
 	}
 
+	public Peer getPeer(){
+		return this.peer;
+	}
+
 	public int getId() {
 		return peer.getId();
 	}
@@ -326,54 +330,8 @@ public class PeerApp {
 
 
 	public void startNegotiate() {
-
-		Vector<Peer> peers = new Vector<Peer>();
-		Set<Map.Entry<Integer, Peer>> set = this.peerList.entrySet();
-		for (Map.Entry<Integer, Peer> entry: set) {
-			if (!entry.getValue().equals(this.peer))
-				peers.add(entry.getValue());
-		}
-
-		if (peers.size() == 0){
-			return;
-		}
-
-		// I only know one peer -> Add him / her
-		if (peers.size() == 1){
-			this.becomeNeighbor(peers.get(0).getIP(), peers.get(1).getPort());
-			return;
-		}
-
-		double[] c = new double[peers.size()];
-
-		c[0] = peers.get(0).getCapacity();
-		for (int i = 1; i < peers.size(); i++) {
-			c[i] = c[i - 1] + peers.get(i).getCapacity();
-		}
-		for (int i = 0; i < peers.size(); i++) {
-			c[i] = c[i] / c[peers.size() - 1];
-		}
-
-		logger.info("inside of the startNegotiate function");
-		double r = Math.random();
-		int contacted = 0;
-
-		for (int i = 0; i < peers.size(); i++) {
-			Peer itPeer = peers.get(i);
-			if (r < c[i] && contacted < (this.getCapacity() - this.neighborList.size())) {
-				contacted++;
-				try {
-					this.becomeNeighbor(itPeer.getIP(), itPeer.getPort());
-					logger.info("Start to negotiate from peer " + this.peer.getId() + " to peer " + itPeer.getId());
-				} catch (Exception e) {
-					logger.error("Function startNegotiate failed, probably because the peer no longer exists, error message {}", e.getMessage());
-				}
-			}
-		}
-	}
-
-	public void becomeNeighbor(String ip, int port) {
-		new BecomeNeighborTask(ip, port, this.peer, this).execute();
+		Thread negotiation = new Thread(new NegotiationTask(this.peer, this));
+		negotiation.start();
 	}
 
 	public void nlistGraph(int[] peers, String dir) throws IOException {

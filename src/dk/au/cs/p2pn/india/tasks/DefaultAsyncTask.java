@@ -6,6 +6,10 @@ import dk.au.cs.p2pn.india.PeerApp;
 
 abstract class DefaultAsyncTask extends DefaultTask implements Runnable {
 
+	public DefaultAsyncTask(PeerApp app){
+		super(app);
+	}
+
     public DefaultAsyncTask(Peer peer, PeerApp app){
         super(peer, app);
     }
