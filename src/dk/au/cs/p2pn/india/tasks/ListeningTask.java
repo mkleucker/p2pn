@@ -1,5 +1,8 @@
-package dk.au.cs.p2pn.india;
+package dk.au.cs.p2pn.india.tasks;
 
+import dk.au.cs.p2pn.india.CommunicationHandler;
+import dk.au.cs.p2pn.india.Peer;
+import dk.au.cs.p2pn.india.PeerApp;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xmlrpc.WebServer;

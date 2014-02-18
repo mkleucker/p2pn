@@ -1,5 +1,8 @@
-package dk.au.cs.p2pn.india;
+package dk.au.cs.p2pn.india.tasks;
 
+
+import dk.au.cs.p2pn.india.Peer;
+import dk.au.cs.p2pn.india.PeerApp;
 
 abstract class DefaultAsyncTask extends DefaultTask implements Runnable {
 

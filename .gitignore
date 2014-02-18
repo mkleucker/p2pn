@@ -1,5 +1,10 @@
+/bin
+.idea/
+*.iml
+*.swp
 *.class
-
-# Package Files #
+*.jar
 *.war
 *.ear
+out/*
+*.dot
