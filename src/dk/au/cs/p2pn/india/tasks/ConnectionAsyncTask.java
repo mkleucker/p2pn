@@ -12,19 +12,12 @@ import java.io.IOException;
 import java.util.Vector;
 
 
-public class ConnectionTask extends DefaultAsyncTask {
+public class ConnectionAsyncTask extends DefaultAsyncTask {
 
-    private boolean neighborRequest;
+    private static final Logger logger = LogManager.getLogger(ConnectionAsyncTask.class.getSimpleName());
 
-    private static final Logger logger = LogManager.getLogger(ConnectionTask.class.getSimpleName());
-
-    public ConnectionTask(String targetIp, int targetPort, Peer peer, PeerApp app){
-        this(targetIp, targetPort, peer, app, false);
-    }
-
-    public ConnectionTask(String targetIp, int targetPort, Peer peer, PeerApp app, boolean neighborRequest){
+    public ConnectionAsyncTask(String targetIp, int targetPort, Peer peer, PeerApp app){
         super(targetIp, targetPort, peer, app);
-        this.neighborRequest = neighborRequest;
     }
 
     public void run(){
@@ -34,14 +27,8 @@ public class ConnectionTask extends DefaultAsyncTask {
             this.client = new XmlRpcClient("http://" + ip + ':' + port + '/');
             logger.debug("{} Connection establish to {}:{}", this.peer.getId(), this.ip, this.port);
 
-            // Issue a request
-
             Vector<Object> params = PeerApp.createVectorForPeer(this.peer);
 
-            if(neighborRequest){
-                params.add(true); // Set flag for Neighbor Request
-                app.setNeighborRequest(ip + ":" + port, NeighborNegotiationState.REQUEST_SENT);
-            }
 
             Vector result = (Vector)this.client.execute("communication.pong", params);
             if(result == null){

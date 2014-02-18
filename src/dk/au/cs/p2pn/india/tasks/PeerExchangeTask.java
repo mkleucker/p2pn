@@ -74,7 +74,7 @@ public class PeerExchangeTask extends DefaultAsyncTask {
                 try {
                     Peer currentPeer = entry.getValue();
 
-                    Thread connection = new Thread(new ConnectionTask(currentPeer.getIP(), currentPeer.getPort(), this.peer, this.app));
+                    Thread connection = new Thread(new ConnectionAsyncTask(currentPeer.getIP(), currentPeer.getPort(), this.peer, this.app));
                     connection.start();
 
                     visited.add(peer.getId());

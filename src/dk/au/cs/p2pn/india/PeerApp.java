@@ -1,10 +1,7 @@
 package dk.au.cs.p2pn.india;
 
 import dk.au.cs.p2pn.india.helper.NeighborNegotiationState;
-import dk.au.cs.p2pn.india.tasks.ConnectionTask;
-import dk.au.cs.p2pn.india.tasks.ListeningTask;
-import dk.au.cs.p2pn.india.tasks.MapNeighborhoodTask;
-import dk.au.cs.p2pn.india.tasks.PeerExchangeTask;
+import dk.au.cs.p2pn.india.tasks.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -304,7 +301,7 @@ public class PeerApp {
 	 * @param port Port of the targeted peer.
 	 */
 	public void ping(String ip, int port) {
-		Thread connection = new Thread(new ConnectionTask(ip, port, this.peer, this));
+		Thread connection = new Thread(new ConnectionAsyncTask(ip, port, this.peer, this));
 		connection.start();
 	}
 
@@ -420,8 +417,7 @@ public class PeerApp {
 	}
 
 	public void becomeNeighbor(String ip, int port) {
-		Thread connection = new Thread(new ConnectionTask(ip, port, this.peer, this, true));
-		connection.start();
+		new BecomeNeighborTask(ip, port, this.peer, this);
 	}
 
 	public void nlistGraph(int[] peers, String dir) throws IOException {
