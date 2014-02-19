@@ -218,6 +218,7 @@ public class Main {
 			Random rand = new Random();
 
 			ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
+			peers.add(this.peer);
 			int numOfPeers = 4;
 			int port = this.peer.getPeer().getPort();
 			for (int i = 1; i < numOfPeers; i++) {
