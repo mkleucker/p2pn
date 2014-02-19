@@ -77,7 +77,7 @@ public class Main {
 			PeerApp test0r = new PeerApp(99, "127.0.0.1", 19876, 9);
 			Thread.sleep(1000);
 			test0r.ping(this.peer.getPeer().getIP(), this.peer.getPeer().getPort());
-			
+
 			Thread.sleep(1000);
 			logger.info("Peerlist of P99: {}", test0r.plist());
 
@@ -105,7 +105,7 @@ public class Main {
 	}
 
 	// the same as test but without the destruction of the peers
-	
+
 	private void test0() {
 		try {
 			logger.info("Starting test...");
@@ -130,7 +130,7 @@ public class Main {
 			PeerApp test0r = new PeerApp(99, "127.0.0.1", 19876, 9);
 			Thread.sleep(1000);
 			test0r.ping(this.peer.getPeer().getIP(), this.peer.getPeer().getPort());
-			
+
 			Thread.sleep(1000);
 			logger.info("Peerlist of P99: {}", test0r.plist());
 
@@ -194,10 +194,10 @@ public class Main {
 		try {
 			PeerApp p2 = new PeerApp(2, "127.0.0.1", this.peer.getPeer().getPort() + 1, 9);
 			Thread.sleep(1000);
-//			logger.info("Created P2");
-//			this.peer.becomeNeighbor(p2.getIP(), p2.getPort());
-//			logger.info("P1 tries to become neighbor of P2...");
-//			Thread.sleep(1000);
+			//			logger.info("Created P2");
+			//			this.peer.becomeNeighbor(p2.getIP(), p2.getPort());
+			//			logger.info("P1 tries to become neighbor of P2...");
+			//			Thread.sleep(1000);
 
 			logger.info("Peerlist of P0: {}", this.peer.plist());
 			logger.info("Neighborlist of P0: {}", this.peer.nlist());
@@ -226,10 +226,6 @@ public class Main {
 			}
 			Thread.sleep(3000);
 
-			peers.add(this.peer);
-			
-			Thread.sleep(3000);
-			
 			for (PeerApp peer : peers) {
 				int numberOfConnections = rand.nextInt(numOfPeers);
 				for (int i = 0; i < numberOfConnections; i++) {
@@ -240,7 +236,6 @@ public class Main {
 			}
 
 			Thread.sleep(4000);
-			
 
 			for (PeerApp peer : peers) {
 				logger.info("{}", peer.plist());
@@ -260,12 +255,12 @@ public class Main {
 			}
 
 			/*
-			Thread.sleep(4000);
+			   Thread.sleep(4000);
 
-			for (PeerApp peer : peers) {
-				peer.destroy();
-			}
-			*/
+			   for (PeerApp peer : peers) {
+			   peer.destroy();
+			   }
+			   */
 		} catch (Exception e) {
 
 		}
@@ -303,7 +298,7 @@ public class Main {
 			if (input.equals("testn")) {
 				this.testNeighborhood();
 			}
-			
+
 			if (input.equals("test0")) {
 				this.test0();
 			}
@@ -326,60 +321,60 @@ public class Main {
 
 			if (input.length() >= 5 && input.substring(0, 5).equals("nlist")){					
 
-					//     example entries 
-					// nlist p1 p99 -o output.dot
-					// nlist p1 -o output.dot
-					// nlist 
+				//     example entries 
+				// nlist p1 p99 -o output.dot
+				// nlist p1 -o output.dot
+				// nlist 
 
-										
-					String addrRaw = input.substring(5);
-					String[] addr;
-					addr = addrRaw.split("-o");
-					
-					int[] listPeers = null;
-					String nameFile = null;				
-					
-					//System.out.println("addr length: " + addr.length + addr[0] + "**"  + addr[1]);
-					System.out.println("addr length: " + addr.length);
-					// without any arguments
-					if(input.length() == 5){
-						//temp print
-						//System.out.println("arguments missing");
-						listPeers = null;
-						nameFile = null;
-						
-					}
-					
-					// with only one argument
-					else if(addr.length == 1){
-						nameFile = addr[1].substring(1);
-						System.out.println("Caso con solo nombre" + nameFile);					
-					}
-					
-					// with the list of peers and the name of the file
-					else if(addr.length == 2){
-						addr[0].substring(1).replace("p","");
-						addr[0].substring(1).replace("P","");
-						String[] peersParsed = addr[0].split(" ");
-						listPeers = new int[peersParsed.length];
-						nameFile = addr[1].substring(1);
-						int j = 0;
-						for(int i = 1; i<peersParsed.length; i++){
-							String a1 = peersParsed[i]; 
-							a1 = a1.replace("P", "");
-							a1 = a1.replace("p", "");					
-							int a = Integer.parseInt(a1);							
-							listPeers[j] = a;							
-							j++;
-						}						
-					}					
-					
+
+				String addrRaw = input.substring(5);
+				String[] addr;
+				addr = addrRaw.split("-o");
+
+				int[] listPeers = null;
+				String nameFile = null;				
+
+				//System.out.println("addr length: " + addr.length + addr[0] + "**"  + addr[1]);
+				System.out.println("addr length: " + addr.length);
+				// without any arguments
+				if(input.length() == 5){
 					//temp print
-					//System.out.println("check: size: " + listPeers.size() + ", nameFile: "+ nameFile);
-					peer.nlistGraph(listPeers, nameFile);	
+					//System.out.println("arguments missing");
+					listPeers = null;
+					nameFile = null;
+
 				}
-				checkConnection();
-				parseInput();
+
+				// with only one argument
+				else if(addr.length == 1){
+					nameFile = addr[1].substring(1);
+					System.out.println("Caso con solo nombre" + nameFile);					
+				}
+
+				// with the list of peers and the name of the file
+				else if(addr.length == 2){
+					addr[0].substring(1).replace("p","");
+					addr[0].substring(1).replace("P","");
+					String[] peersParsed = addr[0].split(" ");
+					listPeers = new int[peersParsed.length];
+					nameFile = addr[1].substring(1);
+					int j = 0;
+					for(int i = 1; i<peersParsed.length; i++){
+						String a1 = peersParsed[i]; 
+						a1 = a1.replace("P", "");
+						a1 = a1.replace("p", "");					
+						int a = Integer.parseInt(a1);							
+						listPeers[j] = a;							
+						j++;
+					}						
+				}					
+
+				//temp print
+				//System.out.println("check: size: " + listPeers.size() + ", nameFile: "+ nameFile);
+				peer.nlistGraph(listPeers, nameFile);	
+			}
+			checkConnection();
+			parseInput();
 		} catch (IOException ioe) {
 			System.out.println("IO error!");
 			System.exit(1);
