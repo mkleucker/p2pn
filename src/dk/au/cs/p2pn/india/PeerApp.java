@@ -327,44 +327,40 @@ public class PeerApp {
 			Arrays.sort(peers);
 			Set<Peer> peerTopo = topo.keySet();
 			for (int i : peers) {
+				System.out.println("The peer passed has " + i);
 				for (Peer itPeer : peerTopo) {
-					if (itPeer.getId() == i)
+					if (itPeer.getId() == i) {
 						peerIndicated.add(itPeer);
+						peerInvolved.put(itPeer.getId(), itPeer);
+						for (Peer peerEntry: topo.get(itPeer))
+							peerInvolved.put(peerEntry.getId(), peerEntry);
+					}
 				}
 			}
 
 			System.out.print("peerIndicated is  ");
 			System.out.println(peerIndicated);
 
-//			for (Peer aPv : peerIndicated) {
-//				output.println("      \"P" + aPv.getId() + '(' + aPv.getCapacity() + ")\";");
-//			}
-
-			for (int i = 0; i < peerIndicated.size(); i++) {
-				ArrayList<Peer> nl = topo.get(peerIndicated.get(i));
-				for (int j = 0; j < nl.size(); j++) {
-					if (!peerIndicated.get(i).smallerThan(nl.get(j)))
-						continue;
-					boolean contains = false;
-					for (Peer aPv : peerIndicated) {
-						if (nl.get(j).equals(aPv)) {
-							contains = true;
-						}
-					}
-					if (contains) {
-						output.println("      \"P" + peerIndicated.get(i).getId() + '(' + peerIndicated.get(i).getCapacity() + ")\" -- " + "\"P" + nl.get(j).getId() + '(' + nl.get(j).getCapacity() + ")\";");
-					}
-				}
+			Set<Map.Entry<Integer, Peer>> setInv = peerInvolved.entrySet();
+			
+			for (Map.Entry<Integer, Peer> aPv : setInv) {
+				output.println("      \"P" + aPv.getValue().getId() + '(' + aPv.getValue().getCapacity() + ")\";");
 			}
-
+			
+			HashMap<Integer, Peer> peerIndict = new HashMap<Integer, Peer>();
+			
+			for (Peer itPeer: peerIndicated) {
+				peerIndict.put(itPeer.getId(), itPeer);
+			}
+			
 			for (int i = 0; i < peerIndicated.size(); i++) {
 				ArrayList<Peer> nl = topo.get(peerIndicated.get(i));
 				for (int j = 0; j < nl.size(); j++) {
-					if (!peerIndicated.get(i).smallerThan(nl.get(j)))
+					if (peerIndict.containsKey(nl.get(j).getId()) && !peerIndicated.get(i).smallerThan(nl.get(j)))
 						continue;
 					boolean contains = false;
-					for (Peer aPv : peerIndicated) {
-						if (nl.get(j).equals(aPv)) {
+					for (Map.Entry<Integer, Peer> aPv : setInv) {
+						if (nl.get(j).equals(aPv.getValue())) {
 							contains = true;
 						}
 					}
@@ -372,6 +368,7 @@ public class PeerApp {
 						output.println("      \"P" + peerIndicated.get(i).getId() + '(' + peerIndicated.get(i).getCapacity() + ")\" -- " + "\"P" + nl.get(j).getId() + '(' + nl.get(j).getCapacity() + ")\";");
 					}
 				}
+				
 			}
 		}
 		output.println("}");

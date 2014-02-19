@@ -327,7 +327,7 @@ public class Main {
 				// nlist 
 
 
-				String addrRaw = input.substring(5);
+				String addrRaw = input.substring(6);
 				String[] addr;
 				addr = addrRaw.split("-o");
 
@@ -353,13 +353,16 @@ public class Main {
 
 				// with the list of peers and the name of the file
 				else if(addr.length == 2){
+					System.out.println("The peers are " + addr[0]);
 					addr[0].substring(1).replace("p","");
 					addr[0].substring(1).replace("P","");
+					System.out.println("The peers are " + addr[0]);
 					String[] peersParsed = addr[0].split(" ");
 					listPeers = new int[peersParsed.length];
+					System.out.println("The length is " + peersParsed.length);
 					nameFile = addr[1].substring(1);
 					int j = 0;
-					for(int i = 1; i<peersParsed.length; i++){
+					for(int i = 0; i<peersParsed.length; i++){
 						String a1 = peersParsed[i]; 
 						a1 = a1.replace("P", "");
 						a1 = a1.replace("p", "");					
