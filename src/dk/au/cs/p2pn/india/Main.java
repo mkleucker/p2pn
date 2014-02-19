@@ -319,59 +319,8 @@ public class Main {
 				System.out.println(this.peer.plist());
 			}
 
-			if (input.length() >= 5 && input.substring(0, 5).equals("nlist")){					
-
-				//     example entries 
-				// nlist p1 p99 -o output.dot
-				// nlist p1 -o output.dot
-				// nlist 
-
-
-				String addrRaw = input.substring(6);
-				String[] addr;
-				addr = addrRaw.split("-o");
-
-				int[] listPeers = null;
-				String nameFile = null;				
-
-				//System.out.println("addr length: " + addr.length + addr[0] + "**"  + addr[1]);
-				System.out.println("addr length: " + addr.length);
-				// without any arguments
-				if(input.length() == 5){
-					//temp print
-					//System.out.println("arguments missing");
-					listPeers = null;
-					nameFile = null;
-
-				}
-
-				// with only one argument
-				else if(addr.length == 1){
-					nameFile = addr[1].substring(1);
-					System.out.println("Caso con solo nombre" + nameFile);					
-				}
-
-				// with the list of peers and the name of the file
-				else if(addr.length == 2){
-					addr[0].substring(1).replace("p","");
-					addr[0].substring(1).replace("P","");
-					String[] peersParsed = addr[0].split(" ");
-					listPeers = new int[peersParsed.length];
-					nameFile = addr[1].substring(1);
-					int j = 0;
-					for(int i = 0; i<peersParsed.length; i++){
-						String a1 = peersParsed[i]; 
-						a1 = a1.replace("P", "");
-						a1 = a1.replace("p", "");					
-						int a = Integer.parseInt(a1);							
-						listPeers[j] = a;							
-						j++;
-					}						
-				}					
-
-				//temp print
-				//System.out.println("check: size: " + listPeers.size() + ", nameFile: "+ nameFile);
-				peer.nlistGraph(listPeers, nameFile);	
+			if (input.length() >= 5 && input.substring(0, 5).equals("nlist")){
+				nlistParse(input);
 			}
 			checkConnection();
 			parseInput();
@@ -381,6 +330,85 @@ public class Main {
 		}
 	}
 
+	
+	/**
+	 * Method for treat the input of "nlist xxx" 
+	 * 
+	 * @param input
+	 * @throws IOException
+	 * 
+	 */
+	private void nlistParse(String input) throws IOException {
+		
+		int[] listPeers = null;
+		String nameFile = null;				
+
+		// without any arguments -- not necessary
+		if(input.length() == 5 && input.equals("nlist")){
+
+			listPeers = null;
+			nameFile = null;
+			logger.info("Writed command without any arguments");
+		}
+		
+		// with only the nameFile argument -- ok
+		if(input.contains("-o") && !(input.contains("p")) && !(input.contains("P"))){
+				
+			String addrRaw = input.substring(5);
+			String[] addr;
+			addr = addrRaw.split("-o");
+			nameFile = addr[1].substring(1);
+			listPeers = null;
+			logger.info("Writed command wit only the name file argument (File name {})", nameFile);
+		}
+		
+		// with only the peer list argument
+		if(!input.contains("-o") && (input.contains("p") || input.contains("P"))){
+			String addrRaw = input.substring(6);
+			
+			addrRaw.substring(1).replace("p","");
+			addrRaw.substring(1).replace("P","");
+			String[] peersParsed = addrRaw.split(" ");
+			listPeers = new int[peersParsed.length];
+
+			int j = 0;
+			for(int i = 0; i<peersParsed.length; i++){
+				String a1 = peersParsed[i]; 
+				a1 = a1.replace("P", "");
+				a1 = a1.replace("p", "");					
+				int a = Integer.parseInt(a1);							
+				listPeers[j] = a;							
+				j++;
+			}
+			logger.info("Writed command with only the peer list argument. (Peer list: {})",addrRaw);
+			
+		}
+
+		// with the list of peers and the name of the file
+		if(input.contains("-o") && ((input.contains("p")) || (input.contains("P")))){
+			String addRaw = null;			
+			String addrRaw = input.substring(6);
+			String[] addr = null;
+			addr = addrRaw.split("-o");			
+			
+			addr[0].substring(1).replace("p","");
+			addr[0].substring(1).replace("P","");
+			String[] peersParsed = addr[0].split(" ");
+			listPeers = new int[peersParsed.length];
+			nameFile = addr[1].substring(1);
+			int j = 0;
+			for(int i = 0; i<peersParsed.length; i++){
+				String a1 = peersParsed[i]; 
+				a1 = a1.replace("P", "");
+				a1 = a1.replace("p", "");					
+				int a = Integer.parseInt(a1);							
+				listPeers[j] = a;							
+				j++;
+			}
+		logger.info("Writed command with the peer list and the file name arguments. (Peer list: {}) (Name file: {})",addr[0],nameFile);
+		}					
+		peer.nlistGraph(listPeers, nameFile);	
+	}
 
 	/**
 	 * Default Java init method
