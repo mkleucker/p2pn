@@ -353,13 +353,10 @@ public class Main {
 
 				// with the list of peers and the name of the file
 				else if(addr.length == 2){
-					System.out.println("The peers are " + addr[0]);
 					addr[0].substring(1).replace("p","");
 					addr[0].substring(1).replace("P","");
-					System.out.println("The peers are " + addr[0]);
 					String[] peersParsed = addr[0].split(" ");
 					listPeers = new int[peersParsed.length];
-					System.out.println("The length is " + peersParsed.length);
 					nameFile = addr[1].substring(1);
 					int j = 0;
 					for(int i = 0; i<peersParsed.length; i++){
