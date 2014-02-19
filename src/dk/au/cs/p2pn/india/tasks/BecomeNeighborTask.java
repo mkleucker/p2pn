@@ -1,7 +1,6 @@
 package dk.au.cs.p2pn.india.tasks;
 
 
-import dk.au.cs.p2pn.india.Peer;
 import dk.au.cs.p2pn.india.PeerApp;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.helper.NeighborNegotiationState;
@@ -41,8 +40,9 @@ public class BecomeNeighborTask extends DefaultTask {
 				return false;
 			}else{
 				// Process the answer.
+				boolean returnVal = (Boolean) result.get(4);
 				this.app.receiveConnectionAnswer(result);
-				return (Boolean) result.get(4);
+				return returnVal;
 			}
 
 
