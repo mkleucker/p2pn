@@ -316,6 +316,9 @@ public class PeerApp {
 			MapNeighborhoodTask nbTask = new MapNeighborhoodTask(this.peer, this);
 			HashMap<Peer, ArrayList<Peer>> topo = nbTask.getTopology();
 
+			System.out.print("The result is  ");
+			System.out.println(topo);
+			
 			Arrays.sort(peers);
 			Set<Peer> ps = topo.keySet();
 			for (int peer1 : peers) {

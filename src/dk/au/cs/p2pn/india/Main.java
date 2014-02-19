@@ -225,6 +225,10 @@ public class Main {
 			}
 			Thread.sleep(3000);
 
+			peers.add(this.peer);
+			
+			Thread.sleep(3000);
+			
 			for (PeerApp peer : peers) {
 				int numberOfConnections = rand.nextInt(numOfPeers);
 				for (int i = 0; i < numberOfConnections; i++) {
@@ -235,6 +239,7 @@ public class Main {
 			}
 
 			Thread.sleep(4000);
+			
 
 			for (PeerApp peer : peers) {
 				logger.info("{}", peer.plist());
@@ -253,11 +258,13 @@ public class Main {
 				System.out.println(peer.nlist());
 			}
 
+			/*
 			Thread.sleep(4000);
 
 			for (PeerApp peer : peers) {
 				peer.destroy();
 			}
+			*/
 		} catch (Exception e) {
 
 		}
@@ -331,7 +338,8 @@ public class Main {
 					int[] listPeers = null;
 					String nameFile = null;				
 					
-					System.out.println("addr length: " + addr.length + addr[0] + "**"  + addr[1]);
+					//System.out.println("addr length: " + addr.length + addr[0] + "**"  + addr[1]);
+					System.out.println("addr length: " + addr.length);
 					// without any arguments
 					if(input.length() == 5){
 						//temp print
