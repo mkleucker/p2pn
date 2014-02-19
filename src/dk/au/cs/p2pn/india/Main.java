@@ -219,12 +219,12 @@ public class Main {
 
 			ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
 			peers.add(this.peer);
-			int numOfPeers = 4;
+			int numOfPeers = 30;
 			int port = this.peer.getPeer().getPort();
 			for (int i = 1; i < numOfPeers; i++) {
 				peers.add(new PeerApp(i, "127.0.0.1", port + i, rand.nextInt(9)+1));
 			}
-			Thread.sleep(3000);
+			Thread.sleep(2000);
 
 			for (PeerApp peer : peers) {
 				int numberOfConnections = rand.nextInt(numOfPeers);
@@ -235,19 +235,19 @@ public class Main {
 				}
 			}
 
-			Thread.sleep(4000);
+			Thread.sleep(3000);
 
 			for (PeerApp peer : peers) {
 				logger.info("{}", peer.plist());
 			}
 
-			Thread.sleep(4000);
+			Thread.sleep(3000);
 
 			for (PeerApp peer : peers) {
 				peer.startNegotiate();
 			}
 
-			Thread.sleep(4000);
+			Thread.sleep(3000);
 
 			for (PeerApp peer : peers) {
 				System.out.println(peer.plist());
@@ -255,12 +255,12 @@ public class Main {
 			}
 
 			/*
-			   Thread.sleep(4000);
-
-			   for (PeerApp peer : peers) {
-			   peer.destroy();
-			   }
-			   */
+			Thread.sleep(30000);
+			for (PeerApp peer : peers) {
+				peer.destroy();
+			}
+			*/
+			
 		} catch (Exception e) {
 
 		}
