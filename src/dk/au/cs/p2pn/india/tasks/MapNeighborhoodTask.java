@@ -35,6 +35,7 @@ public class MapNeighborhoodTask extends DefaultTask {
 			return;
 		}
 
+		
 		for (Peer peer : new HashSet<Peer>(this.toDo)) {
 			if (!data.containsKey(peer)) { // Peer wasn't visited yet
 
@@ -48,6 +49,7 @@ public class MapNeighborhoodTask extends DefaultTask {
 							Peer newPeer = CommunicationConverter.createPeer(v);
 							connections.add(newPeer);
 							if (!data.containsKey(newPeer)){
+								logger.info("new peer added to the result " + newPeer);
 								toDo.add(newPeer);
 							}
 						}
