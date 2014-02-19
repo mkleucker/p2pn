@@ -290,16 +290,13 @@ public class PeerApp {
 	}
 
 	public void nlistGraph(int[] peers, String dir) throws IOException {
-		System.out.println("CAONIMA");
 
 		PrintWriter output;
 		if (dir == null) {
 			output = new PrintWriter(System.out);
-			System.out.println("CAONIMA");
 		} else {
 			String fileName = dir.substring(0, dir.length());
 			output = new PrintWriter(fileName);
-			System.out.println(fileName + "FUCK");
 		}
 
 		output.println("graph network {");
@@ -309,10 +306,18 @@ public class PeerApp {
 			Set<Map.Entry<Integer, Peer>> neighborSet = this.getNeighborList().entrySet();
 			for (Map.Entry<Integer, Peer> entry : neighborSet) {
 				Peer itPeer = entry.getValue();
+				output.println("      \"P" + itPeer.getId() + '(' + itPeer.getCapacity() + ")\";");
+			}
+			for (Map.Entry<Integer, Peer> entry : neighborSet) {
+				Peer itPeer = entry.getValue();
 				output.println("      \"P" + this.peer.getId() + '(' + this.peer.getCapacity() + ")\" -- " + "\"P" + itPeer.getId() + '(' + itPeer.getCapacity() + ")\";");
 			}
 		} else {
-			Vector<Peer> pv = new Vector<Peer>();
+			//peers from the arguments
+			Vector<Peer> peerIndicated = new Vector<Peer>();	
+			//peers from the arguments and there neighbors
+			HashMap<Integer, Peer> peerInvolved = new HashMap<Integer, Peer>();		
+			
 			MapNeighborhoodTask nbTask = new MapNeighborhoodTask(this.peer, this);
 			HashMap<Peer, ArrayList<Peer>> topo = nbTask.getTopology();
 
@@ -320,31 +325,51 @@ public class PeerApp {
 			System.out.println(topo);
 			
 			Arrays.sort(peers);
-			Set<Peer> ps = topo.keySet();
-			for (int peer1 : peers) {
-				for (Peer itPeer : ps) {
-					if (itPeer.getId() == peer1)
-						pv.add(itPeer);
+			Set<Peer> peerTopo = topo.keySet();
+			for (int i : peers) {
+				for (Peer itPeer : peerTopo) {
+					if (itPeer.getId() == i)
+						peerIndicated.add(itPeer);
 				}
 			}
 
-			for (Peer aPv : pv) {
-				output.println("      \"P" + aPv.getId() + '(' + aPv.getCapacity() + ")\";");
-			}
+			System.out.print("peerIndicated is  ");
+			System.out.println(peerIndicated);
 
-			for (int i = 0; i < pv.size(); i++) {
-				ArrayList<Peer> nl = topo.get(pv.get(i));
+//			for (Peer aPv : peerIndicated) {
+//				output.println("      \"P" + aPv.getId() + '(' + aPv.getCapacity() + ")\";");
+//			}
+
+			for (int i = 0; i < peerIndicated.size(); i++) {
+				ArrayList<Peer> nl = topo.get(peerIndicated.get(i));
 				for (int j = 0; j < nl.size(); j++) {
-					if (!pv.get(i).smallerThan(nl.get(j)))
+					if (!peerIndicated.get(i).smallerThan(nl.get(j)))
 						continue;
 					boolean contains = false;
-					for (Peer aPv : pv) {
+					for (Peer aPv : peerIndicated) {
 						if (nl.get(j).equals(aPv)) {
 							contains = true;
 						}
 					}
 					if (contains) {
-						output.println("      \"P" + pv.get(i).getId() + '(' + pv.get(i).getCapacity() + ")\" -- " + "\"P" + nl.get(j).getId() + '(' + nl.get(j).getCapacity() + ")\";");
+						output.println("      \"P" + peerIndicated.get(i).getId() + '(' + peerIndicated.get(i).getCapacity() + ")\" -- " + "\"P" + nl.get(j).getId() + '(' + nl.get(j).getCapacity() + ")\";");
+					}
+				}
+			}
+
+			for (int i = 0; i < peerIndicated.size(); i++) {
+				ArrayList<Peer> nl = topo.get(peerIndicated.get(i));
+				for (int j = 0; j < nl.size(); j++) {
+					if (!peerIndicated.get(i).smallerThan(nl.get(j)))
+						continue;
+					boolean contains = false;
+					for (Peer aPv : peerIndicated) {
+						if (nl.get(j).equals(aPv)) {
+							contains = true;
+						}
+					}
+					if (contains) {
+						output.println("      \"P" + peerIndicated.get(i).getId() + '(' + peerIndicated.get(i).getCapacity() + ")\" -- " + "\"P" + nl.get(j).getId() + '(' + nl.get(j).getCapacity() + ")\";");
 					}
 				}
 			}
