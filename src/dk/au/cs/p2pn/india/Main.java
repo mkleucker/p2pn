@@ -321,17 +321,37 @@ public class Main {
 				System.out.println(this.peer.plist());
 			}
 
-			if(input.contains("find")){				
-				String nameFile = input.substring(5);				
-				peer.search();
-				logger.info("Writed file command with the name file argument: {}", nameFile);
-			}
-			
-			
-
 			if (input.length() >= 5 && input.substring(0, 5).equals("nlist")){
 				nlistParse(input);
 			}
+			
+			if(input.contains("find") && input.length() > 5){				
+				
+				String addrRaw = input.substring(5);
+				String[] addr;
+				
+				addr = addrRaw.split(" ");
+				String nameFile = addr[0];
+				Integer time =  null;
+				if(addr.length >1){
+					time = Integer.parseInt(addr[1]);	
+				}
+				//peer.search(namefile, time);
+				logger.info("Writed file command with the name file argument ant the time: Name file: {} Time: {}", nameFile, time);
+				
+			}
+			
+			if(input.contains("get") && input.length() > 4){				
+				String nameFile = input.substring(4);				
+				logger.info("Writed get command with the name file argument: {}", nameFile);
+				
+			}
+			
+			if(input.contains("report")){				
+				logger.info("Writed report command");
+				
+			}
+			
 			checkConnection();
 			parseInput();
 		} catch (IOException ioe) {
