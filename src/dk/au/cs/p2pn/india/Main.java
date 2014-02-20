@@ -342,15 +342,15 @@ public class Main {
 	 */
 	private void nlistParse(String input) throws IOException {
 		
-		int[] listPeers = null;
-		String nameFile = null;				
+		int[] listPeers;
+		String nameFile;				
 
 		// without any arguments
 		if(input.length() == 5 && input.equals("nlist")){
 			listPeers = null;
 			nameFile = null;
 			logger.info("Writed command without any arguments");
-			peer.nlistGraph(listPeers, nameFile);
+			peer.nlistGraph(listPeers, nameFile,false);
 		}		
 		
 		// with the "all" argument
@@ -359,9 +359,8 @@ public class Main {
 			String[] addr;
 			addr = addrRaw.split("-o");
 			nameFile = addr[1].substring(1);
-			listPeers = null;
 			
-			//peer.nlistGraph(listPeers, nameFile);
+			peer.nlistGraph(listPeers, nameFile,true);
 			logger.info("Writed command with the all argument.");
 		}
 		
@@ -373,7 +372,7 @@ public class Main {
 			nameFile = addr[1].substring(1);
 			listPeers = null;
 			logger.info("Writed command wit only the name file argument (File name {})", nameFile);
-			peer.nlistGraph(listPeers, nameFile);
+			peer.nlistGraph(listPeers, nameFile,false);
 			
 		}
 		
@@ -392,7 +391,7 @@ public class Main {
 				j++;
 			}
 			logger.info("Writed command with only the peer list argument. (Peer list: {})",addrRaw);
-			peer.nlistGraph(listPeers, nameFile);
+			peer.nlistGraph(listPeers, nameFile,false);
 			
 		}
 
@@ -413,7 +412,7 @@ public class Main {
 				j++;
 			}
 		logger.info("Writed command with the peer list and the file name arguments. (Peer list: {}) (Name file: {})",addr[0],nameFile);
-		peer.nlistGraph(listPeers, nameFile);
+		peer.nlistGraph(listPeers, nameFile,false);
 		}		
 	}
 
