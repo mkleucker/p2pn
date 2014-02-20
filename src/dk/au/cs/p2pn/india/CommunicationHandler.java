@@ -1,6 +1,7 @@
 package dk.au.cs.p2pn.india;
 
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
+import dk.au.cs.p2pn.india.helper.ReporterMeasurements;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,8 +31,10 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("unused")
 	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg) {
+		this.app.getReporter().addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
+
 		this.app.addPeer(new Peer(IdArg, IPArg, portArg, capacityArg));
-		return createLocalReturnValue();
+		return CommunicationConverter.createVector(this.peer);
 	}
 
 	/**
@@ -49,7 +52,7 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("unused")
 	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, boolean isNeighborRequest) {
-		logger.debug("Called pong with request");
+		this.app.getReporter().addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
 
 		// Create Peer object
 		Peer inPeer = new Peer(IdArg, IPArg, portArg, capacityArg);
@@ -61,32 +64,21 @@ public class CommunicationHandler {
 				this.app.addNeighbor(inPeer, neighborAnswer);
 			}
 			logger.debug("Answering neighbor request from {}:{} with {}", IPArg, portArg, neighborAnswer);
-			// TODO: Call check on answer
-			return createLocalReturnValue(true, neighborAnswer);
+
+			return CommunicationConverter.createVector(this.peer, neighborAnswer);
 		}
 
-		return createLocalReturnValue();
+		return CommunicationConverter.createVector(this.peer);
 
 	}
 
 	public boolean responseNegotiate(Peer inPeer) {
+		this.app.getReporter().addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
+
 		if(this.app.neighborList.size() + this.app.openNeighborRequests.size() >= this.app.getPeer().getCapacity()) {
 			return false;
 		}
 		return Math.random() < (double) ((double) inPeer.getCapacity() / (double) this.app.getPeer().getCapacity());
-	}
-
-	private Vector createLocalReturnValue(){
-		return this.createLocalReturnValue(false, false);
-	}
-
-	private Vector createLocalReturnValue(boolean isNeighborRequest, boolean neighborRequestAnswer) {
-		Vector data = CommunicationConverter.createVector(this.peer);
-		System.out.println("The length of the return value is " + data.size() + data);
-		if(isNeighborRequest){
-			data.add(neighborRequestAnswer);
-		}
-		return data;
 	}
 
 	/**
@@ -96,6 +88,8 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("unused")
 	public Hashtable<String, Vector> getPeerList(){
+		this.app.getReporter().addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
+
 		return CommunicationConverter.createVector(this.app.getPeerList());
 	}
 
@@ -106,6 +100,8 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("unused")
 	public Vector<Vector> getNeighborList(){
+		this.app.getReporter().addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
+
 		Hashtable<String, Vector> data  = CommunicationConverter.createVector(this.app.getNeighborList());
 		return new Vector<Vector>(data.values());
 	}

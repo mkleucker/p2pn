@@ -2,6 +2,7 @@ package dk.au.cs.p2pn.india;
 
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.helper.NeighborNegotiationState;
+import dk.au.cs.p2pn.india.helper.Reporter;
 import dk.au.cs.p2pn.india.tasks.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,6 +14,8 @@ import java.util.*;
 public class PeerApp {
 
 	Peer peer;
+	Reporter reporter;
+
 	Map<Integer, Peer> peerList;
 	Map<Integer, Peer> neighborList;
 	Map<Integer, Date> lastSeenList;
@@ -36,6 +39,7 @@ public class PeerApp {
 	public PeerApp(int id, String ip, int port, int capacity) {
 		logger.info("Started Peer with ID {} (Capacity: {})", id, capacity);
 		this.peer = new Peer(id, ip, port, capacity);//creation of the Peer
+		this.reporter = new Reporter();
 		this.peerList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
 		this.neighborList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
 		this.lastSeenList = Collections.synchronizedMap(new HashMap<Integer, Date>());
@@ -44,6 +48,10 @@ public class PeerApp {
 		this.server = new ListeningTask(this.peer, this);
 		Thread listening = new Thread(this.server);   //start listening to the port
 		listening.start();
+	}
+
+	protected Reporter getReporter(){
+		return this.reporter;
 	}
 
 
@@ -174,7 +182,9 @@ public class PeerApp {
 	 * @param peer Peer object to add to the neighbor list
 	 */
 	public synchronized void addNeighbor(Peer peer, boolean success) {
-		if (this.openNeighborRequests.containsKey(peer.getIP() + ':' + peer.getPort()) && this.openNeighborRequests.get(peer.getIP() + ':' + peer.getPort()) == NeighborNegotiationState.REQUEST_SENT) {
+		if (this.openNeighborRequests.containsKey(peer.getIP() + ':' + peer.getPort()) &&
+				this.openNeighborRequests.get(peer.getIP() + ':' + peer.getPort()) == NeighborNegotiationState.REQUEST_SENT)
+		{
 			this.openNeighborRequests.remove(peer.getIP() + ":" + peer.getPort());
 		}
 		if (success) {

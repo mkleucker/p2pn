@@ -8,6 +8,7 @@ public class Reporter {
 	private HashMap<ReporterMeasurements, Integer> data;
 
 	public Reporter() {
+		// Register all counters
 		this.data = new HashMap<ReporterMeasurements, Integer>();
 		for (ReporterMeasurements key : ReporterMeasurements.values()) {
 			this.data.put(key, 0);
@@ -15,7 +16,11 @@ public class Reporter {
 	}
 
 	public void addEvent(ReporterMeasurements event) {
-		this.data.put(event, this.data.get(event)+1);
+		this.addEvent(event, 1);
+	}
+
+	public void addEvent(ReporterMeasurements event, int value){
+		this.data.put(event, this.data.get(event)+value);
 	}
 
 }
