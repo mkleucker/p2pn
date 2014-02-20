@@ -15,6 +15,7 @@ public class PeerApp {
 
 	Peer peer;
 	Reporter reporter;
+	int searchCount;		// used to generate the id for each search
 
 	Map<Integer, Peer> peerList;
 	Map<Integer, Peer> neighborList;
@@ -38,6 +39,7 @@ public class PeerApp {
 	 */
 	public PeerApp(int id, String ip, int port, int capacity) {
 		logger.info("Started Peer with ID {} (Capacity: {})", id, capacity);
+		searchCount = 0;
 		this.peer = new Peer(id, ip, port, capacity);//creation of the Peer
 		this.reporter = new Reporter();
 		this.peerList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
@@ -64,6 +66,7 @@ public class PeerApp {
 	 */
 	public PeerApp(int id, String ip, int port) {
 		int capacity = 0;
+		searchCount = 0;
 		ALPHA = 0.6;
 		POWERLAWCUMULATIVE[0] = Math.pow(ALPHA, 1);
 		for (int i = 1; i < 10; i++) {
@@ -304,7 +307,10 @@ public class PeerApp {
 	 * @param fileName   the name of the file the peer is searching
 	 */
 	public void searchFile(String fileName, int ttl) {
-		Thread search = new Thread(new SearchTask(this, fileName, ttl));
+		searchCount++;
+		StringBuilder searchIdentifier = new StringBuilder();
+		searchIdentifier.append("" + this.getPeer().getId() + "" + this.searchCount);	//generate the identifier
+		Thread search = new Thread(new SearchTask(this, fileName, ttl, searchIdentifier.toString()));
 		search.run();
 	}
 
