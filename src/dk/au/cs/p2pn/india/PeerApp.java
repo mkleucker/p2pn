@@ -326,7 +326,7 @@ public class PeerApp {
 			System.out.println(topo);
 			
 			if (all) {
-				if (peers.length != 0) {
+				if (peers != null) {
 					logger.error("ERROR! When ALL is specified peers should be empty!");
 					return;
 				}

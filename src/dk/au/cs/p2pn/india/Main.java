@@ -342,8 +342,8 @@ public class Main {
 	 */
 	private void nlistParse(String input) throws IOException {
 		
-		int[] listPeers;
-		String nameFile;				
+		int[] listPeers = null;
+		String nameFile = null;				
 
 		// without any arguments
 		if(input.length() == 5 && input.equals("nlist")){
@@ -360,7 +360,7 @@ public class Main {
 			addr = addrRaw.split("-o");
 			nameFile = addr[1].substring(1);
 			
-			peer.nlistGraph(listPeers, nameFile,true);
+			peer.nlistGraph(listPeers, nameFile,true); 
 			logger.info("Writed command with the all argument.");
 		}
 		
