@@ -289,7 +289,7 @@ public class PeerApp {
 		negotiation.start();
 	}
 
-	public void nlistGraph(int[] peers, String dir) throws IOException {
+	public void nlistGraph(int[] peers, String dir, boolean all) throws IOException {
 
 		PrintWriter output;
 		if (dir == null) {
@@ -301,7 +301,7 @@ public class PeerApp {
 
 		output.println("graph network {");
 
-		if (peers == null) {
+		if (!all && peers == null) {
 			output.println("      \"P" + this.peer.getId() + '(' + this.peer.getCapacity() + ")\";");
 			Set<Map.Entry<Integer, Peer>> neighborSet = this.getNeighborList().entrySet();
 			for (Map.Entry<Integer, Peer> entry : neighborSet) {
@@ -320,23 +320,34 @@ public class PeerApp {
 			
 			MapNeighborhoodTask nbTask = new MapNeighborhoodTask(this.peer, this);
 			HashMap<Peer, ArrayList<Peer>> topo = nbTask.getTopology();
+			Set<Peer> peerTopo = topo.keySet();
 
 			System.out.print("The result is  ");
 			System.out.println(topo);
 			
-			Arrays.sort(peers);
-			Set<Peer> peerTopo = topo.keySet();
-			for (int i : peers) {
-				System.out.println("The peer passed has " + i);
+			if (all) {
+				if (peers.length != 0) {
+					logger.error("ERROR! When ALL is specified peers should be empty!");
+					return;
+				}
 				for (Peer itPeer : peerTopo) {
-					if (itPeer.getId() == i) {
-						peerIndicated.add(itPeer);
-						peerInvolved.put(itPeer.getId(), itPeer);
-						for (Peer peerEntry: topo.get(itPeer))
-							peerInvolved.put(peerEntry.getId(), peerEntry);
+					peerIndicated.add(itPeer);
+					peerInvolved.put(itPeer.getId(), itPeer);
+				}
+			} else {
+				Arrays.sort(peers);
+				for (int i : peers) {
+					for (Peer itPeer : peerTopo) {
+						if (itPeer.getId() == i) {
+							peerIndicated.add(itPeer);
+							peerInvolved.put(itPeer.getId(), itPeer);
+							for (Peer peerEntry: topo.get(itPeer))
+								peerInvolved.put(peerEntry.getId(), peerEntry);
+						}
 					}
 				}
 			}
+			
 
 			System.out.print("peerIndicated is  ");
 			System.out.println(peerIndicated);
