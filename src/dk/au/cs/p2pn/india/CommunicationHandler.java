@@ -106,4 +106,26 @@ public class CommunicationHandler {
 		Hashtable<String, Vector> data  = CommunicationConverter.createVector(this.app.getNeighborList());
 		return new Vector<Vector>(data.values());
 	}
+	
+	/**
+	 * XML-RPC: Answers the call to `communication.respondSearch`, it will return immediately. If it has the file,
+	 * 			it will start a new thread to give a successful result to the caller before returning. Otherwise
+	 * 			if the ttl is positive, then it passes the search to all the peers in its peer list.
+	 *
+	 * @param	The message of searching
+	 */
+	public void respondSearch(Vector<Object> origin, String fileName, Integer ttl, String ident) {
+		
+	}
+	
+	/**
+	 * XML-RPC: Answers the call to `communication.respondSuccess` when another peer has the file that the 
+	 * 			current peer is looking for, it will return immediately. And it will add the file to the 
+	 *			known file list of the local peer.
+	 *
+	 * @param The message of 
+	 */
+	public void respondSuccess(Vector<Object> origin, String fileName, Integer ttl, String ident) {
+		
+	}
 }
