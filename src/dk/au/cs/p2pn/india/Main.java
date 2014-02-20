@@ -321,6 +321,14 @@ public class Main {
 				System.out.println(this.peer.plist());
 			}
 
+			if(input.contains("find")){				
+				String nameFile = input.substring(5);				
+				peer.search();
+				logger.info("Writed file command with the name file argument: {}", nameFile);
+			}
+			
+			
+
 			if (input.length() >= 5 && input.substring(0, 5).equals("nlist")){
 				nlistParse(input);
 			}
@@ -371,7 +379,7 @@ public class Main {
 			addr = addrRaw.split("-o");
 			nameFile = addr[1].substring(1);
 			listPeers = null;
-			logger.info("Writed command wit only the name file argument (File name {})", nameFile);
+			logger.info("Writed command with only the name file argument (File name {})", nameFile);
 			peer.nlistGraph(listPeers, nameFile,false);
 			
 		}
