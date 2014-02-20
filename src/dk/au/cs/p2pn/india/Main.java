@@ -336,6 +336,9 @@ public class Main {
 				if(addr.length >1){
 					time = Integer.parseInt(addr[1]);	
 				}
+				else{
+					time = 5;
+				}
 				//peer.search(namefile, time);
 				logger.info("Writed file command with the name file argument ant the time: Name file: {} Time: {}", nameFile, time);
 				
