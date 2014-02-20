@@ -50,7 +50,7 @@ public class PeerApp {
 		listening.start();
 	}
 
-	protected Reporter getReporter(){
+	public Reporter getReporter(){
 		return this.reporter;
 	}
 

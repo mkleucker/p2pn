@@ -4,6 +4,7 @@ package dk.au.cs.p2pn.india.tasks;
 import dk.au.cs.p2pn.india.PeerApp;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.helper.NeighborNegotiationState;
+import dk.au.cs.p2pn.india.helper.ReporterMeasurements;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcClient;
@@ -33,6 +34,7 @@ public class BecomeNeighborTask extends DefaultTask {
 			Vector<Object> params = CommunicationConverter.createVector(this.peer, true);
 
 			app.setNeighborRequest(ip + ":" + port, NeighborNegotiationState.REQUEST_SENT);
+			this.app.getReporter().addEvent(ReporterMeasurements.NEIGHBOR_REQUEST_SENT);
 
 			Vector result = (Vector)this.client.execute("communication.pong", params);
 			if(result == null){

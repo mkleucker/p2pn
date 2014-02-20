@@ -59,6 +59,7 @@ public class CommunicationHandler {
 		this.app.addPeer(inPeer);
 
 		if(isNeighborRequest){
+			this.app.getReporter().addEvent(ReporterMeasurements.NEIGHBOR_REQUEST_RECEIVED);
 			boolean neighborAnswer = responseNegotiate(inPeer);
 			if(neighborAnswer){
 				this.app.addNeighbor(inPeer, neighborAnswer);

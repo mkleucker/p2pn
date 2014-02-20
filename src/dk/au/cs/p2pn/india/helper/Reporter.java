@@ -15,11 +15,22 @@ public class Reporter {
 		}
 	}
 
+	/**
+	 * Register an occurrence of $event
+	 * @param event Type of the Event
+	 */
 	public void addEvent(ReporterMeasurements event) {
 		this.addEvent(event, 1);
 	}
 
-	public void addEvent(ReporterMeasurements event, int value){
+	/**
+	 * Increase the counter for $event by $value
+	 * @param event Type of the Event
+	 * @param value Value to increase the counter by (positive only)
+	 */
+	public synchronized void addEvent(ReporterMeasurements event, int value){
+		if(value < 0) return;
+
 		this.data.put(event, this.data.get(event)+value);
 	}
 
