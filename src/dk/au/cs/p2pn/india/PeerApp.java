@@ -293,10 +293,19 @@ public class PeerApp {
 		connection.start();
 	}
 
-
 	public void startNegotiate() {
 		Thread negotiation = new Thread(new NegotiationTask(this));
 		negotiation.start();
+	}
+
+	/**
+	 * Search file in the network using flooding(only used by the peer that starts the search).
+	 *
+	 * @param fileName   the name of the file the peer is searching
+	 */
+	public void searchFile(String fileName, int ttl) {
+		Thread search = new Thread(new SearchTask(this, fileName, ttl));
+		search.run();
 	}
 
 	public void nlistGraph(int[] peers, String dir, boolean all) throws IOException {
@@ -327,14 +336,14 @@ public class PeerApp {
 			Vector<Peer> peerIndicated = new Vector<Peer>();	
 			//peers from the arguments and there neighbors
 			HashMap<Integer, Peer> peerInvolved = new HashMap<Integer, Peer>();		
-			
+
 			MapNeighborhoodTask nbTask = new MapNeighborhoodTask(this.peer, this);
 			HashMap<Peer, ArrayList<Peer>> topo = nbTask.getTopology();
 			Set<Peer> peerTopo = topo.keySet();
 
 			System.out.print("The result is  ");
 			System.out.println(topo);
-			
+
 			if (all) {
 				if (peers != null) {
 					logger.error("ERROR! When ALL is specified peers should be empty!");
@@ -357,23 +366,23 @@ public class PeerApp {
 					}
 				}
 			}
-			
+
 
 			System.out.print("peerIndicated is  ");
 			System.out.println(peerIndicated);
 
 			Set<Map.Entry<Integer, Peer>> setInv = peerInvolved.entrySet();
-			
+
 			for (Map.Entry<Integer, Peer> aPv : setInv) {
 				output.println("      \"P" + aPv.getValue().getId() + '(' + aPv.getValue().getCapacity() + ")\";");
 			}
-			
+
 			HashMap<Integer, Peer> peerIndict = new HashMap<Integer, Peer>();
-			
+
 			for (Peer itPeer: peerIndicated) {
 				peerIndict.put(itPeer.getId(), itPeer);
 			}
-			
+
 			for (int i = 0; i < peerIndicated.size(); i++) {
 				ArrayList<Peer> nl = topo.get(peerIndicated.get(i));
 				for (int j = 0; j < nl.size(); j++) {
@@ -389,7 +398,7 @@ public class PeerApp {
 						output.println("      \"P" + peerIndicated.get(i).getId() + '(' + peerIndicated.get(i).getCapacity() + ")\" -- " + "\"P" + nl.get(j).getId() + '(' + nl.get(j).getCapacity() + ")\";");
 					}
 				}
-				
+
 			}
 		}
 		output.println("}");
