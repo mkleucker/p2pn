@@ -18,14 +18,14 @@ public class SearchTask extends DefaultAsyncTask implements Runnable{
 
 	public String fileName;
 	public int ttl;
-	public String identifier;
+	public String ident;
 	private static final Logger logger = LogManager.getLogger(SearchTask.class.getSimpleName());
 
-	public SearchTask(PeerApp app, String fileName, int ttl, String identifier) {
+	public SearchTask(PeerApp app, String fileName, int ttl, String ident) {
 		super(app);
 		this.fileName = fileName;
 		this.ttl = ttl;
-		this.identifier = identifier;
+		this.ident = ident;
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class SearchTask extends DefaultAsyncTask implements Runnable{
 			params.add(CommunicationConverter.createVector(this.peer));
 			params.add(fileName);
 			params.add(new Integer(ttl));
-			params.add(identifier);
+			params.add(ident);
 
 			Set<Map.Entry<Integer, Peer>> peerSet = this.app.getPeerSet();
 			for (Map.Entry<Integer, Peer> entry : peerSet) {
@@ -51,7 +51,7 @@ public class SearchTask extends DefaultAsyncTask implements Runnable{
 			
 				// Create the client, identifying the server
 				this.client = new XmlRpcClient("http://" + itPeer.getIP() + ':' + itPeer.getId() + '/');
-				this.client.execute("communication.search", params);
+				this.client.execute("communication.respondSearch", params);
 			}
 		} catch (IOException e) {
 		} catch (XmlRpcException e) {
