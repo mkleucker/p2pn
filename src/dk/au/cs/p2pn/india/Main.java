@@ -7,7 +7,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * Main class to later run the peer that also is responsible for
@@ -343,34 +345,43 @@ public class Main {
 		int[] listPeers = null;
 		String nameFile = null;				
 
-		// without any arguments -- not necessary
+		// without any arguments
 		if(input.length() == 5 && input.equals("nlist")){
-
 			listPeers = null;
 			nameFile = null;
 			logger.info("Writed command without any arguments");
+			peer.nlistGraph(listPeers, nameFile);
+		}		
+		
+		// with the "all" argument
+		if(input.contains("-o") && input.contains("all")){						
+			String addrRaw = input.substring(5);
+			String[] addr;
+			addr = addrRaw.split("-o");
+			nameFile = addr[1].substring(1);
+			listPeers = null;
+			
+			//peer.nlistGraph(listPeers, nameFile);
+			logger.info("Writed command with the all argument.");
 		}
 		
-		// with only the nameFile argument -- ok
-		if(input.contains("-o") && !(input.contains("p")) && !(input.contains("P"))){
-				
+		// with only the nameFile argument
+		if(input.contains("-o") && !(input.contains("p")) && !(input.contains("P") && !(input.contains("all")))){				
 			String addrRaw = input.substring(5);
 			String[] addr;
 			addr = addrRaw.split("-o");
 			nameFile = addr[1].substring(1);
 			listPeers = null;
 			logger.info("Writed command wit only the name file argument (File name {})", nameFile);
+			peer.nlistGraph(listPeers, nameFile);
+			
 		}
 		
 		// with only the peer list argument
 		if(!input.contains("-o") && (input.contains("p") || input.contains("P"))){
 			String addrRaw = input.substring(6);
-			
-			addrRaw.substring(1).replace("p","");
-			addrRaw.substring(1).replace("P","");
 			String[] peersParsed = addrRaw.split(" ");
 			listPeers = new int[peersParsed.length];
-
 			int j = 0;
 			for(int i = 0; i<peersParsed.length; i++){
 				String a1 = peersParsed[i]; 
@@ -381,18 +392,14 @@ public class Main {
 				j++;
 			}
 			logger.info("Writed command with only the peer list argument. (Peer list: {})",addrRaw);
+			peer.nlistGraph(listPeers, nameFile);
 			
 		}
 
 		// with the list of peers and the name of the file
-		if(input.contains("-o") && ((input.contains("p")) || (input.contains("P")))){
-			String addRaw = null;			
+		if(input.contains("-o") && ((input.contains("p")) || (input.contains("P")))){					
 			String addrRaw = input.substring(6);
-			String[] addr = null;
-			addr = addrRaw.split("-o");			
-			
-			addr[0].substring(1).replace("p","");
-			addr[0].substring(1).replace("P","");
+			String[] addr = addrRaw.split("-o");						
 			String[] peersParsed = addr[0].split(" ");
 			listPeers = new int[peersParsed.length];
 			nameFile = addr[1].substring(1);
@@ -406,8 +413,8 @@ public class Main {
 				j++;
 			}
 		logger.info("Writed command with the peer list and the file name arguments. (Peer list: {}) (Name file: {})",addr[0],nameFile);
-		}					
-		peer.nlistGraph(listPeers, nameFile);	
+		peer.nlistGraph(listPeers, nameFile);
+		}		
 	}
 
 	/**
