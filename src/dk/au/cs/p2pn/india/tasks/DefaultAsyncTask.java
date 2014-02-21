@@ -10,14 +10,14 @@ abstract class DefaultAsyncTask extends DefaultTask implements Runnable {
 		super(app.getPeer(), app);
 	}
 
-    public DefaultAsyncTask(Peer peer, PeerApp app){
-        super(peer, app);
-    }
+	public DefaultAsyncTask(Peer peer, PeerApp app){
+		super(peer, app);
+	}
 
-    public DefaultAsyncTask(String ip, int port, PeerApp app) {
-        super(ip, port, app);
-    }
+	public DefaultAsyncTask(String ip, int port, PeerApp app) {
+		super(ip, port, app);
+	}
 
-    @Override
-    abstract public void run();
+	@Override
+	abstract public void run();
 }

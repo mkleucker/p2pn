@@ -15,34 +15,34 @@ import java.util.Vector;
 
 public class ConnectionAsyncTask extends DefaultAsyncTask {
 
-    private static final Logger logger = LogManager.getLogger(ConnectionAsyncTask.class.getSimpleName());
+	private static final Logger logger = LogManager.getLogger(ConnectionAsyncTask.class.getSimpleName());
 
-    public ConnectionAsyncTask(String targetIp, int targetPort, PeerApp app){
-        super(targetIp, targetPort, app);
-    }
+	public ConnectionAsyncTask(String targetIp, int targetPort, PeerApp app){
+		super(targetIp, targetPort, app);
+	}
 
-    public void run(){
-        try {
+	public void run(){
+		try {
 
-            // Create the client, identifying the server
-            this.client = new XmlRpcClient("http://" + ip + ':' + port + '/');
-            logger.debug("{} Connection establish to {}:{}", this.peer.getId(), this.ip, this.port);
+			// Create the client, identifying the server
+			this.client = new XmlRpcClient("http://" + ip + ':' + port + '/');
+			logger.debug("{} Connection establish to {}:{}", this.peer.getId(), this.ip, this.port);
 
-            Vector<Object> params = CommunicationConverter.createVector(this.peer);
-            Vector result = (Vector)this.client.execute("communication.pong", params);
-	        this.app.getReporter().addEvent(ReporterMeasurements.PING_SENT);
-            if(result == null){
-                logger.debug("No result from Discovery");
-            }else{
-                // Process the answer.
-                this.app.receiveConnectionAnswer(result);
-            }
+			Vector<Object> params = CommunicationConverter.createVector(this.peer);
+			Vector result = (Vector)this.client.execute("communication.pong", params);
+			this.app.getReporter().addEvent(ReporterMeasurements.PING_SENT);
+			if(result == null){
+				logger.debug("No result from Discovery");
+			}else{
+				// Process the answer.
+				this.app.receiveConnectionAnswer(result);
+			}
 
 
 		} catch (IOException e) {
 			//logger.error(e.getMessage());
 			//e.printStackTrace();
-            this.app.removePeer(peer);
+			this.app.removePeer(peer);
 
 		} catch (XmlRpcException e) {
 			logger.error(e.getMessage());
