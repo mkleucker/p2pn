@@ -331,7 +331,8 @@ public class PeerApp {
 	}
 
 	/**
-	 * Pass the search process to all peers in the peer list.
+	 * Pass the search process to all peers in the peer list and add the identifier to the searchList.
+	 * If it has already seen the request, then just ignore it.
 	 */
 	public void passSearch(Vector<Object> origin, String fileName, Integer ttl, String ident) {
 		if (this.searchList.contains(ident)) {

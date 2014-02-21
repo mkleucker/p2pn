@@ -14,6 +14,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+/**
+ * 
+ * @author johnny
+ *
+ * SearchTask used to start a search process for a specific file using flooding across the whole network.
+ * 
+ * Format of the message:
+ * Origin: 						Peer   (represented as a vector)
+ * File name: 					String
+ * Time to live: 				Integer
+ * Identifier of this search: 	String
+ * 
+ */
+
 public class SearchTask extends DefaultAsyncTask implements Runnable{
 
 	public String fileName;
@@ -32,13 +46,6 @@ public class SearchTask extends DefaultAsyncTask implements Runnable{
 	public void run() {
 		try {
 			
-			/**
-			 * Format of the message:
-			 * Origin: 						Peer   (represented as a vector)
-			 * File name: 					String
-			 * Time to live: 				Integer
-			 * Identifier of this search: 	String
-			 */
 			Vector<Object> params = new Vector<Object>();
 			params.add(CommunicationConverter.createVector(this.peer));
 			params.add(fileName);

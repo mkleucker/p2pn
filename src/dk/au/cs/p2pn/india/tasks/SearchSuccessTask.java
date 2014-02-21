@@ -12,22 +12,24 @@ import org.apache.xmlrpc.XmlRpcException;
 import java.io.IOException;
 import java.util.Vector;
 
+/**
+ * 
+ * @author johnny
+ * SearchSuccessTask: used when a peer is asked for some file it has. This task will send a message 
+ * back to the origin and tell him this peer has the file.
+ * 
+ * Format of the message:
+ * 
+ * Origin:Peer(represented as a vector)
+ * 
+ * File name:String
+ * 
+ * Identifier of this search:String
+ * 
+ * Owner of the file:Peer
+ */
 public class SearchSuccessTask extends DefaultAsyncTask {
 
-	/**
-	 * SearchSuccessTask: used when a peer is asked for some file it has. This task will send a message 
-	 * back to the origin and tell him this peer has the file.
-	 * 
-	 * Format of the message:
-	 * 
-	 * Origin:Peer(represented as a vector)
-	 * 
-	 * File name:String
-	 * 
-	 * Identifier of this search:String
-	 * 
-	 * Owner of the file:Peer
-	 */
 	public Vector<Object> params = new Vector<Object>();
 	public Vector<Object> origin;
 	private static final Logger logger = LogManager.getLogger(SearchTask.class.getSimpleName());

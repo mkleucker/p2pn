@@ -13,8 +13,12 @@ import org.apache.xmlrpc.XmlRpcException;
 import dk.au.cs.p2pn.india.Peer;
 import dk.au.cs.p2pn.india.PeerApp;
 
+/**
+ * @author johnny
+ * used to pass the search to other peers when the local peer doesn't have the file
+ */
 public class PassSearchTask extends DefaultAsyncTask {
-	
+
 	public Vector<Object> params;
 	public Vector<Object> origin;
 	private static final Logger logger = LogManager.getLogger(SearchTask.class.getSimpleName());
