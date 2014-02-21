@@ -2,16 +2,12 @@ package dk.au.cs.p2pn.india;
 
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.helper.ReporterMeasurements;
-
-import dk.au.cs.p2pn.india.tasks.SearchSuccess;
+import dk.au.cs.p2pn.india.tasks.SearchSuccessTask;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.xmlrpc.XmlRpcClient;
 
 import java.util.Hashtable;
-import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 public class CommunicationHandler {
@@ -35,7 +31,7 @@ public class CommunicationHandler {
 	 * @param capacityArg Capacity of the Peer that called this function
 	 * @return Vector containing the
 	 */
-	@SuppressWarnings("unused")
+	@SuppressWarnings("rawtypes")
 	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg) {
 		this.app.getReporter().addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
 
@@ -56,7 +52,7 @@ public class CommunicationHandler {
 	 * @param isNeighborRequest Flag whether the requesting Peer wants to be our neighbor
 	 * @return Vector containing the
 	 */
-	@SuppressWarnings("unused")
+	@SuppressWarnings("rawtypes")
 	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, boolean isNeighborRequest) {
 		this.app.getReporter().addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
 
@@ -93,7 +89,7 @@ public class CommunicationHandler {
 	 *
 	 * @return String-Peer pairs of all known peers.
 	 */
-	@SuppressWarnings("unused")
+	@SuppressWarnings("rawtypes")
 	public Hashtable<String, Vector> getPeerList(){
 		this.app.getReporter().addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
 
@@ -105,7 +101,7 @@ public class CommunicationHandler {
 	 *
 	 * @return List with all Neighbors in vector representation
 	 */
-	@SuppressWarnings("unused")
+	@SuppressWarnings("rawtypes")
 	public Vector<Vector> getNeighborList(){
 		this.app.getReporter().addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
 
@@ -128,7 +124,7 @@ public class CommunicationHandler {
 		 * if the file is found, start a thread to tell the origin and return;
 		 */
 		if (this.app.fileList.containsKey(fileName)) {
-			Thread success = new Thread(new SearchSuccess(origin, fileName, ident, this.app));
+			Thread success = new Thread(new SearchSuccessTask(origin, fileName, ident, this.app));
 			success.run();
 			return;
 		}

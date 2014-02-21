@@ -49,7 +49,7 @@ public class SearchSuccessTask extends DefaultAsyncTask {
 		try {
 			Peer dest = CommunicationConverter.createPeer(origin);
 			this.client = new XmlRpcClient("http://" + dest.getIP() + ':' + dest.getId() + '/');
-			this.client.execute("communication.respondSearch", params);
+			this.client.execute("communication.respondSuccess", params);
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		} catch (XmlRpcException e) {

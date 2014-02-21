@@ -34,9 +34,9 @@ public class SearchTask extends DefaultAsyncTask implements Runnable{
 			
 			/**
 			 * Format of the message:
-			 * Origin: 			Peer   (represented as a vector)
-			 * File name: 			String
-			 * Time to live: 		Integer
+			 * Origin: 						Peer   (represented as a vector)
+			 * File name: 					String
+			 * Time to live: 				Integer
 			 * Identifier of this search: 	String
 			 */
 			Vector<Object> params = new Vector<Object>();

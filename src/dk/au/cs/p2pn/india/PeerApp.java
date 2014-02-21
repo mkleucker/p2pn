@@ -235,6 +235,7 @@ public class PeerApp {
 	 *
 	 * @param data Single Vector object containing the data of a Peer.
 	 */
+	@SuppressWarnings("rawtypes")
 	public synchronized void addPeer(Vector data) {
 		Peer peer = CommunicationConverter.createPeer(data);
 		this.addPeer(peer);
@@ -242,6 +243,7 @@ public class PeerApp {
 	}
 
 
+	@SuppressWarnings("rawtypes")
 	public synchronized void receiveConnectionAnswer(Vector data) {
 		logger.debug("Received Connection answer with length {}", data.size());
 		if (data.size() == 5) {
@@ -260,6 +262,7 @@ public class PeerApp {
 	 *
 	 * @param data Map of String - Vector pairs, where the Vector is a representation of a Peer.
 	 */
+	@SuppressWarnings("rawtypes")
 	public synchronized void addPeers(Map<String, Vector> data) {
 		for (Vector rawPeer : data.values()) {
 			this.addPeer(rawPeer);
@@ -324,13 +327,20 @@ public class PeerApp {
 		searchIdentifier.append("" + this.getPeer().getId() + "" + this.searchCount);	//generate the identifier
 		Thread search = new Thread(new SearchTask(this, fileName, ttl, ident));
 		search.run();
+		return;
 	}
 
 	/**
 	 * Pass the search process to all peers in the peer list.
 	 */
 	public void passSearch(Vector<Object> origin, String fileName, Integer ttl, String ident) {
-		//TODO
+		if (this.searchList.contains(ident)) {
+			return;
+		}
+		this.searchList.add(ident);
+		Thread pass = new Thread(new PassSearchTask(this, origin, fileName, new Integer(ttl.intValue() - 1), ident));
+		pass.run();
+		return;		
 	}
 
 	public void nlistGraph(int[] peers, String dir, boolean all) throws IOException {
