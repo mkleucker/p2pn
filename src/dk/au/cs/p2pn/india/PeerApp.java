@@ -4,6 +4,7 @@ import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.helper.NeighborNegotiationState;
 import dk.au.cs.p2pn.india.helper.Reporter;
 import dk.au.cs.p2pn.india.tasks.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -323,6 +324,13 @@ public class PeerApp {
 		searchIdentifier.append("" + this.getPeer().getId() + "" + this.searchCount);	//generate the identifier
 		Thread search = new Thread(new SearchTask(this, fileName, ttl, ident));
 		search.run();
+	}
+
+	/**
+	 * Pass the search process to all peers in the peer list.
+	 */
+	public void passSearch(Vector<Object> origin, String fileName, Integer ttl, String ident) {
+		//TODO
 	}
 
 	public void nlistGraph(int[] peers, String dir, boolean all) throws IOException {

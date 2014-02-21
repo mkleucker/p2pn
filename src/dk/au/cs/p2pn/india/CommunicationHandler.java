@@ -2,10 +2,16 @@ package dk.au.cs.p2pn.india;
 
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.helper.ReporterMeasurements;
+
+import dk.au.cs.p2pn.india.tasks.SearchSuccess;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.xmlrpc.XmlRpcClient;
 
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 public class CommunicationHandler {
@@ -116,6 +122,19 @@ public class CommunicationHandler {
 	 */
 	public void respondSearch(Vector<Object> origin, String fileName, Integer ttl, String ident) {
 		
+		if (ttl.intValue() <= 0)
+			return;
+		/**
+		 * if the file is found, start a thread to tell the origin and return;
+		 */
+		if (this.app.fileList.containsKey(fileName)) {
+			Thread success = new Thread(new SearchSuccess(origin, fileName, ident, this.app.getPeer()));
+			success.run();
+			return;
+		}
+		
+		this.app.passSearch(origin, fileName, ttl - 1, ident);
+		return;
 	}
 	
 	/**
@@ -123,9 +142,10 @@ public class CommunicationHandler {
 	 * 			current peer is looking for, it will return immediately. And it will add the file to the 
 	 *			known file list of the local peer.
 	 *
-	 * @param The message of 
+	 * @param The message of success, containing the following fields.
 	 */
-	public void respondSuccess(Vector<Object> origin, String fileName, Integer ttl, String ident) {
-		
+	public void respondSuccess(Vector<Object> origin, String fileName, String ident, Vector<Object> owner) {
+		this.app.knownDataList.put(fileName, CommunicationConverter.createPeer(owner));
+		return;
 	}
 }
