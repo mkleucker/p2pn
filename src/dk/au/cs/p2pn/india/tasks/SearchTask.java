@@ -55,7 +55,8 @@ public class SearchTask extends DefaultAsyncTask implements Runnable{
 			Set<Map.Entry<Integer, Peer>> peerSet = this.app.getPeerSet();
 			for (Map.Entry<Integer, Peer> entry : peerSet) {
 				Peer itPeer = entry.getValue();
-			
+				
+				logger.info("Inside searchTask, ready to ask peer {} with IP {} and port {}", itPeer.getId(), itPeer.getIP(), itPeer.getPort());
 				// Create the client, identifying the server
 				this.client = new XmlRpcClient("http://" + itPeer.getIP() + ':' + itPeer.getId() + '/');
 				this.client.execute("communication.respondSearch", params);

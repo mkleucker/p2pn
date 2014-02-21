@@ -8,6 +8,7 @@ import dk.au.cs.p2pn.india.tasks.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -21,7 +22,7 @@ public class PeerApp {
 	Map<Integer, Peer> peerList;
 	Map<Integer, Peer> neighborList;
 	Map<Integer, Date> lastSeenList;
-	Map<String, String> fileList;		//store the file of the local peer, key is file name, value is content
+	Map<String, File> fileList;		//store the file of the local peer, key is file name, value is content
 	Vector<String> searchList;			//store the identifier of search, to avoid repetitive search
 	Map<String, Peer> knownDataList;	//store the information of data known to the local peer, key is the file name and peer is the owner
 	Map<String, NeighborNegotiationState> openNeighborRequests;
@@ -46,7 +47,7 @@ public class PeerApp {
 		searchCount = 0;
 		this.searchList = new Vector<String>();
 		this.knownDataList = Collections.synchronizedMap(new HashMap<String, Peer>());
-		this.fileList = Collections.synchronizedMap(new HashMap<String, String>());
+		this.fileList = Collections.synchronizedMap(new HashMap<String, File>());
 		this.peer = new Peer(id, ip, port, capacity);//creation of the Peer
 		this.reporter = new Reporter();
 		this.peerList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
@@ -76,7 +77,7 @@ public class PeerApp {
 		searchCount = 0;
 		this.searchList = new Vector<String>();
 		this.knownDataList = Collections.synchronizedMap(new HashMap<String, Peer>());
-		this.fileList = Collections.synchronizedMap(new HashMap<String, String>());
+		this.fileList = Collections.synchronizedMap(new HashMap<String, File>());
 		ALPHA = 0.6;
 		POWERLAWCUMULATIVE[0] = Math.pow(ALPHA, 1);
 		for (int i = 1; i < 10; i++) {

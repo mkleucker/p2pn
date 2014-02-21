@@ -4,12 +4,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * Main class to later run the peer that also is responsible for
@@ -268,10 +267,57 @@ public class Main {
 		}
 	}
 
+	private void testSearching() {
+		try {
+			
+			ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
+			peers.add(this.peer);
+			int numOfPeers = 6;
+			int port = this.peer.getPeer().getPort();
+			for (int i = 1; i < numOfPeers; i++) {
+				peers.add(new PeerApp(i, "127.0.0.1", port + i, 5));
+			}
+			
+			peers.get(5).fileList.put("file", new File("p2p3.dot"));
+			
+			Thread.sleep(1000);
+
+			for (int i = numOfPeers - 2; i >= 0; i--) {
+					peers.get(i).ping("127.0.0.1", peers.get(i + 1).getPeer().getPort());
+					Thread.sleep(500);
+			}
+
+			Thread.sleep(2000);
+
+			for (PeerApp peer : peers) {
+				logger.info("{}", peer.plist());
+			}
+
+			Thread.sleep(3000);
+
+			for (PeerApp peer : peers) {
+				System.out.println(peer.plist());
+			}
+			
+			peers.get(0).searchFile("file", 6);
+			
+			
+			/*
+			Thread.sleep(30000);
+			for (PeerApp peer : peers) {
+				peer.destroy();
+			}
+			*/
+			
+		} catch (Exception e) {
+
+		}
+	}
+
+	
 	/**
 	 * Method for parsing the inputs of the user in the console.
 	 */
-	@SuppressWarnings("InfiniteRecursion")
 	private void parseInput() {
 		String input;
 		try {
@@ -299,6 +345,10 @@ public class Main {
 
 			if (input.equals("testn")) {
 				this.testNeighborhood();
+			}
+			
+			if (input.equals("tests")) {
+				this.testSearching();
 			}
 
 			if (input.equals("test0")) {
