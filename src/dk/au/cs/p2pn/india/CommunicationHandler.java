@@ -1,7 +1,7 @@
 package dk.au.cs.p2pn.india;
 
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
-import dk.au.cs.p2pn.india.helper.ReporterMeasurements;
+import dk.au.cs.p2pn.india.reporting.ReporterMeasurements;
 import dk.au.cs.p2pn.india.tasks.SearchSuccessTask;
 
 import org.apache.logging.log4j.LogManager;
@@ -114,7 +114,6 @@ public class CommunicationHandler {
 	 * 			it will start a new thread to give a successful result to the caller before returning. Otherwise
 	 * 			if the ttl is positive, then it passes the search to all the peers in its peer list.
 	 *
-	 * @param	The message of searching
 	 */
 	public void respondSearch(Vector<Object> origin, String fileName, Integer ttl, String ident) {
 		
@@ -133,7 +132,6 @@ public class CommunicationHandler {
 		 * Otherwise pass the search to other peers and return.
 		 */
 		this.app.passSearch(origin, fileName, ttl - 1, ident);
-		return;
 	}
 	
 	/**
@@ -141,10 +139,8 @@ public class CommunicationHandler {
 	 * 			current peer is looking for, this function will return immediately. And it will add the file to the 
 	 *			known file list of the local peer.
 	 *
-	 * @param The message of success, containing the following fields.
 	 */
 	public void respondSuccess(Vector<Object> origin, String fileName, String ident, Vector<Object> owner) {
 		this.app.knownDataList.put(fileName, CommunicationConverter.createPeer(owner));
-		return;
 	}
 }

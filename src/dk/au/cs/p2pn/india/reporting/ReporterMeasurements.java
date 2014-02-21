@@ -1,4 +1,4 @@
-package dk.au.cs.p2pn.india.helper;
+package dk.au.cs.p2pn.india.reporting;
 
 /**
  * Created by max on 20/02/14.

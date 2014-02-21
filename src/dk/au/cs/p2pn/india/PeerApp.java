@@ -2,7 +2,7 @@ package dk.au.cs.p2pn.india;
 
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.helper.NeighborNegotiationState;
-import dk.au.cs.p2pn.india.helper.Reporter;
+import dk.au.cs.p2pn.india.reporting.Reporter;
 import dk.au.cs.p2pn.india.tasks.*;
 
 import org.apache.logging.log4j.LogManager;
