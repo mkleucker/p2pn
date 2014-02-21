@@ -54,10 +54,12 @@ public class SearchTask extends DefaultAsyncTask implements Runnable{
 				this.client.execute("communication.respondSearch", params);
 			}
 		} catch (IOException e) {
+			logger.error(e.getMessage());
 		} catch (XmlRpcException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
+		return;
 	}
 	
 }
