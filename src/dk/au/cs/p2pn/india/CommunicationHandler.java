@@ -129,6 +129,9 @@ public class CommunicationHandler {
 			return;
 		}
 		
+		/**
+		 * Otherwise pass the search to other peers and return.
+		 */
 		this.app.passSearch(origin, fileName, ttl - 1, ident);
 		return;
 	}
