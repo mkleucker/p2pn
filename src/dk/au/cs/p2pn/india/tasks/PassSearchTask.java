@@ -47,9 +47,10 @@ public class PassSearchTask extends DefaultAsyncTask {
 			Set<Map.Entry<Integer, Peer>> peerSet = this.app.getPeerSet();
 			for (Map.Entry<Integer, Peer> entry : peerSet) {
 				Peer itPeer = entry.getValue();
-			
+				logger.info("Inside passSearchTask, iterating all peers");
+
 				// Create the client, identifying the server
-				this.client = new XmlRpcClient("http://" + itPeer.getIP() + ':' + itPeer.getId() + '/');
+				this.client = new XmlRpcClient("http://" + itPeer.getIP() + ':' + itPeer.getPort() + '/');
 				this.client.execute("communication.respondSearch", params);
 			}
 		} catch (IOException e) {

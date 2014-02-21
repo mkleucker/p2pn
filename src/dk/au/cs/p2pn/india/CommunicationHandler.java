@@ -115,23 +115,29 @@ public class CommunicationHandler {
 	 * 			if the ttl is positive, then it passes the search to all the peers in its peer list.
 	 *
 	 */
-	public void respondSearch(Vector<Object> origin, String fileName, Integer ttl, String ident) {
-		
-		if (ttl.intValue() <= 0)
-			return;
+	@SuppressWarnings("rawtypes")
+	public Vector respondSearch(Vector<Object> origin, String fileName, int ttl, String ident) {
+		logger.info("Inside respondSearch");
+
+		if (ttl <= 0)
+			return new Vector();
 		/**
 		 * if the file is found, start a thread to tell the origin and return;
 		 */
 		if (this.app.fileList.containsKey(fileName)) {
+			logger.info("Inside respondSearch, file matched, starting a new success thread");
+
 			Thread success = new Thread(new SearchSuccessTask(origin, fileName, ident, this.app));
 			success.run();
-			return;
+			return new Vector();
 		}
 		
 		/**
 		 * Otherwise pass the search to other peers and return.
 		 */
+		logger.info("Inside respondSearch, file not matched, calling passSearch");
 		this.app.passSearch(origin, fileName, ttl - 1, ident);
+		return new Vector();
 	}
 	
 	/**
@@ -140,7 +146,10 @@ public class CommunicationHandler {
 	 *			known file list of the local peer.
 	 *
 	 */
-	public void respondSuccess(Vector<Object> origin, String fileName, String ident, Vector<Object> owner) {
+	@SuppressWarnings("rawtypes")
+	public Vector respondSuccess(Vector<Object> origin, String fileName, String ident, Vector<Object> owner) {
 		this.app.knownDataList.put(fileName, CommunicationConverter.createPeer(owner));
+		logger.info(this.app.knownDataList);
+		return new Vector();
 	}
 }

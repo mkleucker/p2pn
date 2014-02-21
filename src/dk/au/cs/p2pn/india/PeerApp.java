@@ -327,7 +327,7 @@ public class PeerApp {
 		this.searchList.add(ident);
 		searchIdentifier.append("" + this.getPeer().getId() + "" + this.searchCount);	//generate the identifier
 		Thread search = new Thread(new SearchTask(this, fileName, ttl, ident));
-		search.run();
+		search.start();
 		return;
 	}
 
@@ -335,13 +335,13 @@ public class PeerApp {
 	 * Pass the search process to all peers in the peer list and add the identifier to the searchList.
 	 * If it has already seen the request, then just ignore it.
 	 */
-	public void passSearch(Vector<Object> origin, String fileName, Integer ttl, String ident) {
+	public void passSearch(Vector<Object> origin, String fileName, int ttl, String ident) {
 		if (this.searchList.contains(ident)) {
 			return;
 		}
 		this.searchList.add(ident);
-		Thread pass = new Thread(new PassSearchTask(this, origin, fileName, new Integer(ttl.intValue() - 1), ident));
-		pass.run();
+		Thread pass = new Thread(new PassSearchTask(this, origin, fileName, new Integer(ttl - 1), ident));
+		pass.start();
 		return;		
 	}
 
