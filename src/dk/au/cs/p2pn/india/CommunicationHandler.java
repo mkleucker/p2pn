@@ -128,7 +128,7 @@ public class CommunicationHandler {
 		 * if the file is found, start a thread to tell the origin and return;
 		 */
 		if (this.app.fileList.containsKey(fileName)) {
-			Thread success = new Thread(new SearchSuccess(origin, fileName, ident, this.app.getPeer()));
+			Thread success = new Thread(new SearchSuccess(origin, fileName, ident, this.app));
 			success.run();
 			return;
 		}
@@ -139,7 +139,7 @@ public class CommunicationHandler {
 	
 	/**
 	 * XML-RPC: Answers the call to `communication.respondSuccess` when another peer has the file that the 
-	 * 			current peer is looking for, it will return immediately. And it will add the file to the 
+	 * 			current peer is looking for, this function will return immediately. And it will add the file to the 
 	 *			known file list of the local peer.
 	 *
 	 * @param The message of success, containing the following fields.
