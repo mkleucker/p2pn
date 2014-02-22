@@ -1,6 +1,7 @@
 package dk.au.cs.p2pn.india;
 
 import dk.au.cs.p2pn.india.reporting.Reporter;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,7 +29,6 @@ public class Main {
 		try {
 			logger.info("Starting program");
 
-
 			this.reader = new BufferedReader(new InputStreamReader(System.in));
 			if (args.length != 3) {
 				this.peer = new PeerApp(0, "127.0.0.1", 18523, 9);
@@ -53,6 +53,13 @@ public class Main {
 	public void checkConnection() {
 		Thread checkConn = new Thread(new Checking(peer));
 		checkConn.start();
+	}
+	
+	private void testGet() throws InterruptedException{
+		PeerApp peer1 = new PeerApp(0, "127.0.0.1", 18525, 9);
+		Thread.sleep(1000);
+		this.peer.getP2pFile("try.txt", "127.0.0.1", 18525);
+		
 	}
 
 	private void test() {
@@ -355,6 +362,16 @@ public class Main {
 			if (input.equals("test0")) {
 				this.test0();
 			}
+			
+			if (input.equals("testget")) {
+				try {
+					this.testGet();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
 
 			if (input.length() >= 5 && input.substring(0, 5).equals("hello")) {
 
@@ -390,7 +407,7 @@ public class Main {
 				else{
 					time = 5;
 				}
-				//peer.search(namefile, time);
+				//peer.searchFile(namefile, time);
 				logger.info("Wrote file command with the name file argument ant the time: Name file: {} Time: {}", nameFile, time);
 				
 			}

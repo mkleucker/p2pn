@@ -2,12 +2,15 @@ package dk.au.cs.p2pn.india;
 
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.reporting.Reporter;
+import dk.au.cs.p2pn.india.download.Send;
 import dk.au.cs.p2pn.india.reporting.ReporterMeasurements;
 import dk.au.cs.p2pn.india.tasks.SearchSuccessTask;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -96,6 +99,23 @@ public class CommunicationHandler {
 
 		return CommunicationConverter.createVector(this.app.getPeerList());
 	}
+	
+	
+	/**
+	 * XML-RPC: Answers the call to 'communication.getFile' 
+	 *
+	 */
+	public byte[] getFile(String fileDir) {
+		File file = new File(fileDir);
+		byte[] fileBytes = null;
+		try {
+			fileBytes = Send.fileToBytes(file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return fileBytes;
+	}
 
 	/**
 	 * XML-RPC: Answers the call to `communication.getNeighborList`
@@ -153,4 +173,6 @@ public class CommunicationHandler {
 		logger.info(this.app.knownDataList);
 		return new Vector();
 	}
+	
+	
 }

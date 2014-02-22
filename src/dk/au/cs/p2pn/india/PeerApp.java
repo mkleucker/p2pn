@@ -1,5 +1,6 @@
 package dk.au.cs.p2pn.india;
 
+import dk.au.cs.p2pn.india.download.Receive;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.helper.NeighborNegotiationState;
 import dk.au.cs.p2pn.india.reporting.Reporter;
@@ -325,6 +326,19 @@ public class PeerApp {
 		search.start();
 		return;
 	}
+	
+	
+	
+
+	public void getP2pFile(String nameFile, String ip, int port) {
+		// TODO Auto-generated method stub
+				
+		Thread get = new Thread(new Receive(this,nameFile,ip,port));
+		get.start();
+		return;
+		
+	}
+	
 
 	/**
 	 * Pass the search process to all peers in the peer list and add the identifier to the searchList.
@@ -436,4 +450,6 @@ public class PeerApp {
 		output.println("}");
 		output.close();
 	}
+
+
 }
