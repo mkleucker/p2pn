@@ -1,5 +1,6 @@
 package dk.au.cs.p2pn.india;
 
+import dk.au.cs.p2pn.india.reporting.Reporter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -390,19 +391,18 @@ public class Main {
 					time = 5;
 				}
 				//peer.search(namefile, time);
-				logger.info("Writed file command with the name file argument ant the time: Name file: {} Time: {}", nameFile, time);
+				logger.info("Wrote file command with the name file argument ant the time: Name file: {} Time: {}", nameFile, time);
 				
 			}
 			
 			if(input.contains("get") && input.length() > 4){				
 				String nameFile = input.substring(4);				
-				logger.info("Writed get command with the name file argument: {}", nameFile);
+				logger.info("Wrote get command with the name file argument: {}", nameFile);
 				
 			}
 			
 			if(input.contains("report")){				
-				logger.info("Writed report command");
-				
+				logger.info("Recorded Data:\n {}", Reporter.getData());
 			}
 			
 			checkConnection();
