@@ -2,6 +2,7 @@ package dk.au.cs.p2pn.india.tasks;
 
 import dk.au.cs.p2pn.india.Peer;
 import dk.au.cs.p2pn.india.PeerApp;
+import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 
 import org.apache.logging.log4j.LogManager;
@@ -59,7 +60,7 @@ public class SearchTask extends DefaultAsyncTask implements Runnable{
 				
 				logger.info("Inside searchTask, ready to ask peer {} with IP {} and port {}", itPeer.getId(), itPeer.getIP(), itPeer.getPort());
 				// Create the client, identifying the server
-				this.client = new XmlRpcClient("http://" + itPeer.getIP() + ':' + itPeer.getPort() + '/');
+				this.client = ClientRequestFactory.getClient("http://" + itPeer.getIP() + ':' + itPeer.getPort() + '/');
 				logger.info("Inside searchTask, ready to execute");
 				Vector res = (Vector)this.client.execute("communication.respondSearch", params);
 			}

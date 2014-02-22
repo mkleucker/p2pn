@@ -1,12 +1,12 @@
 package dk.au.cs.p2pn.india.tasks;
 
 import dk.au.cs.p2pn.india.PeerApp;
+import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.reporting.Reporter;
 import dk.au.cs.p2pn.india.reporting.ReporterMeasurements;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class ConnectionAsyncTask extends DefaultAsyncTask {
 		try {
 
 			// Create the client, identifying the server
-			this.client = new XmlRpcClient("http://" + ip + ':' + port + '/');
+			this.client = ClientRequestFactory.getClient("http://" + ip + ':' + port + '/');
 			logger.debug("{} Connection establish to {}:{}", this.peer.getId(), this.ip, this.port);
 			Vector<Object> params = CommunicationConverter.createVector(this.peer);
 			Vector result = (Vector)this.client.execute("communication.pong", params);

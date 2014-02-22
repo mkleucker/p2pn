@@ -2,6 +2,7 @@ package dk.au.cs.p2pn.india.tasks;
 
 import dk.au.cs.p2pn.india.Peer;
 import dk.au.cs.p2pn.india.PeerApp;
+import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 
 import org.apache.logging.log4j.LogManager;
@@ -52,7 +53,7 @@ public class SearchSuccessTask extends DefaultAsyncTask {
 			Peer dest = CommunicationConverter.createPeer(origin);
 			logger.info("Inside SearchSuccessTask, establishing connection");
 
-			this.client = new XmlRpcClient("http://" + dest.getIP() + ':' + dest.getPort() + '/');
+			this.client = ClientRequestFactory.getClient("http://" + dest.getIP() + ':' + dest.getPort() + '/');
 			this.client.execute("communication.respondSuccess", params);
 		} catch (IOException e) {
 			logger.error(e.getMessage());

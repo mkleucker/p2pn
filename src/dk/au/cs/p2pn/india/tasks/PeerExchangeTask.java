@@ -2,6 +2,7 @@ package dk.au.cs.p2pn.india.tasks;
 
 import dk.au.cs.p2pn.india.Peer;
 import dk.au.cs.p2pn.india.PeerApp;
+import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,7 +43,7 @@ public class PeerExchangeTask extends DefaultAsyncTask {
                 try {
                     Peer currentPeer = entry.getValue();
 
-                    XmlRpcClient client = new XmlRpcClient("http://" + currentPeer.getIP() + ':' + currentPeer.getPort() + '/');
+                    XmlRpcClient client = ClientRequestFactory.getClient("http://" + currentPeer.getIP() + ':' + currentPeer.getPort() + '/');
 
                     Hashtable<String, Vector> result = (Hashtable<String, Vector>) client.execute(
                             "communication.getPeerList",

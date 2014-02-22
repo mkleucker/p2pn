@@ -2,6 +2,7 @@ package dk.au.cs.p2pn.india.tasks;
 
 import dk.au.cs.p2pn.india.Peer;
 import dk.au.cs.p2pn.india.PeerApp;
+import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,7 +42,7 @@ public class MapNeighborhoodTask extends DefaultTask {
 
 				ArrayList<Peer> connections = new ArrayList<Peer>();
 				try {
-					XmlRpcClient client = new XmlRpcClient("http://" + peer.getIP() + ':' + peer.getPort() + '/');
+					XmlRpcClient client = ClientRequestFactory.getClient("http://" + peer.getIP() + ':' + peer.getPort() + '/');
 
 					Vector<Vector> result = (Vector<Vector>) client.execute("communication.getNeighborList", new Vector(0));
 					if (result != null) {

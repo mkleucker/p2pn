@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcClient;
@@ -50,7 +51,7 @@ public class PassSearchTask extends DefaultAsyncTask {
 				logger.info("Inside passSearchTask, iterating all peers");
 
 				// Create the client, identifying the server
-				this.client = new XmlRpcClient("http://" + itPeer.getIP() + ':' + itPeer.getPort() + '/');
+				this.client = ClientRequestFactory.getClient("http://" + itPeer.getIP() + ':' + itPeer.getPort() + '/');
 				this.client.execute("communication.respondSearch", params);
 			}
 		} catch (IOException e) {
