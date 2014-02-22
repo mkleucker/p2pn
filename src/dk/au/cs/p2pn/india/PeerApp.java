@@ -16,7 +16,6 @@ import java.util.*;
 public class PeerApp {
 
 	Peer peer;
-	Reporter reporter;
 	int searchCount;		// used to generate the id for each search
 
 	Map<Integer, Peer> peerList;
@@ -49,19 +48,15 @@ public class PeerApp {
 		this.knownDataList = Collections.synchronizedMap(new HashMap<String, Peer>());
 		this.fileList = Collections.synchronizedMap(new HashMap<String, File>());
 		this.peer = new Peer(id, ip, port, capacity);//creation of the Peer
-		this.reporter = new Reporter();
 		this.peerList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
 		this.neighborList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
 		this.lastSeenList = Collections.synchronizedMap(new HashMap<Integer, Date>());
 		this.openNeighborRequests = Collections.synchronizedMap(new HashMap<String, NeighborNegotiationState>());
+		Reporter.init();
 
 		this.server = new ListeningTask(this.peer, this);
 		Thread listening = new Thread(this.server);   //start listening to the port
 		listening.start();
-	}
-
-	public Reporter getReporter(){
-		return this.reporter;
 	}
 
 

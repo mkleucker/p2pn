@@ -1,6 +1,7 @@
 package dk.au.cs.p2pn.india;
 
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
+import dk.au.cs.p2pn.india.reporting.Reporter;
 import dk.au.cs.p2pn.india.reporting.ReporterMeasurements;
 import dk.au.cs.p2pn.india.tasks.SearchSuccessTask;
 
@@ -33,7 +34,7 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg) {
-		this.app.getReporter().addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
+		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
 
 		this.app.addPeer(new Peer(IdArg, IPArg, portArg, capacityArg));
 		return CommunicationConverter.createVector(this.peer);
@@ -54,14 +55,14 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, boolean isNeighborRequest) {
-		this.app.getReporter().addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
+		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
 
 		// Create Peer object
 		Peer inPeer = new Peer(IdArg, IPArg, portArg, capacityArg);
 		this.app.addPeer(inPeer);
 
 		if(isNeighborRequest){
-			this.app.getReporter().addEvent(ReporterMeasurements.NEIGHBOR_REQUEST_RECEIVED);
+			Reporter.addEvent(ReporterMeasurements.NEIGHBOR_REQUEST_RECEIVED);
 			boolean neighborAnswer = responseNegotiate(inPeer);
 			if(neighborAnswer){
 				this.app.addNeighbor(inPeer, neighborAnswer);
@@ -76,7 +77,7 @@ public class CommunicationHandler {
 	}
 
 	public boolean responseNegotiate(Peer inPeer) {
-		this.app.getReporter().addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
+		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
 
 		if(this.app.neighborList.size() + this.app.openNeighborRequests.size() >= this.app.getPeer().getCapacity()) {
 			return false;
@@ -91,7 +92,7 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Hashtable<String, Vector> getPeerList(){
-		this.app.getReporter().addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
+		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
 
 		return CommunicationConverter.createVector(this.app.getPeerList());
 	}
@@ -103,7 +104,7 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Vector<Vector> getNeighborList(){
-		this.app.getReporter().addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
+		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
 
 		Hashtable<String, Vector> data  = CommunicationConverter.createVector(this.app.getNeighborList());
 		return new Vector<Vector>(data.values());

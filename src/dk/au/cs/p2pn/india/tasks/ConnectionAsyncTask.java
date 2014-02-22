@@ -2,6 +2,7 @@ package dk.au.cs.p2pn.india.tasks;
 
 import dk.au.cs.p2pn.india.PeerApp;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
+import dk.au.cs.p2pn.india.reporting.Reporter;
 import dk.au.cs.p2pn.india.reporting.ReporterMeasurements;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,10 +27,9 @@ public class ConnectionAsyncTask extends DefaultAsyncTask {
 			// Create the client, identifying the server
 			this.client = new XmlRpcClient("http://" + ip + ':' + port + '/');
 			logger.debug("{} Connection establish to {}:{}", this.peer.getId(), this.ip, this.port);
-
 			Vector<Object> params = CommunicationConverter.createVector(this.peer);
 			Vector result = (Vector)this.client.execute("communication.pong", params);
-			this.app.getReporter().addEvent(ReporterMeasurements.PING_SENT);
+			Reporter.addEvent(ReporterMeasurements.PING_SENT);
 			if(result == null){
 				logger.debug("No result from Discovery");
 			}else{

@@ -5,13 +5,18 @@ import java.util.HashMap;
 
 public class Reporter {
 
-	private HashMap<ReporterMeasurements, Integer> data;
+	private static HashMap<ReporterMeasurements, Integer> data;
 
 	public Reporter() {
 		// Register all counters
-		this.data = new HashMap<ReporterMeasurements, Integer>();
+
+
+	}
+
+	public static void init(){
+		data = new HashMap<ReporterMeasurements, Integer>();
 		for (ReporterMeasurements key : ReporterMeasurements.values()) {
-			this.data.put(key, 0);
+			data.put(key, 0);
 		}
 	}
 
@@ -19,8 +24,8 @@ public class Reporter {
 	 * Register an occurrence of $event
 	 * @param event Type of the Event
 	 */
-	public void addEvent(ReporterMeasurements event) {
-		this.addEvent(event, 1);
+	public static void addEvent(ReporterMeasurements event) {
+		addEvent(event, 1);
 	}
 
 	/**
@@ -28,10 +33,9 @@ public class Reporter {
 	 * @param event Type of the Event
 	 * @param value Value to increase the counter by (positive only)
 	 */
-	public synchronized void addEvent(ReporterMeasurements event, int value){
+	public static synchronized void addEvent(ReporterMeasurements event, int value){
 		if(value < 0) return;
-
-		this.data.put(event, this.data.get(event)+value);
+		data.put(event, data.get(event)+value);
 	}
 
 }
