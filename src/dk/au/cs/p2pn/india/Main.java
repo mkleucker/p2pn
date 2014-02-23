@@ -326,14 +326,17 @@ public class Main {
 	 * Method for parsing the inputs of the user in the console.
 	 */
 	private void parseInput() {
+		System.out.print(">");
+
 		String input;
 		try {
-			System.out.print(">");
+
 			input = reader.readLine();
 			if (input == null) {
 				System.exit(0);
 			}
 			if (input.equals("exit")) {
+				System.out.println("Shutting down program...");
 				this.peer.destroy();
 				System.exit(0);
 			}
@@ -374,13 +377,14 @@ public class Main {
 
 			if (input.length() >= 5 && input.substring(0, 5).equals("hello")) {
 
-				String addressraw = input.substring(5);
-				String[] address = addressraw.split(":");
+				String[] address = input.substring(5).split(":");
 
 				if (address.length == 2) {
 					this.peer.ping(address[0].substring(1), Integer.parseInt(address[1]));
+					System.out.println("Contacted "+address[0]+":"+address[1]);
 				} else {
 					this.peer.helloAll();
+					System.out.println("Peer requested peer lists from all known peers. (depth: 1)");
 				}
 			}
 
@@ -392,21 +396,18 @@ public class Main {
 				nlistParse(input);
 			}
 			
-			if(input.contains("find") && input.length() > 5){				
-				
-				String addrRaw = input.substring(5);
-				String[] addr;
-				
-				addr = addrRaw.split(" ");
+			if(input.contains("find") && input.length() > 5){
+
+				String[] addr = input.substring(5).split(" ");
 				String nameFile = addr[0];
-				Integer time =  null;
+				Integer time;
 				if(addr.length >1){
 					time = Integer.parseInt(addr[1]);	
 				}
 				else{
 					time = 5;
 				}
-				//peer.searchFile(namefile, time);
+				peer.searchFile(nameFile, time);
 				logger.info("Wrote file command with the name file argument ant the time: Name file: {} Time: {}", nameFile, time);
 				
 			}
@@ -414,11 +415,11 @@ public class Main {
 			if(input.contains("get") && input.length() > 4){				
 				String nameFile = input.substring(4);				
 				logger.info("Wrote get command with the name file argument: {}", nameFile);
-				
+				// TODO: Call proper get function on the peer object?
 			}
 			
 			if(input.contains("report")){				
-				logger.info("Recorded Data:\n {}", Reporter.getData());
+				System.out.println("Recorded Data:\n " + Reporter.getData());
 			}
 			
 			checkConnection();
