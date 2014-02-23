@@ -35,6 +35,12 @@ public class Receive implements Runnable{
 
 	private static final Logger logger = LogManager.getLogger(SearchTask.class.getSimpleName());
 	
+	/**
+	 * @param app PeerApp 
+	 * @param fileName Name of the file to be downloaded
+	 * @param ip IP direction of the Peer
+	 * @param port Port number of the Peer
+	 */
 	public Receive(PeerApp app, String fileName, String ip, int port) {
 		this.fileName = fileName;
 		this.app = app;
@@ -45,7 +51,7 @@ public class Receive implements Runnable{
 	}
 	
 	/**
-	 * method to create a file from a bytes array
+	 * Method to create a file from a bytes array
 	 * 
 	 * @param data bytes of the file
 	 * @param fileName name of the file 
@@ -63,17 +69,22 @@ public class Receive implements Runnable{
 	
 	public void run() {
 		
-		Vector<Object> params = new Vector<Object>();		
-		String fileName = null; 
+		Vector<Object> params = new Vector<Object>();				 
 		params.add(fileName);
-		byte[] res = null;
+		byte[] res = null;		
 		
 		try {
 			logger.info("Inside receive thread, ready to ask peer with IP {} and port {}",  ip, port);
 			this.client = ClientRequestFactory.getClient("http://" + ip + ':' + port + '/');
-			res = (byte[])this.client.execute("communication.getFile", params);			
 			logger.info("Inside the receive thread, ready to execute");
+			res = (byte[])this.client.execute("communication.getFile", params);			
+			
+			//temporal part only for testing if the file has been downloaded
+			fileName += "-New";
+			//temporal part only for testing if the file has been downloaded
+			
 			createFile(res,fileName);
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -6,19 +6,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class Send {
-	
-	/*
-	 * TODO
-	 * 
-	- open file from system. 
-	- file to bytes
-	- sending method.
-	*/
 
 	/**
 	 * Method for create a bytes array from a file
 	 * 
-	 * @param file
+	 * @param File to be converted to bytes
 	 * @return
 	 * @throws IOException
 	 */

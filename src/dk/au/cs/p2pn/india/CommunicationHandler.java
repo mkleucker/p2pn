@@ -100,10 +100,12 @@ public class CommunicationHandler {
 		return CommunicationConverter.createVector(this.app.getPeerList());
 	}
 	
-	
 	/**
-	 * XML-RPC: Answers the call to 'communication.getFile' 
-	 *
+	 * XML-RPC: Answers the call to 'communication.getFile'
+	 * 
+	 * @param fileDir Name of the file and directory
+	 * 
+	 * @return Bytes array with the content of the File
 	 */
 	public byte[] getFile(String fileDir) {
 		File file = new File(fileDir);

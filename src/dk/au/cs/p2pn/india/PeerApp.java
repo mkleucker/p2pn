@@ -328,15 +328,17 @@ public class PeerApp {
 	}
 	
 	
-	
-
+	/**
+	 * Get a file from another peer. 
+	 * 
+	 * @param nameFile File name of the File to be downloaded
+	 * @param ip IP number of the peer that we will download the file. 
+	 * @param port Port number of the peer 
+	 */
 	public void getP2pFile(String nameFile, String ip, int port) {
-		// TODO Auto-generated method stub
-				
 		Thread get = new Thread(new Receive(this,nameFile,ip,port));
 		get.start();
-		return;
-		
+		return;	
 	}
 	
 
