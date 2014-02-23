@@ -59,7 +59,6 @@ public class Main {
 		PeerApp peer1 = new PeerApp(0, "127.0.0.1", 18525, 9);
 		Thread.sleep(1000);
 		this.peer.getP2pFile("duck.jpg", "127.0.0.1", 18525);
-		
 	}
 
 	private void test() {

@@ -11,9 +11,17 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Vector;
 
-
+/**
+ * Extended XmlRpcClient which enables logging possibilities.
+ */
 public class ClientRequest extends XmlRpcClient {
 
+	/**
+	 * Regular constructor identical to the one of XmlRpcClient.
+	 * @param address URL of the other peer
+	 * @throws IOException
+	 * @throws XmlRpcException
+	 */
 	public ClientRequest(String address) throws IOException, XmlRpcException {
 		super(address);
 	}
