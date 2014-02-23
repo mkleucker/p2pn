@@ -145,10 +145,13 @@ public class CommunicationHandler {
 		if (ttl <= 0)
 			return new Vector();
 
+
 		// Only process each search once
 		if (this.app.searchList.contains(ident)){
 			return new Vector();
 		}
+
+		this.app.searchList.add(ident);
 
 		/**
 		 * if the file is found, start a thread to tell the origin and return;

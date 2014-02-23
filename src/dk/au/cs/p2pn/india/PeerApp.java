@@ -343,10 +343,6 @@ public class PeerApp {
 	 * If it has already seen the request, then just ignore it.
 	 */
 	public void passSearch(Vector<Object> origin, String fileName, int ttl, String ident) {
-		if (this.searchList.contains(ident)) {
-			return;
-		}
-		this.searchList.add(ident);
 		Thread pass = new Thread(new PassSearchTask(this, origin, fileName, ttl - 1, ident));
 		pass.start();
 	}
