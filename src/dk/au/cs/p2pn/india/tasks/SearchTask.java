@@ -54,8 +54,7 @@ public class SearchTask extends DefaultAsyncTask implements Runnable{
 			params.add(ttl);
 			params.add(ident);
 
-			Set<Map.Entry<Integer, Peer>> peerSet = this.app.getPeerSet();
-			for (Map.Entry<Integer, Peer> entry : peerSet) {
+			for (Map.Entry<Integer, Peer> entry : this.app.getNeighborList().entrySet()) {
 				Peer itPeer = entry.getValue();
 				
 				logger.info("Inside searchTask, ready to ask peer {} with IP {} and port {}", itPeer.getId(), itPeer.getIP(), itPeer.getPort());
