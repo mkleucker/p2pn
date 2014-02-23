@@ -36,15 +36,13 @@ public class SearchSuccessTask extends DefaultAsyncTask {
 	private static final Logger logger = LogManager.getLogger(SearchTask.class.getSimpleName());
 
 
-	public SearchSuccessTask(Vector<Object> origin, String fileName, String ident, PeerApp ownerApp) {
+	public SearchSuccessTask(Vector<Object> origin, String fileName, int ttl, String ident, PeerApp ownerApp) {
 		super(ownerApp);
 
 		this.origin = origin;
 
-		params.add(origin);
-		params.add(fileName);
-		params.add(ident);
-		params.add(CommunicationConverter.createVector(this.app.getPeer()));
+		this.params = CommunicationConverter.createSearchSuccessVector(origin, fileName, ttl, ident, this.app.getPeer());
+
 	}
 
 	@Override

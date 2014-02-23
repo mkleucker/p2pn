@@ -150,7 +150,7 @@ public class CommunicationHandler {
 		if (this.app.fileList.containsKey(fileName)) {
 			logger.info("Inside respondSearch, file matched, starting a new success thread");
 
-			Thread success = new Thread(new SearchSuccessTask(origin, fileName, ident, this.app));
+			Thread success = new Thread(new SearchSuccessTask(origin, fileName, ttl, ident, this.app));
 			success.run();
 			return new Vector();
 		}

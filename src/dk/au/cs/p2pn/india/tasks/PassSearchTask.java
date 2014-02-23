@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
+import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcClient;
@@ -35,11 +36,8 @@ public class PassSearchTask extends DefaultAsyncTask {
 		 * Time to live: 				Integer
 		 * Identifier of this search: 	String
 		 */
-		params = new Vector<Object>();
-		params.add(origin);
-		params.add(fileName);
-		params.add(ttl);
-		params.add(ident);
+		this.params = CommunicationConverter.createSearchVector(origin, fileName, ttl, ident);
+
 	}
 
 	@Override
@@ -60,7 +58,7 @@ public class PassSearchTask extends DefaultAsyncTask {
 			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
-		return;
+
 	}
 
 }

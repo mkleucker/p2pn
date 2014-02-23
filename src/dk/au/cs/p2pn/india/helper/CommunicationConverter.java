@@ -56,6 +56,32 @@ public class CommunicationConverter {
 		return result;
 	}
 
+
+	public static Vector<Object> createSearchVector(Object peer, String fileName, int ttl, String ident){
+		return createSearchSuccessVector(peer, fileName, ttl, ident, null);
+	}
+
+
+	public static Vector<Object> createSearchSuccessVector(Object peer, String fileName, int ttl, String ident, Object source){
+		Vector<Object> params = new Vector<Object>();
+		if(peer instanceof Peer){
+			params.add(createVector((Peer)peer));
+		}else if(peer instanceof Vector){
+			params.add(peer);
+		}
+		params.add(fileName);
+		params.add(ttl);
+		params.add(ident);
+		if(source != null){
+			if(source instanceof Peer){
+				params.add(createVector((Peer)source));
+			}else if(source instanceof Vector){
+				params.add(source);
+			}
+		}
+		return params;
+	}
+
 	public static Peer createPeer(Vector data) {
 		return new Peer((Integer) data.get(0),
 				(String) data.get(1),
