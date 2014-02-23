@@ -54,11 +54,56 @@ public class Main {
 		Thread checkConn = new Thread(new Checking(peer));
 		checkConn.start();
 	}
-	
-	private void testGet() throws InterruptedException{
+
+	private void testGet() throws InterruptedException {
 		PeerApp peer1 = new PeerApp(0, "127.0.0.1", 18525, 9);
 		Thread.sleep(1000);
 		this.peer.getP2pFile("duck.jpg", "127.0.0.1", 18525);
+	}
+
+	private ArrayList<PeerApp> setupNetwork() {
+		Random rand = new Random();
+
+		ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
+		try {
+
+
+			peers.add(this.peer);
+			int numOfPeers = 50;
+			int port = this.peer.getPeer().getPort();
+			for (int i = 1; i < numOfPeers; i++) {
+				peers.add(new PeerApp(i, "127.0.0.1", port + i, rand.nextInt(9) + 1));
+			}
+			Thread.sleep(2000);
+
+			for (PeerApp peer : peers) {
+				int numberOfConnections = rand.nextInt(numOfPeers);
+				for (int i = 0; i < numberOfConnections; i++) {
+					int p = rand.nextInt(peers.size());
+					if (p != peer.getPeer().getId())
+						peer.ping("127.0.0.1", peers.get(p).getPeer().getPort());
+				}
+			}
+
+			Thread.sleep(3000);
+
+			for (PeerApp peer : peers) {
+				logger.info("{}", peer.plist());
+			}
+
+			Thread.sleep(3000);
+
+			for (PeerApp peer : peers) {
+				peer.startNegotiate();
+			}
+
+
+
+		} catch (Exception e) {
+
+		}
+		return peers;
+
 	}
 
 	private void test() {
@@ -114,7 +159,7 @@ public class Main {
 
 	// the same as test but without the destruction of the peers
 
-	private void test0() {
+	private void test0()  throws InterruptedException {
 		try {
 			logger.info("Starting test...");
 
@@ -160,7 +205,7 @@ public class Main {
 		}
 	}
 
-	public void test2() {
+	public void test2()  throws InterruptedException {
 		try {
 			logger.info("Starting test...");
 
@@ -198,7 +243,7 @@ public class Main {
 		}
 	}
 
-	private void test3() {
+	private void test3() throws InterruptedException {
 		try {
 			PeerApp p2 = new PeerApp(2, "127.0.0.1", this.peer.getPeer().getPort() + 1, 9);
 			Thread.sleep(1000);
@@ -220,112 +265,42 @@ public class Main {
 	}
 
 
-	private void testNeighborhood() {
-		try {
+	private void testNeighborhood() throws InterruptedException {
+		ArrayList<PeerApp> peers = setupNetwork();
+		Thread.sleep(2000);
 
-			Random rand = new Random();
-
-			ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
-			peers.add(this.peer);
-			int numOfPeers = 50;
-			int port = this.peer.getPeer().getPort();
-			for (int i = 1; i < numOfPeers; i++) {
-				peers.add(new PeerApp(i, "127.0.0.1", port + i, rand.nextInt(9)+1));
-			}
-			Thread.sleep(2000);
-
-			for (PeerApp peer : peers) {
-				int numberOfConnections = rand.nextInt(numOfPeers);
-				for (int i = 0; i < numberOfConnections; i++) {
-					int p = rand.nextInt(peers.size());
-					if (p != peer.getPeer().getId())
-						peer.ping("127.0.0.1", peers.get(p).getPeer().getPort());
-				}
-			}
-
-			Thread.sleep(3000);
-
-			for (PeerApp peer : peers) {
-				logger.info("{}", peer.plist());
-			}
-
-			Thread.sleep(3000);
-
-			for (PeerApp peer : peers) {
-				peer.startNegotiate();
-			}
-
-			Thread.sleep(3000);
-
-			for (PeerApp peer : peers) {
-				System.out.println(peer.plist());
-				System.out.println(peer.nlist());
-			}
-
-			/*
-			Thread.sleep(30000);
-			for (PeerApp peer : peers) {
-				peer.destroy();
-			}
-			*/
-			
-		} catch (Exception e) {
-
+		for (PeerApp peer : peers) {
+			System.out.println(peer.plist());
+			System.out.println(peer.nlist());
 		}
 	}
 
-	private void testSearching() {
+	private void testSearching() throws InterruptedException{
 		try {
-			
-			ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
-			peers.add(this.peer);
-			int numOfPeers = 6;
-			int port = this.peer.getPeer().getPort();
-			for (int i = 1; i < numOfPeers; i++) {
-				peers.add(new PeerApp(i, "127.0.0.1", port + i, 5));
-			}
-			
+
+			ArrayList<PeerApp> peers = setupNetwork();
+
 			peers.get(5).fileList.put("file", new File("p2p3.dot"));
-			
-			Thread.sleep(1000);
 
-			for (int i = numOfPeers - 2; i >= 0; i--) {
-					peers.get(i).ping("127.0.0.1", peers.get(i + 1).getPeer().getPort());
-					Thread.sleep(500);
-			}
 
-			Thread.sleep(2000);
-
-			for (PeerApp peer : peers) {
-				logger.info("{}", peer.plist());
-			}
-
-			Thread.sleep(3000);
-
-			for (PeerApp peer : peers) {
-				System.out.println(peer.plist());
-			}
-			
 			peers.get(0).searchFile("file", 6);
 			
-			
-			/*
+
 			Thread.sleep(30000);
 			for (PeerApp peer : peers) {
 				peer.destroy();
 			}
-			*/
-			
+
 		} catch (Exception e) {
 
 		}
 	}
 
-	
+
 	/**
 	 * Method for parsing the inputs of the user in the console.
 	 */
-	private void parseInput() {
+	private void parseInput(){
 		System.out.print(">");
 
 		String input;
@@ -356,7 +331,7 @@ public class Main {
 			if (input.equals("testn")) {
 				this.testNeighborhood();
 			}
-			
+
 			if (input.equals("tests")) {
 				this.testSearching();
 			}
@@ -364,7 +339,7 @@ public class Main {
 			if (input.equals("test0")) {
 				this.test0();
 			}
-			
+
 			if (input.equals("testget")) {
 				try {
 					this.testGet();
@@ -373,7 +348,7 @@ public class Main {
 					e.printStackTrace();
 				}
 			}
-			
+
 
 			if (input.length() >= 5 && input.substring(0, 5).equals("hello")) {
 
@@ -381,7 +356,7 @@ public class Main {
 
 				if (address.length == 2) {
 					this.peer.ping(address[0].substring(1), Integer.parseInt(address[1]));
-					System.out.println("Contacted "+address[0]+":"+address[1]);
+					System.out.println("Contacted " + address[0] + ":" + address[1]);
 				} else {
 					this.peer.helloAll();
 					System.out.println("Peer requested peer lists from all known peers. (depth: 1)");
@@ -392,126 +367,126 @@ public class Main {
 				System.out.println(this.peer.plist());
 			}
 
-			if (input.length() >= 5 && input.substring(0, 5).equals("nlist")){
+			if (input.length() >= 5 && input.substring(0, 5).equals("nlist")) {
 				nlistParse(input);
 			}
-			
-			if(input.contains("find") && input.length() > 5){
 
-				String[] addr = input.substring(5).split(" ");
-				String nameFile = addr[0];
+			if (input.contains("find") && input.length() > 5) {
+
+				String[] address = input.substring(5).split(" ");
+				String filename = address[0];
 				Integer time;
-				if(addr.length >1){
-					time = Integer.parseInt(addr[1]);	
-				}
-				else{
+				if (address.length > 1) {
+					time = Integer.parseInt(address[1]);
+				} else {
 					time = 5;
 				}
-				peer.searchFile(nameFile, time);
-				logger.info("Wrote file command with the name file argument ant the time: Name file: {} Time: {}", nameFile, time);
-				
+				peer.searchFile(filename, time);
+				logger.info("Wrote file command with the name file argument ant the time: Name file: {} Time: {}", filename, time);
+
 			}
-			
-			if(input.contains("get") && input.length() > 4){				
-				String nameFile = input.substring(4);				
+
+			if (input.contains("get") && input.length() > 4) {
+				String nameFile = input.substring(4);
 				logger.info("Wrote get command with the name file argument: {}", nameFile);
 				// TODO: Call proper get function on the peer object?
 			}
-			
-			if(input.contains("report")){				
+
+			if (input.contains("report")) {
 				System.out.println("Recorded Data:\n " + Reporter.getData());
 			}
-			
+
 			checkConnection();
 			parseInput();
+		} catch (InterruptedException e){
+			logger.error(e);
 		} catch (IOException ioe) {
 			System.out.println("IO error!");
 			System.exit(1);
 		}
 	}
 
-	
+
 	/**
-	 * Method for treat the input of "nlist xxx" 
-	 * 
+	 * Method for treat the input of "nlist xxx"
+	 *
 	 * @param input
 	 * @throws IOException
-	 * 
 	 */
 	private void nlistParse(String input) throws IOException {
-		
+
 		int[] listPeers = null;
-		String nameFile = null;				
+		String nameFile = null;
 
 		// without any arguments
-		if(input.length() == 5 && input.equals("nlist")){
+		if (input.length() == 5 && input.equals("nlist")) {
 			listPeers = null;
 			nameFile = null;
 			logger.info("Writed command without any arguments");
-			peer.nlistGraph(listPeers, nameFile,false);
-		}		
-		
+			peer.nlistGraph(listPeers, nameFile, false);
+		}
+
 		// with the "all" argument
-		if(input.contains("-o") && input.contains("all")){						
+		if (input.contains("-o") && input.contains("all")) {
 			String addrRaw = input.substring(5);
 			String[] addr;
 			addr = addrRaw.split("-o");
 			nameFile = addr[1].substring(1);
-			
-			peer.nlistGraph(listPeers, nameFile,true); 
+
+			peer.nlistGraph(listPeers, nameFile, true);
 			logger.info("Writed command with the all argument.");
 		}
-		
+
 		// with only the nameFile argument
-		if(input.contains("-o") && !(input.contains("p")) && !(input.contains("P") && !(input.contains("all")))){				
+		if (input.contains("-o") && !(input.contains("p")) && !(input.contains("P") && !(input.contains("all")))) {
 			String addrRaw = input.substring(5);
 			String[] addr;
 			addr = addrRaw.split("-o");
 			nameFile = addr[1].substring(1);
 			listPeers = null;
 			logger.info("Writed command with only the name file argument (File name {})", nameFile);
-			peer.nlistGraph(listPeers, nameFile,false);
-			
+			peer.nlistGraph(listPeers, nameFile, false);
+
 		}
-		
+
 		// with only the peer list argument
-		if(!input.contains("-o") && (input.contains("p") || input.contains("P"))){
+		if (!input.contains("-o") && (input.contains("p") || input.contains("P"))) {
 			String addrRaw = input.substring(6);
 			String[] peersParsed = addrRaw.split(" ");
 			listPeers = new int[peersParsed.length];
 			int j = 0;
-			for(int i = 0; i<peersParsed.length; i++){
-				String a1 = peersParsed[i]; 
+			for (int i = 0; i < peersParsed.length; i++) {
+				String a1 = peersParsed[i];
 				a1 = a1.replace("P", "");
-				a1 = a1.replace("p", "");					
-				int a = Integer.parseInt(a1);							
-				listPeers[j] = a;							
+				a1 = a1.replace("p", "");
+				int a = Integer.parseInt(a1);
+				listPeers[j] = a;
 				j++;
 			}
-			logger.info("Writed command with only the peer list argument. (Peer list: {})",addrRaw);
-			peer.nlistGraph(listPeers, nameFile,false);
-			
+			logger.info("Writed command with only the peer list argument. (Peer list: {})", addrRaw);
+			peer.nlistGraph(listPeers, nameFile, false);
+
 		}
 
 		// with the list of peers and the name of the file
-		if(input.contains("-o") && ((input.contains("p")) || (input.contains("P")))){					
+		if (input.contains("-o") && ((input.contains("p")) || (input.contains("P")))) {
 			String addrRaw = input.substring(6);
-			String[] addr = addrRaw.split("-o");						
+			String[] addr = addrRaw.split("-o");
 			String[] peersParsed = addr[0].split(" ");
 			listPeers = new int[peersParsed.length];
 			nameFile = addr[1].substring(1);
 			int j = 0;
-			for(int i = 0; i<peersParsed.length; i++){
-				String a1 = peersParsed[i]; 
+			for (int i = 0; i < peersParsed.length; i++) {
+				String a1 = peersParsed[i];
 				a1 = a1.replace("P", "");
-				a1 = a1.replace("p", "");					
-				int a = Integer.parseInt(a1);							
-				listPeers[j] = a;							
+				a1 = a1.replace("p", "");
+				int a = Integer.parseInt(a1);
+				listPeers[j] = a;
 				j++;
 			}
-		logger.info("Writed command with the peer list and the file name arguments. (Peer list: {}) (Name file: {})",addr[0],nameFile);
-		peer.nlistGraph(listPeers, nameFile,false);
-		}		
+			logger.info("Writed command with the peer list and the file name arguments. (Peer list: {}) (Name file: {})", addr[0], nameFile);
+			peer.nlistGraph(listPeers, nameFile, false);
+		}
 	}
 
 	/**

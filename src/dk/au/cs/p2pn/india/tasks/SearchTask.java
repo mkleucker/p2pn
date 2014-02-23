@@ -51,7 +51,7 @@ public class SearchTask extends DefaultAsyncTask implements Runnable{
 			Vector<Object> params = new Vector<Object>();
 			params.add(CommunicationConverter.createVector(this.peer));
 			params.add(fileName);
-			params.add(new Integer(ttl));
+			params.add(ttl);
 			params.add(ident);
 
 			Set<Map.Entry<Integer, Peer>> peerSet = this.app.getPeerSet();

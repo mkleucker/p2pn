@@ -317,11 +317,10 @@ public class PeerApp {
 	 */
 	public void searchFile(String fileName, int ttl) {
 		searchCount++;
-		StringBuilder searchIdentifier = new StringBuilder();
-		String ident = searchIdentifier.toString();
-		this.searchList.add(ident);
-		searchIdentifier.append("" + this.getPeer().getId() + "" + this.searchCount);	//generate the identifier
-		Thread search = new Thread(new SearchTask(this, fileName, ttl, ident));
+
+		String searchIdentifier = this.getPeer().getId() + "." + this.searchCount;
+		this.searchList.add(searchIdentifier);
+		Thread search = new Thread(new SearchTask(this, fileName, ttl, searchIdentifier));
 		search.start();
 	}
 	
