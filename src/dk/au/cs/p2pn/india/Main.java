@@ -58,7 +58,7 @@ public class Main {
 	private void testGet() throws InterruptedException{
 		PeerApp peer1 = new PeerApp(0, "127.0.0.1", 18525, 9);
 		Thread.sleep(1000);
-		this.peer.getP2pFile("try.txt", "127.0.0.1", 18525);
+		this.peer.getP2pFile("duck.jpg", "127.0.0.1", 18525);
 		
 	}
 

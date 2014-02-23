@@ -84,7 +84,7 @@ public class Receive implements Runnable{
 			//temporal part only for testing if the file has been downloaded
 			
 			createFile(res,fileName);
-			
+			logger.info("File downloaded. (Name: {} )", fileName);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
