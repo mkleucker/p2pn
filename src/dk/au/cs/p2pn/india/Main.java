@@ -30,6 +30,8 @@ public class Main {
 			logger.info("Starting program");
 
 			this.reader = new BufferedReader(new InputStreamReader(System.in));
+			
+			/*
 			if (args.length != 3) {
 				this.peer = new PeerApp(0, "127.0.0.1", 18523, 9);
 			} else {
@@ -38,8 +40,10 @@ public class Main {
 				Integer port = Integer.parseInt(args[2]);
 				this.peer = new PeerApp(id, ip, port, 9);
 			}
-
+			
 			checkConnection();
+			*/
+			
 			this.parseInput();
 
 		} catch (Exception e) {
@@ -106,6 +110,53 @@ public class Main {
 
 	}
 
+	@SuppressWarnings("unused")
+	private void testMonday(){
+
+		try {
+			
+		PeerApp peer3 = new PeerApp(3, "10.192.4.119", 18527, 5);
+		PeerApp peer4 = new PeerApp(4, "10.192.4.119", 18528, 5);
+		
+		Thread.sleep(2000);
+		
+		peer3.ping(peer4.getPeer().getIP(), peer4.getPeer().getPort());
+		
+		System.out.println("Peer 4's IP is " + peer4.getPeer().getIP());
+		System.out.println("Peer 4's port is " + peer4.getPeer().getPort());
+		
+		Thread.sleep(3000);
+		
+		System.out.println("Peer 3's peer list is " + peer3.plist());
+		System.out.println("Peer 4's peer list is " + peer4.plist());
+		
+		peer3.startNegotiate();
+
+		Thread.sleep(2000);
+		
+		System.out.println("Peer 3's neighbor list is " + peer3.getNeighborList());
+		System.out.println("Peer 4's neighbor list is " + peer4.getNeighborList());
+		
+		Thread.sleep(3000);
+		
+		System.out.println("Peer 3's neighbor list is " + peer3.getNeighborList());
+		
+		Thread.sleep(2000);
+		
+		peer4.searchFile("duck.mp3", 6);
+		
+		Thread.sleep(10000);
+		
+		System.out.println("The known data list of peer 4 is " + peer4.knownDataList);
+
+		
+		peer4.getP2pFile("duck.mp3", peer4.knownDataList.get("duck.mp3").getIP(), peer4.knownDataList.get("duck.mp3").getPort());
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private void test() {
 		try {
 			logger.info("Starting test...");
@@ -336,6 +387,10 @@ public class Main {
 				this.testSearching();
 			}
 
+			if (input.equals("testm")) {
+				this.testMonday();
+			}
+			
 			if (input.equals("test0")) {
 				this.test0();
 			}

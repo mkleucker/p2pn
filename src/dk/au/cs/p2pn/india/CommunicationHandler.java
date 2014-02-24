@@ -180,7 +180,7 @@ public class CommunicationHandler {
 	@SuppressWarnings("rawtypes")
 	public Vector respondSuccess(Vector<Object> origin, String fileName, int ttl, String ident, Vector<Object> owner) {
 		this.app.knownDataList.put(fileName, CommunicationConverter.createPeer(owner));
-		logger.info(this.app.knownDataList);
+		logger.info("The known data list is {}", this.app.knownDataList);
 		return new Vector();
 	}
 	
