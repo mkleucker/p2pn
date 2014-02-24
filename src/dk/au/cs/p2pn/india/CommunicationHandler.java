@@ -178,7 +178,7 @@ public class CommunicationHandler {
 	 *
 	 */
 	@SuppressWarnings("rawtypes")
-	public Vector respondSuccess(Vector<Object> origin, String fileName, String ident, Vector<Object> owner) {
+	public Vector respondSuccess(Vector<Object> origin, String fileName, int ttl, String ident, Vector<Object> owner) {
 		this.app.knownDataList.put(fileName, CommunicationConverter.createPeer(owner));
 		logger.info(this.app.knownDataList);
 		return new Vector();
