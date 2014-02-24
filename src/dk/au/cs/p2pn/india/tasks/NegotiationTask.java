@@ -25,7 +25,7 @@ public class NegotiationTask extends DefaultAsyncTask {
 		try {
 			this.startNegotiate();
 		}catch(Exception e){
-			logger.error("error", e.getCause());
+			logger.error("error nima", e.getCause());
 		}
 	}
 
@@ -43,7 +43,8 @@ public class NegotiationTask extends DefaultAsyncTask {
 
 		// I only know one peer -> Add him / her
 		if (peers.size() == 1){
-			this.becomeNeighbor(peers.get(0).getIP(), peers.get(1).getPort());
+			System.out.println("let's become neighbors!!!");
+			this.becomeNeighbor(peers.get(0).getIP(), peers.get(0).getPort());
 			return;
 		}
 
