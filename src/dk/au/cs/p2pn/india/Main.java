@@ -27,6 +27,7 @@ public class Main {
 
 	public Main(String[] args) {
 		try {
+			Reporter.init();
 			logger.info("Starting program");
 
 			this.reader = new BufferedReader(new InputStreamReader(System.in));
@@ -161,42 +162,35 @@ public class Main {
 
 		try {
 			
-		PeerApp peer3 = new PeerApp(3, "10.192.4.119", 18527, 5);
-		PeerApp peer4 = new PeerApp(4, "10.192.4.119", 18528, 5);
+		PeerApp peer1 = new PeerApp(1, "10.192.4.119", 18527, 5);
+		PeerApp peer2 = new PeerApp(2, "10.192.4.119", 18528, 5);
 		
 		Thread.sleep(2000);
 		
-		peer3.ping(peer4.getPeer().getIP(), peer4.getPeer().getPort());
+		peer1.fileList.put("duck.mp4", new File("duck.mp4"));
+		peer2.ping(peer1.getPeer().getIP(), peer1.getPeer().getPort());
 		
-		System.out.println("Peer 4's IP is " + peer4.getPeer().getIP());
-		System.out.println("Peer 4's port is " + peer4.getPeer().getPort());
+		System.out.println("Peer 1's IP is " + peer1.getPeer().getIP());
+		System.out.println("Peer 1's port is " + peer1.getPeer().getPort());
 		
 		Thread.sleep(3000);
 		
-		System.out.println("Peer 3's peer list is " + peer3.plist());
-		System.out.println("Peer 4's peer list is " + peer4.plist());
+		System.out.println("Peer 2's peer list is " + peer2.plist());
+		System.out.println("Peer 1's peer list is " + peer1.plist());
 		
-		peer3.startNegotiate();
+		peer1.startNegotiate();
 
 		Thread.sleep(2000);
 		
-		System.out.println("Peer 3's neighbor list is " + peer3.getNeighborList());
-		System.out.println("Peer 4's neighbor list is " + peer4.getNeighborList());
+		System.out.println("Peer 2's neighbor list is " + peer2.getNeighborList());
+		System.out.println("Peer 1's neighbor list is " + peer1.getNeighborList());
 		
 		Thread.sleep(3000);
 		
-		System.out.println("Peer 3's neighbor list is " + peer3.getNeighborList());
+		System.out.println("Peer 2's neighbor list is " + peer2.getNeighborList());
 		
 		Thread.sleep(2000);
 		
-		peer4.searchFile("duck.mp3", 6);
-		
-		Thread.sleep(10000);
-		
-		System.out.println("The known data list of peer 4 is " + peer4.knownDataList);
-
-		
-		peer4.getP2pFile("duck.mp3", peer4.knownDataList.get("duck.mp3").getIP(), peer4.knownDataList.get("duck.mp3").getPort());
 		
 		} catch (Exception e) {
 			e.printStackTrace();
