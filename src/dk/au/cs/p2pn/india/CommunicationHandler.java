@@ -2,7 +2,6 @@ package dk.au.cs.p2pn.india;
 
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.reporting.Reporter;
-import dk.au.cs.p2pn.india.download.Send;
 import dk.au.cs.p2pn.india.reporting.ReporterMeasurements;
 import dk.au.cs.p2pn.india.tasks.SearchSuccessTask;
 
@@ -111,7 +110,7 @@ public class CommunicationHandler {
 		File file = new File(fileDir);
 		byte[] fileBytes = null;
 		try {
-			fileBytes = Send.fileToBytes(file);
+			fileBytes = CommunicationConverter.fileToBytes(file);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

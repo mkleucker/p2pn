@@ -2,6 +2,10 @@ package dk.au.cs.p2pn.india.helper;
 
 import dk.au.cs.p2pn.india.Peer;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
@@ -88,4 +92,30 @@ public class CommunicationConverter {
 				(Integer) data.get(2),
 				(Integer) data.get(3));
 	}
+
+
+	/**
+	 * Method for create a bytes array from a file
+	 *
+	 * @param file to be converted to bytes
+	 * @return Byte array of the file.
+	 * @throws java.io.IOException
+	 */
+	public static byte[] fileToBytes(File file) throws IOException {
+		InputStream input = new FileInputStream(file);
+		long fileSize = file.length();
+
+		byte[] bytesArray = new byte[(int)fileSize];
+
+		int offset = 0;
+		int bytesRead = 0;
+		while (offset < bytesArray.length && (bytesRead=input.read(bytesArray, offset, bytesArray.length-offset)) >= 0) {
+			offset += bytesRead;
+		}
+		input.close();
+		return bytesArray;
+	}
+
 }
+
+
