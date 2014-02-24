@@ -197,9 +197,6 @@ public class PeerApp {
 			this.openNeighborRequests.remove(peer.getIP() + ":" + peer.getPort());
 		}
 		if (success) {
-			if (this.peer.getId() == 1) {
-				System.out.println("waaaa");
-			}
 			this.neighborList.put(peer.getId(), peer);
 			this.updateLastSeen(peer);
 		}
