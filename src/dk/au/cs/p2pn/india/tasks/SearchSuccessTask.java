@@ -54,10 +54,9 @@ public class SearchSuccessTask extends DefaultAsyncTask {
 			this.client = ClientRequestFactory.getClient("http://" + dest.getIP() + ':' + dest.getPort() + '/');
 			this.client.execute("communication.respondSuccess", params);
 		} catch (IOException e) {
-			logger.error(e.getMessage());
+			logger.error(e);
 		} catch (XmlRpcException e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
+			logger.error(e);
 		}
 	}
 
