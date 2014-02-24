@@ -43,20 +43,16 @@ public class PassSearchTask extends DefaultAsyncTask {
 	@Override
 	public void run() {
 		try {
-			Set<Map.Entry<Integer, Peer>> peerSet = this.app.getPeerSet();
-			for (Map.Entry<Integer, Peer> entry : peerSet) {
+			for (Map.Entry<Integer, Peer> entry : this.app.getNeighborList().entrySet()) {
 				Peer itPeer = entry.getValue();
-				logger.info("Inside passSearchTask, iterating all peers");
-
 				// Create the client, identifying the server
 				this.client = ClientRequestFactory.getClient("http://" + itPeer.getIP() + ':' + itPeer.getPort() + '/');
 				this.client.execute("communication.respondSearch", params);
 			}
 		} catch (IOException e) {
-			logger.error(e.getMessage());
+			logger.error(e);
 		} catch (XmlRpcException e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
+			logger.error(e);
 		}
 
 	}
