@@ -11,23 +11,39 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.util.*;
 
 public class PeerApp {
 
+	/** Local peer object. */
 	Peer peer;
-	int searchCount;		// used to generate the id for each search
+	/** Counter for the number of searches sent. */
+	int searchCount;
 
-	Map<Integer, Peer> peerList;
-	Map<Integer, Peer> neighborList;
-	Map<Integer, Date> lastSeenList;
-	Map<String, File> fileList;		//store the file of the local peer, key is file name, value is content
-	Vector<String> searchList;			//store the identifier of search, to avoid repetitive search
-	Map<String, Peer> knownDataList;	//store the information of data known to the local peer, key is the file name and peer is the owner
-	Map<String, NeighborNegotiationState> openNeighborRequests;
+	/** List of all known peers in the network. */
+	Map<Integer, Peer> peerList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
+	/** List of my current neighbors. */
+	Map<Integer, Peer> neighborList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
+	/** List the timestamps that a peer has been seen the last time. */
+	Map<Integer, Date> lastSeenList = Collections.synchronizedMap(new HashMap<Integer, Date>());
 
+	/** List of all files this peer has locally. */
+	Map<String, File> fileList = Collections.synchronizedMap(new HashMap<String, File>());
+	/** List of all search identifiers that have been processed. */
+	Vector<String> searchList = new Vector<String>();
+	/** List the files that have been found on the network and their location. */
+	Map<String, Peer> knownDataList = Collections.synchronizedMap(new HashMap<String, Peer>());
+	/** List of the open neighbor requests. */
+	Map<String, NeighborNegotiationState> openNeighborRequests =
+			Collections.synchronizedMap(new HashMap<String, NeighborNegotiationState>());
+
+
+	/** No idea what this means. Better don't touch it. */
 	public static double[] POWERLAWCUMULATIVE = new double[10];
+	/** No idea what this means. Better don't touch it. */
 	public static double ALPHA;
+
 
 	private static final Logger logger = LogManager.getLogger(PeerApp.class.getSimpleName());
 
@@ -42,21 +58,7 @@ public class PeerApp {
 	 * @param capacity Capacity of this Peer
 	 */
 	public PeerApp(int id, String ip, int port, int capacity) {
-		logger.info("Started Peer with ID {} (Capacity: {})", id, capacity);
-		searchCount = 0;
-		this.searchList = new Vector<String>();
-		this.knownDataList = Collections.synchronizedMap(new HashMap<String, Peer>());
-		this.fileList = Collections.synchronizedMap(new HashMap<String, File>());
-		this.peer = new Peer(id, ip, port, capacity);//creation of the Peer
-		this.peerList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
-		this.neighborList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
-		this.lastSeenList = Collections.synchronizedMap(new HashMap<Integer, Date>());
-		this.openNeighborRequests = Collections.synchronizedMap(new HashMap<String, NeighborNegotiationState>());
-		Reporter.init();
-
-		this.server = new ListeningTask(this.peer, this);
-		Thread listening = new Thread(this.server);   //start listening to the port
-		listening.start();
+		this.setupPeer(id, ip, port, capacity);
 	}
 
 
@@ -68,11 +70,32 @@ public class PeerApp {
 	 * @param port     Port on which this Peer listens
 	 */
 	public PeerApp(int id, String ip, int port) {
+		this.setupPeer(id, ip, port, this.generateCapacity());
+	}
+
+	/**
+	 * Shorthand version for instantiating the PeerApp.
+	 * @param id ID of the Peer
+	 * @param port Port number of the peer
+	 */
+	public PeerApp(int id, int port, int capacity){
+		try{
+			String ip = InetAddress.getLocalHost().getHostAddress();
+			this.setupPeer(id, ip, port, capacity);
+		}catch (Exception e){
+			logger.error(e);
+			this.setupPeer(id, "127.0.0.1", port, capacity);
+		}
+	}
+
+	/**
+	 * Calculates the capacity of a peer based on the power-law.
+	 *
+	 * @return Capacity for this peer.
+	 */
+	private int generateCapacity(){
 		int capacity = 0;
-		searchCount = 0;
-		this.searchList = new Vector<String>();
-		this.knownDataList = Collections.synchronizedMap(new HashMap<String, Peer>());
-		this.fileList = Collections.synchronizedMap(new HashMap<String, File>());
+
 		ALPHA = 0.6;
 		POWERLAWCUMULATIVE[0] = Math.pow(ALPHA, 1);
 		for (int i = 1; i < 10; i++) {
@@ -91,12 +114,20 @@ public class PeerApp {
 			}
 		}
 
-		logger.info("Started Peer with ID {}", id);
-		this.peer = new Peer(id, ip, port, capacity);//creation of the Peer
-		this.peerList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
-		this.neighborList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
-		this.lastSeenList = Collections.synchronizedMap(new HashMap<Integer, Date>());
-		this.openNeighborRequests = Collections.synchronizedMap(new HashMap<String, NeighborNegotiationState>());
+		return capacity;
+	}
+
+	/**
+	 * Initializes the PeerApp and the Peer.
+	 * @param id ID of the Peer
+	 * @param ip IP Address of the Peer
+	 * @param port Port number of the peer
+	 * @param capacity Capacity of this Peer
+	 */
+	private void setupPeer(int id, String ip, int port, int capacity){
+		logger.info("Starting Peer with ID {} (IP: {}, Port: {}, Capacity: {})", id, ip, port, capacity);
+
+		this.peer = new Peer(id, ip, port, capacity);
 
 		this.server = new ListeningTask(this.peer, this);
 		Thread listening = new Thread(this.server);   //start listening to the port

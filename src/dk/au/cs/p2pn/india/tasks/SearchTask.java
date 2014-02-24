@@ -59,10 +59,9 @@ public class SearchTask extends DefaultAsyncTask implements Runnable{
 				Vector res = (Vector)this.client.execute("communication.respondSearch", params);
 			}
 		} catch (IOException e) {
-			logger.error(e.getMessage());
+			logger.error(e);
 		} catch (XmlRpcException e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
+			logger.error(e);
 		}
 	}
 	

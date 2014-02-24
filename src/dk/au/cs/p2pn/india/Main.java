@@ -109,6 +109,52 @@ public class Main {
 		return peers;
 
 	}
+	
+	private void testProcessHostFile(){
+		
+		//use your own IP
+		PeerApp peer1 = new PeerApp(1, "10.192.75.179", 18525, 9);
+		PeerApp peer2 = new PeerApp(2, "10.192.75.179", 18526, 9);
+				
+		try {
+			Thread.sleep(2000);
+			peer1.fileList.put("try.txt", new File("try.txt"));
+			
+			Thread.sleep(1000);
+			
+			System.out.println("File list of peer1: " + peer1.fileList);
+			
+			//ping with from peer 1 to peer 2
+			peer1.ping("10.192.75.179", 18526);
+
+			Thread.sleep(3000);
+			
+			peer1.startNegotiate();
+			Thread.sleep(2000);
+			
+			//ping with from peer 2 to peer 3
+			System.out.println("0.peer list: " + peer1.plist());
+
+			//pc 2 IP
+			peer2.ping("10.192.4.119", 18527);
+			Thread.sleep(2000);
+			
+			peer2.startNegotiate();
+			System.out.println("peer list: " + peer1.plist());
+			System.out.println("peer list: " + peer2.plist());
+			
+			System.out.println("neighbour list: " + peer1.nlist());
+			System.out.println("neighbour list: " + peer2.nlist());
+						
+		
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+}
+	
 
 	@SuppressWarnings("unused")
 	private void testMonday(){
@@ -450,7 +496,11 @@ public class Main {
 			if (input.contains("report")) {
 				System.out.println("Recorded Data:\n " + Reporter.getData());
 			}
-
+			
+			if (input.contains("testhostfile")) {
+				this.testProcessHostFile();
+			}
+			
 			checkConnection();
 			parseInput();
 		} catch (InterruptedException e){
