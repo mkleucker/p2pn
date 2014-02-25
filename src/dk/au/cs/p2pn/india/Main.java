@@ -26,13 +26,13 @@ public class Main {
 	private static final Logger logger = LogManager.getLogger(PeerApp.class.getSimpleName());
 
 	public Main(String[] args) {
+		// Initialize Reporter for this program instance.
+		Reporter.init();
+
 		try {
-			Reporter.init();
 			logger.info("Starting program");
 
 			this.reader = new BufferedReader(new InputStreamReader(System.in));
-			
-			/*
 			if (args.length != 3) {
 				this.peer = new PeerApp(0, "127.0.0.1", 18523, 9);
 			} else {
@@ -41,10 +41,8 @@ public class Main {
 				Integer port = Integer.parseInt(args[2]);
 				this.peer = new PeerApp(id, ip, port, 9);
 			}
-			
+
 			checkConnection();
-			*/
-			
 			this.parseInput();
 
 		} catch (Exception e) {
