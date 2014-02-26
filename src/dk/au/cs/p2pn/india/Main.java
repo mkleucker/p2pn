@@ -26,13 +26,13 @@ public class Main {
 	private static final Logger logger = LogManager.getLogger(PeerApp.class.getSimpleName());
 
 	public Main(String[] args) {
+		// Initialize Reporter for this program instance.
+		Reporter.init();
+
 		try {
-			Reporter.init();
 			logger.info("Starting program");
 
 			this.reader = new BufferedReader(new InputStreamReader(System.in));
-			
-			/*
 			if (args.length != 3) {
 				this.peer = new PeerApp(0, "127.0.0.1", 18523, 9);
 			} else {
@@ -41,10 +41,8 @@ public class Main {
 				Integer port = Integer.parseInt(args[2]);
 				this.peer = new PeerApp(id, ip, port, 9);
 			}
-			
+
 			checkConnection();
-			*/
-			
 			this.parseInput();
 
 		} catch (Exception e) {
@@ -374,7 +372,7 @@ public class Main {
 			peers.get(5).fileList.put("file", new File("p2p3.dot"));
 
 
-			peers.get(0).searchFile("file", 6);
+			peers.get(0).startFloodSearch("file", 6);
 			
 
 			Thread.sleep(30000);
@@ -476,7 +474,7 @@ public class Main {
 				} else {
 					time = 5;
 				}
-				peer.searchFile(filename, time);
+				peer.startFloodSearch(filename, time);
 				logger.info("Wrote file command with the name file argument ant the time: Name file: {} Time: {}", filename, time);
 
 			}

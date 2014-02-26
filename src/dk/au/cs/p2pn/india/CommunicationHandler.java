@@ -3,6 +3,11 @@ package dk.au.cs.p2pn.india;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.reporting.Reporter;
 import dk.au.cs.p2pn.india.reporting.ReporterMeasurements;
+import dk.au.cs.p2pn.india.search.BasicSearch;
+import dk.au.cs.p2pn.india.search.FloodSearch;
+import dk.au.cs.p2pn.india.search.SearchTypes;
+import dk.au.cs.p2pn.india.search.WalkerSearch;
+import dk.au.cs.p2pn.india.tasks.SearchPassTask;
 import dk.au.cs.p2pn.india.tasks.SearchSuccessTask;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +24,7 @@ public class CommunicationHandler {
 
 	private static final Logger logger = LogManager.getLogger(CommunicationHandler.class.getSimpleName());
 
-	public CommunicationHandler(Peer peer, PeerApp app){
+	public CommunicationHandler(Peer peer, PeerApp app) {
 		this.peer = peer;
 		this.app = app;
 	}
@@ -27,10 +32,9 @@ public class CommunicationHandler {
 	/**
 	 * XML-RPC: Answers a XML-RPCall by a different Peer as part of our Protocol.
 	 *
-	 *
-	 * @param IdArg ID of the Peer that called this function
-	 * @param IPArg IP of the Peer that called this function
-	 * @param portArg Port of the Peer that called this function
+	 * @param IdArg       ID of the Peer that called this function
+	 * @param IPArg       IP of the Peer that called this function
+	 * @param portArg     Port of the Peer that called this function
 	 * @param capacityArg Capacity of the Peer that called this function
 	 * @return Vector containing the
 	 */
@@ -47,11 +51,10 @@ public class CommunicationHandler {
 	 * then it signals that the other peer want to be my neighbor. Hence I have to
 	 * decide and reply accordingly.
 	 *
-	 *
-	 * @param IdArg ID of the Peer that called this function
-	 * @param IPArg IP of the Peer that called this function
-	 * @param portArg Port of the Peer that called this function
-	 * @param capacityArg Capacity of the Peer that called this function
+	 * @param IdArg             ID of the Peer that called this function
+	 * @param IPArg             IP of the Peer that called this function
+	 * @param portArg           Port of the Peer that called this function
+	 * @param capacityArg       Capacity of the Peer that called this function
 	 * @param isNeighborRequest Flag whether the requesting Peer wants to be our neighbor
 	 * @return Vector containing the
 	 */
@@ -63,10 +66,10 @@ public class CommunicationHandler {
 		Peer inPeer = new Peer(IdArg, IPArg, portArg, capacityArg);
 		this.app.addPeer(inPeer);
 
-		if(isNeighborRequest){
+		if (isNeighborRequest) {
 			Reporter.addEvent(ReporterMeasurements.NEIGHBOR_REQUEST_RECEIVED);
 			boolean neighborAnswer = responseNegotiate(inPeer);
-			if(neighborAnswer){
+			if (neighborAnswer) {
 				this.app.addNeighbor(inPeer, neighborAnswer);
 			}
 			logger.debug("Answering neighbor request from {}:{} with {}", IPArg, portArg, neighborAnswer);
@@ -81,7 +84,7 @@ public class CommunicationHandler {
 	public boolean responseNegotiate(Peer inPeer) {
 		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
 
-		if(this.app.neighborList.size() + this.app.openNeighborRequests.size() >= this.app.getPeer().getCapacity()) {
+		if (this.app.neighborList.size() + this.app.openNeighborRequests.size() >= this.app.getPeer().getCapacity()) {
 			return false;
 		}
 		return Math.random() < (double) ((double) inPeer.getCapacity() / (double) this.app.getPeer().getCapacity());
@@ -93,17 +96,16 @@ public class CommunicationHandler {
 	 * @return String-Peer pairs of all known peers.
 	 */
 	@SuppressWarnings("rawtypes")
-	public Hashtable<String, Vector> getPeerList(){
+	public Hashtable<String, Vector> getPeerList() {
 		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
 
 		return CommunicationConverter.createVector(this.app.getPeerList());
 	}
-	
+
 	/**
 	 * XML-RPC: Answers the call to 'communication.getFile'
-	 * 
+	 *
 	 * @param fileDir Name of the file and directory
-	 * 
 	 * @return Bytes array with the content of the File
 	 */
 	public byte[] getFile(String fileDir) {
@@ -124,65 +126,95 @@ public class CommunicationHandler {
 	 * @return List with all Neighbors in vector representation
 	 */
 	@SuppressWarnings("rawtypes")
-	public Vector<Vector> getNeighborList(){
+	public Vector<Vector> getNeighborList() {
 		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
 
-		Hashtable<String, Vector> data  = CommunicationConverter.createVector(this.app.getNeighborList());
+		Hashtable<String, Vector> data = CommunicationConverter.createVector(this.app.getNeighborList());
 		return new Vector<Vector>(data.values());
 	}
-	
+
 	/**
 	 * XML-RPC: Answers the call to `communication.respondSearch`, it will return immediately. If it has the file,
-	 * 			it will start a new thread to give a successful result to the caller before returning. Otherwise
-	 * 			if the ttl is positive, then it passes the search to all the peers in its peer list.
-	 *
+	 * it will start a new thread to give a successful result to the caller before returning. Otherwise
+	 * if the ttl is positive, then it passes the search to all the peers in its peer list.
 	 */
 	@SuppressWarnings("rawtypes")
-	public Vector respondSearch(Vector<Object> origin, String fileName, int ttl, String ident) {
+	public Vector respondSearch(Vector<Object> origin, String fileName, int ttl, String ident, int type) {
 		logger.info("Inside respondSearch");
 
-		if (ttl <= 0)
-			return new Vector();
+		BasicSearch search;
+		Peer peer = CommunicationConverter.createPeer(origin);
 
-
-		// Only process each search once
-		if (this.app.searchList.contains(ident)){
+		if (type == SearchTypes.FLOOD_SEARCH.getValue()) {
+			search = new FloodSearch(ident, fileName, ttl, peer);
+		} else if (type == SearchTypes.K_WALKER_SEARCH.getValue()) {
+			search = new WalkerSearch(ident, fileName, ttl, peer);
+		} else {
 			return new Vector();
 		}
 
-		this.app.searchList.add(ident);
+		// Case 1: Search
+		if (!shouldAnswerSearch(search)) {
+			return new Vector();
+		}
 
-		/**
-		 * if the file is found, start a thread to tell the origin and return;
-		 */
+		// Send success
 		if (this.app.fileList.containsKey(fileName)) {
-			logger.info("Inside respondSearch, file matched, starting a new success thread");
-
-			Thread success = new Thread(new SearchSuccessTask(origin, fileName, ttl, ident, this.app));
-			success.run();
+			// but only if i didn't yet.
+			if(!this.app.getSearchList().containsKey(search.getId())) {
+				logger.info("Inside respondSearch, file matched, starting a new success thread");
+				search.setSuccess(this.app.getPeer());
+				Thread success = new Thread(new SearchSuccessTask(search, this.app));
+				success.run();
+			}
 			return new Vector();
+
 		}
-		
-		/**
-		 * Otherwise pass the search to other peers and return.
-		 */
-		logger.info("Inside respondSearch, file not matched, calling passSearch");
-		this.app.passSearch(origin, fileName, ttl - 1, ident);
+
+		// Pass Search
+		logger.info("Inside respond Search, file not matched, calling passSearch");
+
+		Thread pass = new Thread(new SearchPassTask(this.app, search));
+		pass.start();
+
 		return new Vector();
 	}
-	
+
+	private boolean shouldAnswerSearch(BasicSearch search) {
+		if (search == null){
+			return  false;
+		}
+		if (search.getTtl() <= 0) {
+			return false;
+		}
+
+		// Process all search types if thy haven't been passed yet.
+		if (!this.app.searchList.containsKey(search.getId())){
+			return true;
+		}
+
+		// Process Walker search only if i have more neighbors left
+		// then I have already contacted for this.
+		if (search.getType() == SearchTypes.K_WALKER_SEARCH) {
+			if (this.app.getSearchList().get(search.getId()).size() < this.app.getNeighborList().size()){
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	/**
-	 * XML-RPC: Answers the call to `communication.respondSuccess` when another peer has the file that the 
-	 * 			current peer is looking for, this function will return immediately. And it will add the file to the 
-	 *			known file list of the local peer.
-	 *
+	 * XML-RPC: Answers the call to `communication.respondSuccess` when another peer has the file that the
+	 * current peer is looking for, this function will return immediately. And it will add the file to the
+	 * known file list of the local peer.
 	 */
 	@SuppressWarnings("rawtypes")
-	public Vector respondSuccess(Vector<Object> origin, String fileName, int ttl, String ident, Vector<Object> owner) {
+	public Vector respondSuccess(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> owner) {
 		this.app.knownDataList.put(fileName, CommunicationConverter.createPeer(owner));
 		logger.info("The known data list is {}", this.app.knownDataList);
 		return new Vector();
 	}
-	
-	
+
+
 }

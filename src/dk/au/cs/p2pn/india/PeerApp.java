@@ -3,7 +3,9 @@ package dk.au.cs.p2pn.india;
 import dk.au.cs.p2pn.india.download.Receive;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.helper.NeighborNegotiationState;
-import dk.au.cs.p2pn.india.reporting.Reporter;
+import dk.au.cs.p2pn.india.search.BasicSearch;
+import dk.au.cs.p2pn.india.search.FloodSearch;
+import dk.au.cs.p2pn.india.search.WalkerSearch;
 import dk.au.cs.p2pn.india.tasks.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,8 +32,11 @@ public class PeerApp {
 
 	/** List of all files this peer has locally. */
 	Map<String, File> fileList = Collections.synchronizedMap(new HashMap<String, File>());
+
+
+
 	/** List of all search identifiers that have been processed. */
-	Vector<String> searchList = new Vector<String>();
+	HashMap<String, ArrayList<Peer>> searchList = new HashMap<String, ArrayList<Peer>>();
 	/** List the files that have been found on the network and their location. */
 	Map<String, Peer> knownDataList = Collections.synchronizedMap(new HashMap<String, Peer>());
 	/** List of the open neighbor requests. */
@@ -249,6 +254,10 @@ public class PeerApp {
 		return new HashMap<Integer, Peer>(this.neighborList);
 	}
 
+	public synchronized HashMap<String, ArrayList> getSearchList() {
+		return new HashMap<String, ArrayList>(searchList);
+	}
+
 	public synchronized void setNeighborRequest(String address, NeighborNegotiationState state) {
 		this.openNeighborRequests.put(address, state);
 	}
@@ -343,16 +352,29 @@ public class PeerApp {
 	 *
 	 * @param fileName   the name of the file the peer is searching
 	 */
-	public void searchFile(String fileName, int ttl) {
-		searchCount++;
+	public void startFloodSearch(String fileName, int ttl) {
+		FloodSearch search = new FloodSearch(this.getNewSearchIdentifier(), fileName, ttl, this.getPeer());
 
-		String searchIdentifier = this.getPeer().getId() + "." + this.searchCount;
-		this.searchList.add(searchIdentifier);
-		Thread search = new Thread(new SearchTask(this, fileName, ttl, searchIdentifier));
-		search.start();
+		this.startSearch(search);
 	}
-	
-	
+
+	public void startWalkerSearch(String fileName, int ttl, int walkers){
+		WalkerSearch search = new WalkerSearch(this.getNewSearchIdentifier(), fileName, ttl, this.getPeer(), walkers);
+		this.startSearch(search);
+	}
+
+	private void startSearch(BasicSearch search){
+		Thread searchThread = new Thread(new SearchStartTask(this, search));
+		searchThread.start();
+	}
+
+	private String getNewSearchIdentifier(){
+		this.searchCount++;
+		String searchIdentifier = this.getPeer().getId() + "." + this.searchCount;
+		this.searchList.put(searchIdentifier, new ArrayList<Peer>());
+		return searchIdentifier;
+	}
+
 	/**
 	 * Get a file from another peer. 
 	 * 
@@ -366,14 +388,7 @@ public class PeerApp {
 	}
 	
 
-	/**
-	 * Pass the search process to all peers in the peer list and add the identifier to the searchList.
-	 * If it has already seen the request, then just ignore it.
-	 */
-	public void passSearch(Vector<Object> origin, String fileName, int ttl, String ident) {
-		Thread pass = new Thread(new PassSearchTask(this, origin, fileName, ttl - 1, ident));
-		pass.start();
-	}
+
 
 	public void nlistGraph(int[] peers, String dir, boolean all) throws IOException {
 

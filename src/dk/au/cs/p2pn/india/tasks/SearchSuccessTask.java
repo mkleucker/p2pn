@@ -5,9 +5,9 @@ import dk.au.cs.p2pn.india.PeerApp;
 import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 
+import dk.au.cs.p2pn.india.search.BasicSearch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
 
 import java.io.IOException;
@@ -31,28 +31,22 @@ import java.util.Vector;
  */
 public class SearchSuccessTask extends DefaultAsyncTask {
 
-	public Vector<Object> params = new Vector<Object>();
-	public Vector<Object> origin;
-	private static final Logger logger = LogManager.getLogger(SearchTask.class.getSimpleName());
+	private static final Logger logger = LogManager.getLogger(SearchStartTask.class.getSimpleName());
 
+	private BasicSearch search;
 
-	public SearchSuccessTask(Vector<Object> origin, String fileName, int ttl, String ident, PeerApp ownerApp) {
+	public SearchSuccessTask(BasicSearch search, PeerApp ownerApp) {
 		super(ownerApp);
 
-		this.origin = origin;
-
-		this.params = CommunicationConverter.createSearchSuccessVector(origin, fileName, ttl, ident, this.app.getPeer());
-
+		this.search = search;
 	}
 
 	@Override
 	public void run() {
 		try {
-			Peer dest = CommunicationConverter.createPeer(origin);
 			logger.info("Inside SearchSuccessTask, establishing connection");
-
-			this.client = ClientRequestFactory.getClient("http://" + dest.getIP() + ':' + dest.getPort() + '/');
-			this.client.execute("communication.respondSuccess", params);
+			this.client = ClientRequestFactory.getClient("http://" + search.getSource().getIP() + ':' + search.getSource().getPort() + '/');
+			this.client.execute("communication.respondSuccess", search.toVector());
 		} catch (IOException e) {
 			logger.error(e);
 		} catch (XmlRpcException e) {
