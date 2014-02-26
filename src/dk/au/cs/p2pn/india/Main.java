@@ -109,6 +109,16 @@ public class Main {
 
 	}
 	
+	/**
+	 * 
+	 * Test method for the download part.
+	 * 
+	 * Must be used while it's being used the "testMonday() function" in another
+	 * computer.  With this method you can establish a connection between
+	 * 4 peers and offer a file to be downloaded from one peer to another
+	 * peer (try.txt file).
+	 *   
+	 */
 	private void testProcessHostFile(){
 		
 		//use your own IP
@@ -155,6 +165,15 @@ public class Main {
 }
 	
 
+	/**
+	 * 
+	 * Test method for the download part.
+	 * 
+	 * Must be used while it's being used the "testProcessHostFile() function" in another
+	 * computer.  With this method you can establish a connection between
+	 * 4 peers and download the file offered by the peer to be donwloaded (try.txt). 
+	 *   
+	 */
 	@SuppressWarnings("unused")
 	private void testMonday(){
 
@@ -433,7 +452,7 @@ public class Main {
 				this.test0();
 			}
 
-			if (input.equals("testget")) {
+			if (input.equals("testge")) {
 				try {
 					this.testGet();
 				} catch (InterruptedException e) {
@@ -482,7 +501,8 @@ public class Main {
 			if (input.contains("get") && input.length() > 4) {
 				String nameFile = input.substring(4);
 				logger.info("Wrote get command with the name file argument: {}", nameFile);
-				// TODO: Call proper get function on the peer object?
+				this.peer.getP2pFile(nameFile, this.peer.knownDataList.get(nameFile).getIP(), this.peer.knownDataList.get(nameFile).getPort());
+			
 			}
 
 			if (input.contains("report")) {
@@ -491,6 +511,10 @@ public class Main {
 			
 			if (input.contains("testhostfile")) {
 				this.testProcessHostFile();
+			}
+			
+			if (input.contains("testm")) {
+				this.testMonday();;
 			}
 			
 			checkConnection();
