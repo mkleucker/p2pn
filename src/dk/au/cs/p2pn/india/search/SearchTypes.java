@@ -12,4 +12,12 @@ public enum SearchTypes {
 	public int getValue() {
 		return value;
 	}
+	static SearchTypes getType( int intVal ) throws Exception
+	{
+		for (SearchTypes type : SearchTypes.values())
+			if (type.getValue() == intVal)
+				return type;
+
+		return null;
+	}
 }

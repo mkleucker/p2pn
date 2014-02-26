@@ -1,19 +1,17 @@
 package dk.au.cs.p2pn.india.download;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Vector;
-
-import dk.au.cs.p2pn.india.tasks.SearchStartTask;
+import dk.au.cs.p2pn.india.Peer;
+import dk.au.cs.p2pn.india.PeerApp;
+import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
 
-import dk.au.cs.p2pn.india.Peer;
-import dk.au.cs.p2pn.india.PeerApp;
-import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Vector;
 
 public class Receive implements Runnable{
 
@@ -23,8 +21,7 @@ public class Receive implements Runnable{
 */
 	
 
-//	XmlRpcClient client = new XmlRpcClient();
-	
+
 	String fileName;
 	PeerApp app;
 	Peer peer;
@@ -33,7 +30,7 @@ public class Receive implements Runnable{
 	int port; 
 
 
-	private static final Logger logger = LogManager.getLogger(SearchStartTask.class.getSimpleName());
+	private static final Logger logger = LogManager.getLogger(Receive.class.getSimpleName());
 	
 	/**
 	 * @param app PeerApp 
