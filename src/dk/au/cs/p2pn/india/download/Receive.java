@@ -78,11 +78,7 @@ public class Receive implements Runnable{
 			this.client = ClientRequestFactory.getClient("http://" + ip + ':' + port + '/');
 			logger.info("Inside the receive thread, ready to execute");
 			res = (byte[])this.client.execute("communication.getFile", params);			
-			
-			//temporal part only for testing if the file has been downloaded
-			fileName += "-New";
-			//temporal part only for testing if the file has been downloaded
-			
+
 			createFile(res,fileName);
 			logger.info("File downloaded. (Name: {} )", fileName);
 		} catch (IOException e) {
