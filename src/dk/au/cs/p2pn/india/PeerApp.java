@@ -371,7 +371,7 @@ public class PeerApp {
 	private String getNewSearchIdentifier(){
 		this.searchCount++;
 		String searchIdentifier = this.getPeer().getId() + "." + this.searchCount;
-		this.searchList.put(searchIdentifier);
+		this.searchList.put(searchIdentifier, new ArrayList<Peer>());
 		return searchIdentifier;
 	}
 

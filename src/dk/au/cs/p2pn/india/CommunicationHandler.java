@@ -149,6 +149,8 @@ public class CommunicationHandler {
 			search = new FloodSearch(ident, fileName, ttl, peer);
 		} else if (type == SearchTypes.K_WALKER_SEARCH.getValue()) {
 			search = new WalkerSearch(ident, fileName, ttl, peer);
+		} else {
+			return new Vector();
 		}
 
 		// Case 1: Search
@@ -159,7 +161,7 @@ public class CommunicationHandler {
 		// Send success
 		if (this.app.fileList.containsKey(fileName)) {
 			// but only if i didn't yet.
-			if(!this.app.searchList.containsKey(search.getId())) {
+			if(!this.app.getSearchList().containsKey(search.getId())) {
 				logger.info("Inside respondSearch, file matched, starting a new success thread");
 				search.setSuccess(this.app.getPeer());
 				Thread success = new Thread(new SearchSuccessTask(search, this.app));
@@ -194,7 +196,7 @@ public class CommunicationHandler {
 		// Process Walker search only if i have more neighbors left
 		// then I have already contacted for this.
 		if (search.getType() == SearchTypes.K_WALKER_SEARCH) {
-			if (this.app.searchList.get(search.getId()).size() > this.app.getNeighborList().size()){
+			if (this.app.getSearchList().get(search.getId()).size() < this.app.getNeighborList().size()){
 				return true;
 			}
 		}
@@ -208,7 +210,7 @@ public class CommunicationHandler {
 	 * known file list of the local peer.
 	 */
 	@SuppressWarnings("rawtypes")
-	public Vector respondSuccess(Vector<Object> origin, String fileName, int ttl, String ident, Vector<Object> owner) {
+	public Vector respondSuccess(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> owner) {
 		this.app.knownDataList.put(fileName, CommunicationConverter.createPeer(owner));
 		logger.info("The known data list is {}", this.app.knownDataList);
 		return new Vector();
