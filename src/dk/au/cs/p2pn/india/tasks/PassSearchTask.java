@@ -1,11 +1,15 @@
 package dk.au.cs.p2pn.india.tasks;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
 import java.util.Vector;
 
 import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
+import dk.au.cs.p2pn.india.search.BasicSearch;
+import dk.au.cs.p2pn.india.search.SearchTypes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcException;
@@ -15,45 +19,63 @@ import dk.au.cs.p2pn.india.PeerApp;
 
 /**
  * @author johnny
- * used to pass the search to other peers when the local peer doesn't have the file
+ *         used to pass the search to other peers when the local peer doesn't have the file
  */
 public class PassSearchTask extends DefaultAsyncTask {
 
-	public Vector<Object> params;
-	public Vector<Object> origin;
+	private BasicSearch search;
 	private static final Logger logger = LogManager.getLogger(SearchStartTask.class.getSimpleName());
 
-	public PassSearchTask(PeerApp app, Vector<Object> origin, String fileName, Integer ttl, String ident) {
+	public PassSearchTask(PeerApp app, BasicSearch search) {
 		super(app);
-		this.origin = origin;
-		
-		/**
-		 * Format of the message:
-		 * Origin: 						Peer   (represented as a vector)
-		 * File name: 					String
-		 * Time to live: 				Integer
-		 * Identifier of this search: 	String
-		 */
-		this.params = CommunicationConverter.createSearchVector(origin, fileName, ttl, ident);
-
+		this.search = search;
 	}
 
 	@Override
 	public void run() {
 		try {
-			for (Map.Entry<Integer, Peer> entry : this.app.getNeighborList().entrySet()) {
-				Peer itPeer = entry.getValue();
 
-				// Create the client, identifying the server
-				this.client = ClientRequestFactory.getClient("http://" + itPeer.getIP() + ':' + itPeer.getPort() + '/');
-				this.client.execute("communication.respondSearch", params);
+			if (search.getType() == SearchTypes.FLOOD_SEARCH) {
+				this.executeFloodSearch();
+			}else if (this.search.getType() == SearchTypes.K_WALKER_SEARCH){
+				this.executeWalkerSearch();
 			}
-		} catch (IOException e)  {
+
+		} catch (IOException e) {
 			logger.error(e);
 		} catch (XmlRpcException e) {
 			logger.error(e);
 		}
 
+	}
+
+	private void executeFloodSearch() throws IOException, XmlRpcException {
+		for (Map.Entry<Integer, Peer> entry : this.app.getNeighborList().entrySet()) {
+			Peer peer = entry.getValue();
+			this.executeSearch(peer);
+		}
+	}
+
+	private void executeWalkerSearch() throws IOException, XmlRpcException {
+
+		// All neighbors are potential targets
+		ArrayList<Peer> possibleTargets = new ArrayList<Peer>(this.app.getNeighborList().values());
+
+		// ... except for the ones we already sent this search to
+		if (this.app.getSearchList().containsKey(this.search.getId())) {
+			possibleTargets.removeAll(this.app.getSearchList().get(this.search.getId()));
+		}
+
+		if (possibleTargets.size() > 0) {
+			Random rand = new Random();
+
+			this.executeSearch(possibleTargets.get(rand.nextInt(possibleTargets.size())));
+		}
+	}
+
+	private void executeSearch(Peer peer) throws IOException, XmlRpcException{
+		this.client = ClientRequestFactory.getClient("http://" + peer.getIP() + ':' + peer.getPort() + '/');
+		this.client.execute("communication.respondSearch", this.search.toVector());
 	}
 
 }

@@ -32,8 +32,11 @@ public class PeerApp {
 
 	/** List of all files this peer has locally. */
 	Map<String, File> fileList = Collections.synchronizedMap(new HashMap<String, File>());
+
+
+
 	/** List of all search identifiers that have been processed. */
-	HashMap<String, List> searchList = new HashMap<String, List>();
+	HashMap<String, ArrayList<Peer>> searchList = new HashMap<String, ArrayList<Peer>>();
 	/** List the files that have been found on the network and their location. */
 	Map<String, Peer> knownDataList = Collections.synchronizedMap(new HashMap<String, Peer>());
 	/** List of the open neighbor requests. */
@@ -251,6 +254,10 @@ public class PeerApp {
 		return new HashMap<Integer, Peer>(this.neighborList);
 	}
 
+	public synchronized HashMap<String, ArrayList> getSearchList() {
+		return new HashMap<String, ArrayList>(searchList);
+	}
+
 	public synchronized void setNeighborRequest(String address, NeighborNegotiationState state) {
 		this.openNeighborRequests.put(address, state);
 	}
@@ -381,14 +388,7 @@ public class PeerApp {
 	}
 	
 
-	/**
-	 * Pass the search process to all peers in the peer list and add the identifier to the searchList.
-	 * If it has already seen the request, then just ignore it.
-	 */
-	public void passSearch(Vector<Object> origin, String fileName, int ttl, String ident) {
-		Thread pass = new Thread(new PassSearchTask(this, origin, fileName, ttl - 1, ident));
-		pass.start();
-	}
+
 
 	public void nlistGraph(int[] peers, String dir, boolean all) throws IOException {
 
