@@ -7,7 +7,7 @@ import dk.au.cs.p2pn.india.search.BasicSearch;
 import dk.au.cs.p2pn.india.search.FloodSearch;
 import dk.au.cs.p2pn.india.search.SearchTypes;
 import dk.au.cs.p2pn.india.search.WalkerSearch;
-import dk.au.cs.p2pn.india.tasks.PassSearchTask;
+import dk.au.cs.p2pn.india.tasks.SearchPassTask;
 import dk.au.cs.p2pn.india.tasks.SearchSuccessTask;
 
 import org.apache.logging.log4j.LogManager;
@@ -174,7 +174,7 @@ public class CommunicationHandler {
 		// Pass Search
 		logger.info("Inside respond Search, file not matched, calling passSearch");
 
-		Thread pass = new Thread(new PassSearchTask(this.app, search));
+		Thread pass = new Thread(new SearchPassTask(this.app, search));
 		pass.start();
 
 		return new Vector();

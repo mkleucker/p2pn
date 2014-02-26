@@ -21,12 +21,12 @@ import dk.au.cs.p2pn.india.PeerApp;
  * @author johnny
  *         used to pass the search to other peers when the local peer doesn't have the file
  */
-public class PassSearchTask extends DefaultAsyncTask {
+public class SearchPassTask extends DefaultAsyncTask {
 
 	private BasicSearch search;
 	private static final Logger logger = LogManager.getLogger(SearchStartTask.class.getSimpleName());
 
-	public PassSearchTask(PeerApp app, BasicSearch search) {
+	public SearchPassTask(PeerApp app, BasicSearch search) {
 		super(app);
 		this.search = search;
 	}
