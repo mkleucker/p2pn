@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Vector;
 
 
@@ -65,6 +66,17 @@ public class CommunicationConverter {
 		return createSearchSuccessVector(peer, fileName, ttl, ident, null);
 	}
 
+	public static Vector<Object> crateSearchKWalkerVector(Object peer, String fileName, int ttl, String id, int checkback){
+		return createVector(peer, fileName, ttl, id, checkback);
+	}
+
+	public static Vector<Object> createVector(Object... objects){
+		Vector<Object> params = new Vector<Object>();
+		for (Object o : objects){
+			params.add(o);
+		}
+		return params;
+	}
 
 	public static Vector<Object> createSearchSuccessVector(Object peer, String fileName, int ttl, String ident, Object source){
 		Vector<Object> params = new Vector<Object>();

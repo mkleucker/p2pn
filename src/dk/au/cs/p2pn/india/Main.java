@@ -372,7 +372,7 @@ public class Main {
 			peers.get(5).fileList.put("file", new File("p2p3.dot"));
 
 
-			peers.get(0).searchFile("file", 6);
+			peers.get(0).startFloodSearch("file", 6);
 			
 
 			Thread.sleep(30000);
@@ -474,7 +474,7 @@ public class Main {
 				} else {
 					time = 5;
 				}
-				peer.searchFile(filename, time);
+				peer.startFloodSearch(filename, time);
 				logger.info("Wrote file command with the name file argument ant the time: Name file: {} Time: {}", filename, time);
 
 			}

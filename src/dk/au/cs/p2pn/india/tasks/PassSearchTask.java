@@ -2,14 +2,12 @@ package dk.au.cs.p2pn.india.tasks;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
 
 import dk.au.cs.p2pn.india.Peer;
@@ -23,7 +21,7 @@ public class PassSearchTask extends DefaultAsyncTask {
 
 	public Vector<Object> params;
 	public Vector<Object> origin;
-	private static final Logger logger = LogManager.getLogger(SearchTask.class.getSimpleName());
+	private static final Logger logger = LogManager.getLogger(SearchStartTask.class.getSimpleName());
 
 	public PassSearchTask(PeerApp app, Vector<Object> origin, String fileName, Integer ttl, String ident) {
 		super(app);
@@ -50,7 +48,7 @@ public class PassSearchTask extends DefaultAsyncTask {
 				this.client = ClientRequestFactory.getClient("http://" + itPeer.getIP() + ':' + itPeer.getPort() + '/');
 				this.client.execute("communication.respondSearch", params);
 			}
-		} catch (IOException e) {
+		} catch (IOException e)  {
 			logger.error(e);
 		} catch (XmlRpcException e) {
 			logger.error(e);

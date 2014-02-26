@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Vector;
 
+import dk.au.cs.p2pn.india.tasks.SearchStartTask;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcClient;
@@ -13,7 +14,6 @@ import org.apache.xmlrpc.XmlRpcException;
 import dk.au.cs.p2pn.india.Peer;
 import dk.au.cs.p2pn.india.PeerApp;
 import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
-import dk.au.cs.p2pn.india.tasks.SearchTask;
 
 public class Receive implements Runnable{
 
@@ -33,7 +33,7 @@ public class Receive implements Runnable{
 	int port; 
 
 
-	private static final Logger logger = LogManager.getLogger(SearchTask.class.getSimpleName());
+	private static final Logger logger = LogManager.getLogger(SearchStartTask.class.getSimpleName());
 	
 	/**
 	 * @param app PeerApp 

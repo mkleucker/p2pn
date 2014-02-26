@@ -7,7 +7,6 @@ import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
 
 import java.io.IOException;
@@ -33,7 +32,7 @@ public class SearchSuccessTask extends DefaultAsyncTask {
 
 	public Vector<Object> params = new Vector<Object>();
 	public Vector<Object> origin;
-	private static final Logger logger = LogManager.getLogger(SearchTask.class.getSimpleName());
+	private static final Logger logger = LogManager.getLogger(SearchStartTask.class.getSimpleName());
 
 
 	public SearchSuccessTask(Vector<Object> origin, String fileName, int ttl, String ident, PeerApp ownerApp) {
