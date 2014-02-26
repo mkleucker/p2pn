@@ -108,8 +108,10 @@ public class CommunicationHandler {
 	 * @param fileDir Name of the file and directory
 	 * @return Bytes array with the content of the File
 	 */
-	public byte[] getFile(String fileDir) {
-		File file = new File(fileDir);
+	public byte[] getFile(String fileName) {
+		String path = "downloads/";
+		path += fileName;
+		File file = new File(path);
 		byte[] fileBytes = null;
 		try {
 			fileBytes = CommunicationConverter.fileToBytes(file);
