@@ -391,8 +391,8 @@ public class Main {
 			peers.get(5).fileList.put("file", new File("p2p3.dot"));
 
 
-			peers.get(0).startFloodSearch("file", 6);
-			
+			//peers.get(0).startFloodSearch("file", 6);
+			peers.get(0).startWalkerSearch("file", 20, 3);
 
 			Thread.sleep(30000);
 			for (PeerApp peer : peers) {
@@ -498,6 +498,24 @@ public class Main {
 
 			}
 
+			// Proper syntax for kfind:
+			//   kfind _filename_ _ttl_ _numOfWalkers_
+			if (input.contains("kfind")){
+				String[] args = input.substring(5).split(" ");
+				int ttl = 6;
+				int numOfWalkers = 4;
+				if (args.length > 0){
+					String fileName = args[0].trim();
+					if (args.length > 1){
+						ttl = Integer.parseInt(args[1].trim());
+					}
+					if (args.length > 2){
+						numOfWalkers = Integer.parseInt(args[2].trim());
+					}
+					this.peer.startWalkerSearch(fileName, ttl, numOfWalkers);
+				}
+			}
+
 			if (input.contains("get") && input.length() > 4) {
 				String nameFile = input.substring(4);
 				logger.info("Wrote get command with the name file argument: {}", nameFile);
@@ -514,7 +532,7 @@ public class Main {
 			}
 			
 			if (input.contains("testm")) {
-				this.testMonday();;
+				this.testMonday();
 			}
 			
 			checkConnection();
