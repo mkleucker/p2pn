@@ -3,6 +3,7 @@ package dk.au.cs.p2pn.india;
 import dk.au.cs.p2pn.india.download.Receive;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.helper.NeighborNegotiationState;
+import dk.au.cs.p2pn.india.search.AdvancedWalkerSearch;
 import dk.au.cs.p2pn.india.search.BasicSearch;
 import dk.au.cs.p2pn.india.search.FloodSearch;
 import dk.au.cs.p2pn.india.search.WalkerSearch;
@@ -33,7 +34,8 @@ public class PeerApp {
 	/** List of all files this peer has locally. */
 	Map<String, File> fileList = Collections.synchronizedMap(new HashMap<String, File>());
 
-
+	/** Distributions over all the neighbors that are associated with files. */
+	public HashMap<String, Vector<Double>> neighborWeight = new HashMap<String, Vector<Double>>();
 
 	/** List of all search identifiers that have been processed. */
 	HashMap<String, ArrayList<Peer>> searchList = new HashMap<String, ArrayList<Peer>>();
@@ -363,6 +365,12 @@ public class PeerApp {
 		this.startSearch(search);
 	}
 
+	public void startAdvancedWalkerSearch(String fileName, int ttl, int walkersNumber){
+		//TODO
+		AdvancedWalkerSearch search = new AdvancedWalkerSearch(this.getNewSearchIdentifier(), fileName, ttl, this.getPeer(), walkersNumber);
+		this.startSearch(search);
+	}
+	
 	private void startSearch(BasicSearch search){
 		Thread searchThread = new Thread(new SearchStartTask(this, search));
 		searchThread.start();
@@ -387,7 +395,18 @@ public class PeerApp {
 		get.start();
 	}
 	
-
+	/** Normalize the distribution of the neighbors, where the distribution is associated to the fileName. */
+	public void normalizeWeight(String fileName) {
+		double sum = 0.0;
+		for (int i = 0; i < neighborWeight.size(); i++) {
+			sum += neighborWeight.get(fileName).elementAt(i).doubleValue();
+		}
+		Vector<Double> newDistr = new Vector<Double>();
+		for (int i = 0; i < neighborWeight.size(); i++) {
+			newDistr.add(new Double(neighborWeight.get(fileName).elementAt(i).doubleValue() / sum));
+		}
+		neighborWeight.put(fileName, newDistr);
+	}
 
 
 	public void nlistGraph(int[] peers, String dir, boolean all) throws IOException {

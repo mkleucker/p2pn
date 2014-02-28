@@ -9,6 +9,4 @@ public class FloodSearch extends BasicSearch{
 		super(id, filename, ttl, source);
 		this.setType(SearchTypes.FLOOD_SEARCH);
 	}
-
-
 }

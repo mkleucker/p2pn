@@ -37,8 +37,10 @@ public class SearchPassTask extends DefaultAsyncTask {
 
 			if (search.getType() == SearchTypes.FLOOD_SEARCH) {
 				this.executeFloodSearch();
-			}else if (this.search.getType() == SearchTypes.K_WALKER_SEARCH){
+			} else if (this.search.getType() == SearchTypes.K_WALKER_SEARCH){
 				this.executeWalkerSearch();
+			} else if (this.search.getType() == SearchTypes.AK_WALKER_SEARCH){
+				this.executeAdvancedWalkerSearch();
 			}
 
 		} catch (IOException e) {
@@ -71,6 +73,10 @@ public class SearchPassTask extends DefaultAsyncTask {
 
 			this.executeSearch(possibleTargets.get(rand.nextInt(possibleTargets.size())));
 		}
+	}
+
+	private void executeAdvancedWalkerSearch() throws IOException, XmlRpcException {
+		// TODO
 	}
 
 	private void executeSearch(Peer peer) throws IOException, XmlRpcException{

@@ -8,6 +8,7 @@ import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.search.BasicSearch;
 import dk.au.cs.p2pn.india.search.SearchTypes;
 import dk.au.cs.p2pn.india.search.WalkerSearch;
+import dk.au.cs.p2pn.india.search.AdvancedWalkerSearch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcClient;
@@ -54,6 +55,8 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 				this.executeFloodSearch(params);
 			} else if (this.search.getType() == SearchTypes.K_WALKER_SEARCH) {
 				this.executeWalkerSearch(params);
+			} else if (this.search.getType() == SearchTypes.AK_WALKER_SEARCH) {
+				this.executeAKWalkerSearch(params);
 			}
 
 		} catch (IOException e) {
@@ -65,6 +68,7 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 	}
 
 
+	@SuppressWarnings("rawtypes")
 	private void executeFloodSearch(Vector params) throws IOException, XmlRpcException {
 		for (Map.Entry<Integer, Peer> entry : this.app.getNeighborList().entrySet()) {
 			Peer itPeer = entry.getValue();
@@ -72,12 +76,8 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 		}
 	}
 
-	private void executeSearch(Peer peer, Vector params) throws IOException, XmlRpcException{
-		this.client = ClientRequestFactory.getClient("http://" + peer.getIP() + ':' + peer.getPort() + '/');
-		this.client.execute("communication.respondSearch", params);
-	}
-
-	private void executeWalkerSearch(Vector params) throws IOException, XmlRpcException{
+	@SuppressWarnings("rawtypes")
+	private void executeWalkerSearch(Vector params) throws IOException, XmlRpcException {
 		WalkerSearch wSearch = (WalkerSearch) this.search;
 		int num = wSearch.getWalkerCount();
 
@@ -95,5 +95,43 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 			this.executeSearch(peer, params);
 		}
 
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private void executeAKWalkerSearch(Vector params) throws IOException, XmlRpcException {
+		AdvancedWalkerSearch aSearch = (AdvancedWalkerSearch) this.search;
+		int num = aSearch.getWalkerCount();
+		
+		ArrayList<Peer> possiblePeers = new ArrayList<Peer>(this.app.getNeighborList().values());
+		if (num <= possiblePeers.size()) {
+			num = possiblePeers.size();
+		}
+		
+		if (!this.app.neighborWeight.containsKey(this.search.getFilename())) {
+			Vector<Double> distr = new Vector<Double>();
+			for (int i = 0; i < this.app.getNeighborList().size(); i++) {
+				distr.add(new Double(1.0));
+			}
+			this.app.neighborWeight.put(this.search.getFilename(), distr);
+			this.app.normalizeWeight(this.search.getFilename());
+			
+			Random rand = new Random();
+			for (int i = 0; i < num; i++){
+				int randomInt = rand.nextInt(possiblePeers.size());
+				Peer peer = possiblePeers.get(randomInt);
+				possiblePeers.remove(randomInt);
+				this.executeSearch(peer, params);
+			}
+		} else {
+			//TODO
+		}
+		
+
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private void executeSearch(Peer peer, Vector params) throws IOException, XmlRpcException{
+		this.client = ClientRequestFactory.getClient("http://" + peer.getIP() + ':' + peer.getPort() + '/');
+		this.client.execute("communication.respondSearch", params);
 	}
 }
