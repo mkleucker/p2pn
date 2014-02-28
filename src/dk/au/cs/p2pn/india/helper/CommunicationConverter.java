@@ -8,8 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Vector;
+
+import dk.au.cs.p2pn.india.Peer;
 
 
 public class CommunicationConverter {

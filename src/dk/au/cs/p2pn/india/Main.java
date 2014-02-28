@@ -109,6 +109,16 @@ public class Main {
 
 	}
 	
+	/**
+	 * 
+	 * Test method for the download part.
+	 * 
+	 * Must be used while it's being used the "testMonday() function" in another
+	 * computer.  With this method you can establish a connection between
+	 * 4 peers and offer a file to be downloaded from one peer to another
+	 * peer (try.txt file).
+	 *   
+	 */
 	private void testProcessHostFile(){
 		
 		//use your own IP
@@ -155,6 +165,15 @@ public class Main {
 }
 	
 
+	/**
+	 * 
+	 * Test method for the download part.
+	 * 
+	 * Must be used while it's being used the "testProcessHostFile() function" in another
+	 * computer.  With this method you can establish a connection between
+	 * 4 peers and download the file offered by the peer to be donwloaded (try.txt). 
+	 *   
+	 */
 	@SuppressWarnings("unused")
 	private void testMonday(){
 
@@ -372,8 +391,8 @@ public class Main {
 			peers.get(5).fileList.put("file", new File("p2p3.dot"));
 
 
-			peers.get(0).startFloodSearch("file", 6);
-			
+			//peers.get(0).startFloodSearch("file", 6);
+			peers.get(0).startWalkerSearch("file", 20, 3);
 
 			Thread.sleep(30000);
 			for (PeerApp peer : peers) {
@@ -433,7 +452,7 @@ public class Main {
 				this.test0();
 			}
 
-			if (input.equals("testget")) {
+			if (input.equals("testge")) {
 				try {
 					this.testGet();
 				} catch (InterruptedException e) {
@@ -479,10 +498,29 @@ public class Main {
 
 			}
 
+			// Proper syntax for kfind:
+			//   kfind _filename_ _ttl_ _numOfWalkers_
+			if (input.contains("kfind")){
+				String[] args = input.substring(5).split(" ");
+				int ttl = 6;
+				int numOfWalkers = 4;
+				if (args.length > 0){
+					String fileName = args[0].trim();
+					if (args.length > 1){
+						ttl = Integer.parseInt(args[1].trim());
+					}
+					if (args.length > 2){
+						numOfWalkers = Integer.parseInt(args[2].trim());
+					}
+					this.peer.startWalkerSearch(fileName, ttl, numOfWalkers);
+				}
+			}
+
 			if (input.contains("get") && input.length() > 4) {
 				String nameFile = input.substring(4);
 				logger.info("Wrote get command with the name file argument: {}", nameFile);
-				// TODO: Call proper get function on the peer object?
+				this.peer.getP2pFile(nameFile, this.peer.knownDataList.get(nameFile).getIP(), this.peer.knownDataList.get(nameFile).getPort());
+			
 			}
 
 			if (input.contains("report")) {
@@ -491,6 +529,10 @@ public class Main {
 			
 			if (input.contains("testhostfile")) {
 				this.testProcessHostFile();
+			}
+			
+			if (input.contains("testm")) {
+				this.testMonday();
 			}
 			
 			checkConnection();

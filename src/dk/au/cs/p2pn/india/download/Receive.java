@@ -56,7 +56,13 @@ public class Receive implements Runnable{
 	 */
 	public static void createFile(byte[] data, String fileName) throws IOException{
     	FileOutputStream output;
-        File newFile=new File(fileName);
+    	String path = "downloads/";
+    	// Folder creation
+    	File folder = new File("downloads");
+    	folder.mkdirs();
+    	path += fileName;
+    	// File creation 
+        File newFile=new File(path);
         newFile.createNewFile();
         output = new FileOutputStream(newFile);
         output.write(data);
@@ -75,7 +81,6 @@ public class Receive implements Runnable{
 			this.client = ClientRequestFactory.getClient("http://" + ip + ':' + port + '/');
 			logger.info("Inside the receive thread, ready to execute");
 			res = (byte[])this.client.execute("communication.getFile", params);			
-
 			createFile(res,fileName);
 			logger.info("File downloaded. (Name: {} )", fileName);
 		} catch (IOException e) {
