@@ -253,9 +253,26 @@ public class PeerApp {
 			HashMap<Peer, Double> neighbours = neighborWeight.get(peer);
 			neighbours.put(peer, 0.5);
 			String fileName = entry.getKey();
-			neighborWeight.put(fileName, neighbours); 
+			neighborWeight.put(fileName, neighbours);
+			this.normalizeWeight(fileName);
 		}
 	}
+	
+	/**
+	 * Updates the NeighborWeight list when a new neighbor is added.
+	 *  
+	 */
+	public void updateNeighborWeightAddFile(String fileName){
+		HashMap<Peer, Double> neighbours = null;
+		Set<Entry<Integer, Peer>> set = this.neighborList.entrySet();
+		for (Entry<Integer, Peer> entry: set) {
+			//HashMap<Peer, Double> neighbours = neighborWeight.get(peer);
+			neighbours.put(entry.getValue(), 0.5); 
+		}
+		neighborWeight.put(fileName, neighbours);
+		this.normalizeWeight(fileName);
+	}
+	
 	/**
 	 * Returns a copy of the list of lastSeenList.
 	 *
