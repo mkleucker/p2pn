@@ -109,6 +109,7 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 		
 		if (!this.app.neighborWeight.containsKey(this.search.getFilename())) {	
 			//TODO
+			this.app.updateNeighborWeightAddFile(this.search.getFilename());
 			// update the neighborWeight hashmap by calling the method from victor.
 			Random rand = new Random();
 			for (int i = 0; i < num; i++){
