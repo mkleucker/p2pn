@@ -35,7 +35,7 @@ public class PeerApp {
 	Map<String, File> fileList = Collections.synchronizedMap(new HashMap<String, File>());
 
 	/** Distributions over all the neighbors that are associated with files. */
-	public HashMap<String, Vector<Double>> neighborWeight = new HashMap<String, Vector<Double>>();
+	public HashMap<String, HashMap<Peer, Double>> neighborWeight = new HashMap<String, HashMap<Peer, Double>>();
 
 	/** List of all search identifiers that have been processed. */
 	HashMap<String, ArrayList<Peer>> searchList = new HashMap<String, ArrayList<Peer>>();
@@ -398,14 +398,15 @@ public class PeerApp {
 	/** Normalize the distribution of the neighbors, where the distribution is associated to the fileName. */
 	public void normalizeWeight(String fileName) {
 		double sum = 0.0;
-		for (int i = 0; i < neighborWeight.size(); i++) {
-			sum += neighborWeight.get(fileName).elementAt(i).doubleValue();
+		HashMap<Peer, Double> distr = neighborWeight.get(fileName);
+		Set<Map.Entry<Peer, Double>> set = distr.entrySet();
+		for (Map.Entry<Peer, Double> entry: set) {
+			sum += entry.getValue().doubleValue();
 		}
-		Vector<Double> newDistr = new Vector<Double>();
-		for (int i = 0; i < neighborWeight.size(); i++) {
-			newDistr.add(new Double(neighborWeight.get(fileName).elementAt(i).doubleValue() / sum));
+		for (Map.Entry<Peer, Double> entry: set) {
+			distr.put(entry.getKey(), new Double(entry.getValue().doubleValue() / sum));
 		}
-		neighborWeight.put(fileName, newDistr);
+		neighborWeight.put(fileName, distr);
 	}
 
 
