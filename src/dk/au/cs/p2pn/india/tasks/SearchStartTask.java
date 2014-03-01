@@ -107,14 +107,9 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 			num = possiblePeers.size();
 		}
 		
-		if (!this.app.neighborWeight.containsKey(this.search.getFilename())) {
-			Vector<Double> distr = new Vector<Double>();
-			for (int i = 0; i < this.app.getNeighborList().size(); i++) {
-				distr.add(new Double(1.0));
-			}
-			this.app.neighborWeight.put(this.search.getFilename(), distr);
-			this.app.normalizeWeight(this.search.getFilename());
-			
+		if (!this.app.neighborWeight.containsKey(this.search.getFilename())) {	
+			//TODO
+			// update the neighborWeight hashmap by calling the method from victor.
 			Random rand = new Random();
 			for (int i = 0; i < num; i++){
 				int randomInt = rand.nextInt(possiblePeers.size());
