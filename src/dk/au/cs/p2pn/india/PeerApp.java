@@ -8,6 +8,7 @@ import dk.au.cs.p2pn.india.search.BasicSearch;
 import dk.au.cs.p2pn.india.search.FloodSearch;
 import dk.au.cs.p2pn.india.search.WalkerSearch;
 import dk.au.cs.p2pn.india.tasks.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.util.*;
+import java.util.Map.Entry;
 
 public class PeerApp {
 
@@ -237,9 +239,23 @@ public class PeerApp {
 		if (success) {
 			this.neighborList.put(peer.getId(), peer);
 			this.updateLastSeen(peer);
+
 		}
 	}
-
+	
+	/**
+	 * Updates the NeighborWeight list when a new neighbor is added.
+	 *  
+	 */
+	public void updateNeighborWeightAddNeighbor(){
+		Set<Entry<String, File>> set = fileList.entrySet();			
+		for (Entry<String, File> entry: set) {
+			HashMap<Peer, Double> neighbours = neighborWeight.get(peer);
+			neighbours.put(peer, 0.5);
+			String fileName = entry.getKey();
+			neighborWeight.put(fileName, neighbours); 
+		}
+	}
 	/**
 	 * Returns a copy of the list of lastSeenList.
 	 *
