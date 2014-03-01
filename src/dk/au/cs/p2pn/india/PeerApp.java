@@ -258,8 +258,9 @@ public class PeerApp {
 		}
 	}
 	
+	
 	/**
-	 * Updates the NeighborWeight list when a new neighbor is added.
+	 * Updates the NeighborWeight list when a new file is added.
 	 *  
 	 */
 	public void updateNeighborWeightAddFile(String fileName){
@@ -272,6 +273,7 @@ public class PeerApp {
 		neighborWeight.put(fileName, neighbours);
 		this.normalizeWeight(fileName);
 	}
+	
 	
 	/**
 	 * Returns a copy of the list of lastSeenList.
