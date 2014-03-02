@@ -264,10 +264,9 @@ public class PeerApp {
 	 *  
 	 */
 	public void updateNeighborWeightAddFile(String fileName){
-		HashMap<Peer, Double> neighbours = null;
 		Set<Entry<Integer, Peer>> set = this.neighborList.entrySet();
+		HashMap<Peer, Double> neighbours = new HashMap<Peer, Double>();
 		for (Entry<Integer, Peer> entry: set) {
-			//HashMap<Peer, Double> neighbours = neighborWeight.get(peer);
 			neighbours.put(entry.getValue(), 0.5); 
 		}
 		neighborWeight.put(fileName, neighbours);
@@ -552,6 +551,4 @@ public class PeerApp {
 		output.println("}");
 		output.close();
 	}
-
-
 }
