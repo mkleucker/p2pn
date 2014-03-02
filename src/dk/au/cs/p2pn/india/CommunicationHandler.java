@@ -9,7 +9,6 @@ import dk.au.cs.p2pn.india.search.SearchTypes;
 import dk.au.cs.p2pn.india.search.WalkerSearch;
 import dk.au.cs.p2pn.india.tasks.SearchPassTask;
 import dk.au.cs.p2pn.india.tasks.SearchSuccessTask;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -105,7 +104,7 @@ public class CommunicationHandler {
 	/**
 	 * XML-RPC: Answers the call to 'communication.getFile'
 	 *
-	 * @param fileDir Name of the file and directory
+	 * @param fileName Name of the file and directory
 	 * @return Bytes array with the content of the File
 	 */
 	public byte[] getFile(String fileName) {

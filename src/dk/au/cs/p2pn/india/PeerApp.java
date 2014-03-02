@@ -418,6 +418,17 @@ public class PeerApp {
 		return searchIdentifier;
 	}
 
+	public synchronized void addToSearchList(String searchId, Peer peer) {
+		ArrayList<Peer> peers;
+		if (this.searchList.containsKey(searchId)){
+			peers = this.searchList.get(searchId);
+		} else {
+			peers = new ArrayList<Peer>();
+		}
+		peers.add(peer);
+		this.searchList.put(searchId, peers);
+	}
+
 	/**
 	 * Get a file from another peer. 
 	 * 

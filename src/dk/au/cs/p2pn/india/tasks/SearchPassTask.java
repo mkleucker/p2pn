@@ -81,6 +81,7 @@ public class SearchPassTask extends DefaultAsyncTask {
 	}
 
 	private void executeSearch(Peer peer) throws IOException, XmlRpcException{
+		this.app.addToSearchList(this.search.getId(), peer);
 		this.client = ClientRequestFactory.getClient("http://" + peer.getIP() + ':' + peer.getPort() + '/');
 		this.client.execute("communication.respondSearch", this.search.toVector());
 	}

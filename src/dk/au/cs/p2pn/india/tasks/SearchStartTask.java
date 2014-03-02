@@ -49,16 +49,14 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 	@Override
 	public void run() {
 
-		Vector<Object> params = this.search.toVector();
-
 		try {
 
 			if (this.search.getType() == SearchTypes.FLOOD_SEARCH) {
-				this.executeFloodSearch(params);
+				this.executeFloodSearch();
 			} else if (this.search.getType() == SearchTypes.K_WALKER_SEARCH) {
-				this.executeWalkerSearch(params);
+				this.executeWalkerSearch();
 			} else if (this.search.getType() == SearchTypes.AK_WALKER_SEARCH) {
-				this.executeAKWalkerSearch(params);
+				this.executeAKWalkerSearch();
 			}
 
 		} catch (IOException e) {
@@ -71,17 +69,16 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 
 
 	@SuppressWarnings("rawtypes")
-	private void executeFloodSearch(Vector params) throws IOException, XmlRpcException {
+	private void executeFloodSearch() throws IOException, XmlRpcException {
 		for (Map.Entry<Integer, Peer> entry : this.app.getNeighborList().entrySet()) {
 			Peer itPeer = entry.getValue();
-			this.executeSearch(itPeer, params);
+			this.executeSearch(itPeer);
 		}
 	}
 
 	@SuppressWarnings("rawtypes")
-	private void executeWalkerSearch(Vector params) throws IOException, XmlRpcException {
-		WalkerSearch wSearch = (WalkerSearch) this.search;
-		int num = wSearch.getWalkerCount();
+	private void executeWalkerSearch() throws IOException, XmlRpcException {
+		int num = ((WalkerSearch)this.search).getWalkerCount();
 
 		ArrayList<Peer> possiblePeers = new ArrayList<Peer>(this.app.getNeighborList().values());
 
@@ -94,13 +91,13 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 			int randomInt = rand.nextInt(possiblePeers.size());
 			Peer peer = possiblePeers.get(randomInt);
 			possiblePeers.remove(randomInt);
-			this.executeSearch(peer, params);
+			this.executeSearch(peer);
 		}
 
 	}
 	
 	@SuppressWarnings("rawtypes")
-	private void executeAKWalkerSearch(Vector params) throws IOException, XmlRpcException {
+	private void executeAKWalkerSearch() throws IOException, XmlRpcException {
 		AdvancedWalkerSearch aSearch = (AdvancedWalkerSearch) this.search;
 		int num = aSearch.getWalkerCount();
 		
@@ -117,7 +114,7 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 				int randomInt = rand.nextInt(possiblePeers.size());
 				Peer peer = possiblePeers.get(randomInt);
 				possiblePeers.remove(randomInt);
-				this.executeSearch(peer, params);
+				this.executeSearch(peer);
 			}
 		} else {
 			//TODO
@@ -149,8 +146,9 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	private void executeSearch(Peer peer, Vector params) throws IOException, XmlRpcException{
+	private void executeSearch(Peer peer) throws IOException, XmlRpcException{
+		this.app.addToSearchList(this.search.getId(), peer);
 		this.client = ClientRequestFactory.getClient("http://" + peer.getIP() + ':' + peer.getPort() + '/');
-		this.client.execute("communication.respondSearch", params);
+		this.client.execute("communication.respondSearch", this.search.toVector());
 	}
 }
