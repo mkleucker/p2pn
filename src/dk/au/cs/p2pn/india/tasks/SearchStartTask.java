@@ -95,6 +95,9 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 	
 	private void executeAKWalkerSearch() throws IOException, XmlRpcException {
 		//TODO still need to add my self to the search path and decrease the weights of peers I send message to
+
+		((AdvancedWalkerSearch)this.search).addToPath(this.peer);
+
 		AdvancedWalkerSearch aSearch = (AdvancedWalkerSearch) this.search;
 		int num = aSearch.getWalkerCount();
 		

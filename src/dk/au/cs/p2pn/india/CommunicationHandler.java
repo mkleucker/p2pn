@@ -137,13 +137,38 @@ public class CommunicationHandler {
 	}
 
 	/**
+	 * Responder for the AWalker Search
+	 */
+	public Vector respondSearch(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> path) {
+
+		AdvancedWalkerSearch search;
+		Peer peer = CommunicationConverter.createPeer(origin);
+
+		if (type == SearchTypes.AK_WALKER_SEARCH.getValue()){
+			search = new AdvancedWalkerSearch(ident, fileName, ttl, peer);
+		}else{
+			return new Vector();
+		}
+
+		Vector<Peer> peerPath = new Vector<Peer>();
+		for (Object e : path){
+			peerPath.add(CommunicationConverter.createPeer((Vector) e));
+		}
+
+		search.setPath(peerPath);
+
+		this.processSearch(search);
+
+		return new Vector();
+	}
+
+	/**
 	 * XML-RPC: Answers the call to `communication.respondSearch`, it will return immediately. If it has the file,
 	 * it will start a new thread to give a successful result to the caller before returning. Otherwise
 	 * if the ttl is positive, then it passes the search to all the peers in its peer list.
 	 */
 	@SuppressWarnings("rawtypes")
 	public Vector respondSearch(Vector<Object> origin, String fileName, int ttl, String ident, int type) {
-		logger.info("Inside respondSearch");
 
 		BasicSearch search;
 		Peer peer = CommunicationConverter.createPeer(origin);
@@ -152,38 +177,36 @@ public class CommunicationHandler {
 			search = new FloodSearch(ident, fileName, ttl, peer);
 		} else if (type == SearchTypes.K_WALKER_SEARCH.getValue()) {
 			search = new WalkerSearch(ident, fileName, ttl, peer);
-		} else if (type == SearchTypes.AK_WALKER_SEARCH.getValue()){
-			search = new AdvancedWalkerSearch(ident, fileName, ttl, peer);
 		} else {
 			return new Vector();
 		}
 
+		this.processSearch(search);
+
+		return new Vector();
+	}
+
+	private void processSearch(BasicSearch search){
 		// Case 1: Search
 		if (!shouldAnswerSearch(search)) {
-			return new Vector();
+			return;
 		}
 
 		// Send success
-		if (this.app.fileList.containsKey(fileName)) {
+		if (this.app.fileList.containsKey(search.getFilename())) {
 			// but only if i didn't yet.
 			if(!this.app.getSearchList().containsKey(search.getId())) {
 				logger.info("Inside respondSearch, file matched, starting a new success thread");
 				//TODO need to update the weight along the whole path
-				search.setSuccess(this.app.getPeer());
 				Thread success = new Thread(new SearchSuccessTask(search, this.app));
 				success.run();
 			}
-			return new Vector();
+			return;
 
 		}
 
-		// Pass Search
-		logger.info("Inside respond Search, file not matched, calling passSearch");
-
 		Thread pass = new Thread(new SearchPassTask(this.app, search));
 		pass.start();
-
-		return new Vector();
 	}
 
 	private boolean shouldAnswerSearch(BasicSearch search) {
@@ -217,8 +240,10 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Vector respondSuccess(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> owner) {
-		this.app.knownDataList.put(fileName, CommunicationConverter.createPeer(owner));
 		logger.info("The known data list is {}", this.app.knownDataList);
 		return new Vector();
 	}
+
+
+
 }
