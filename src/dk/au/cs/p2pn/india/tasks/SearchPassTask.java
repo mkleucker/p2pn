@@ -4,10 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
-import java.util.Vector;
-
 import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
-import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.search.BasicSearch;
 import dk.au.cs.p2pn.india.search.SearchTypes;
 import org.apache.logging.log4j.LogManager;

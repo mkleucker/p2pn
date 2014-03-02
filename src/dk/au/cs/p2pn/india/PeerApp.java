@@ -426,6 +426,28 @@ public class PeerApp {
 		return searchIdentifier;
 	}
 
+	public Peer randomDrawDelete(Vector<Map.Entry<Peer, Double>> v) {
+		double[] cumula = new double[v.size()];
+		cumula[0] = v.get(0).getValue().doubleValue();
+		for (int i = 1; i < v.size(); i++) {
+			cumula[i] = cumula[i - 1] + v.get(i).getValue().doubleValue();
+		}
+		for (int i = 0; i < v.size(); i++) {
+			cumula[i] = cumula[i] / cumula[v.size() - 1];
+		}
+		double r = Math.random();
+		int index = v.size() - 1;
+		for (int i = 0; i < v.size(); i++) {
+			if (r < cumula[i]) {
+				index = i;
+				break;
+			}
+		}
+		Peer res = v.get(index).getKey();
+		v.remove(index);
+		return res;
+	}
+	
 	public synchronized void addToSearchList(String searchId, Peer peer) {
 		ArrayList<Peer> peers;
 		if (this.searchList.containsKey(searchId)){
