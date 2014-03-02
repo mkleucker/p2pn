@@ -77,6 +77,7 @@ public class SearchPassTask extends DefaultAsyncTask {
 
 	private void executeAdvancedWalkerSearch() throws IOException, XmlRpcException {
 		// TODO
+		// when 
 	}
 
 	private void executeSearch(Peer peer) throws IOException, XmlRpcException{

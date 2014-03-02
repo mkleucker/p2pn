@@ -49,7 +49,7 @@ public class PeerApp {
 
 
 	/** No idea what this means. Better don't touch it. */
-	public static double[] POWERLAWCUMULATIVE = new double[10];
+	public static double[] POWERLAWCUMULATIVE = new double[10]; // They are just used to draw capacity according to power law.
 	/** No idea what this means. Better don't touch it. */
 	public static double ALPHA;
 
