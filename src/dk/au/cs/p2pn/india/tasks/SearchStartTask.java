@@ -3,7 +3,6 @@ package dk.au.cs.p2pn.india.tasks;
 import dk.au.cs.p2pn.india.Peer;
 import dk.au.cs.p2pn.india.PeerApp;
 import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
-import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.search.BasicSearch;
 import dk.au.cs.p2pn.india.search.SearchTypes;
 import dk.au.cs.p2pn.india.search.WalkerSearch;
@@ -34,6 +33,7 @@ import java.util.Vector;
  *         Identifier of this search: 	String
  */
 
+@SuppressWarnings({ "unused" })
 public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 
 	private static final Logger logger = LogManager.getLogger(SearchStartTask.class.getSimpleName());
@@ -45,7 +45,6 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 		this.search = search;
 	}
 
-	@SuppressWarnings({"unused", "rawtypes"})
 	@Override
 	public void run() {
 
@@ -68,7 +67,6 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 	}
 
 
-	@SuppressWarnings("rawtypes")
 	private void executeFloodSearch() throws IOException, XmlRpcException {
 		for (Map.Entry<Integer, Peer> entry : this.app.getNeighborList().entrySet()) {
 			Peer itPeer = entry.getValue();
@@ -76,7 +74,6 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
 	private void executeWalkerSearch() throws IOException, XmlRpcException {
 		int num = ((WalkerSearch)this.search).getWalkerCount();
 
@@ -96,7 +93,6 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 
 	}
 	
-	@SuppressWarnings("rawtypes")
 	private void executeAKWalkerSearch() throws IOException, XmlRpcException {
 		AdvancedWalkerSearch aSearch = (AdvancedWalkerSearch) this.search;
 		int num = aSearch.getWalkerCount();
@@ -145,7 +141,6 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 		}
 	}
 	
-	@SuppressWarnings("rawtypes")
 	private void executeSearch(Peer peer) throws IOException, XmlRpcException{
 		this.app.addToSearchList(this.search.getId(), peer);
 		this.client = ClientRequestFactory.getClient("http://" + peer.getIP() + ':' + peer.getPort() + '/');

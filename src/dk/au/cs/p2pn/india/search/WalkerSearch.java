@@ -12,6 +12,7 @@ public class WalkerSearch extends BasicSearch {
 	public WalkerSearch(String id, String filename, int ttl, Peer source){
 		super(id, filename, ttl, source);
 		this.setType(SearchTypes.K_WALKER_SEARCH);
+		this.walkerCount = 5;
 	}
 
 	public WalkerSearch(String id, String filename, int ttl, Peer source, int walkerCount){

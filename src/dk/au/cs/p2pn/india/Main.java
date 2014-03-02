@@ -58,6 +58,7 @@ public class Main {
 		checkConn.start();
 	}
 
+	@SuppressWarnings("unused")
 	private void testGet() throws InterruptedException {
 		PeerApp peer1 = new PeerApp(0, "127.0.0.1", 18525, 9);
 		Thread.sleep(1000);
@@ -174,7 +175,6 @@ public class Main {
 	 * 4 peers and download the file offered by the peer to be donwloaded (try.txt). 
 	 *   
 	 */
-	@SuppressWarnings("unused")
 	private void testMonday(){
 
 		try {
@@ -483,6 +483,9 @@ public class Main {
 				nlistParse(input);
 			}
 
+			//TODO
+			/** The method contains should not be used since "kfind" and "afind" and "find" they all contains "find". */
+			
 			if (input.contains("find") && input.length() > 5) {
 
 				String[] address = input.substring(5).split(" ");
@@ -503,16 +506,34 @@ public class Main {
 			if (input.contains("kfind")){
 				String[] args = input.substring(5).split(" ");
 				int ttl = 6;
-				int numOfWalkers = 4;
 				if (args.length > 0){
 					String fileName = args[0].trim();
 					if (args.length > 1){
 						ttl = Integer.parseInt(args[1].trim());
 					}
 					if (args.length > 2){
-						numOfWalkers = Integer.parseInt(args[2].trim());
+						this.peer.startWalkerSearch(fileName, ttl, Integer.parseInt(args[2].trim()));
+					} else {
+						this.peer.startWalkerSearch(fileName, ttl);
 					}
-					this.peer.startWalkerSearch(fileName, ttl, numOfWalkers);
+				}
+			}
+
+			/** Parsing the advanced walker search command */
+			//   akfind _filename_ _ttl_ _numOfWalkers_
+			if (input.contains("afind")){
+				String[] args = input.substring(6).split(" ");
+				int ttl = 6;
+				if (args.length > 0){
+					String fileName = args[0].trim();
+					if (args.length > 1){
+						ttl = Integer.parseInt(args[1].trim());
+					}
+					if (args.length > 2){
+						this.peer.startAdvancedWalkerSearch(fileName, ttl, Integer.parseInt(args[2].trim()));
+					} else {
+						this.peer.startAdvancedWalkerSearch(fileName, ttl);
+					}
 				}
 			}
 

@@ -290,8 +290,8 @@ public class PeerApp {
 		return new HashMap<Integer, Peer>(this.neighborList);
 	}
 
-	public synchronized HashMap<String, ArrayList> getSearchList() {
-		return new HashMap<String, ArrayList>(searchList);
+	public synchronized HashMap<String, ArrayList<Peer>> getSearchList() {
+		return new HashMap<String, ArrayList<Peer>>(searchList);
 	}
 
 	public synchronized void setNeighborRequest(String address, NeighborNegotiationState state) {
@@ -399,9 +399,18 @@ public class PeerApp {
 		this.startSearch(search);
 	}
 
+	public void startWalkerSearch(String fileName, int ttl){
+		WalkerSearch search = new WalkerSearch(this.getNewSearchIdentifier(), fileName, ttl, this.getPeer());
+		this.startSearch(search);
+	}
+	
 	public void startAdvancedWalkerSearch(String fileName, int ttl, int walkersNumber){
-		//TODO
 		AdvancedWalkerSearch search = new AdvancedWalkerSearch(this.getNewSearchIdentifier(), fileName, ttl, this.getPeer(), walkersNumber);
+		this.startSearch(search);
+	}
+	
+	public void startAdvancedWalkerSearch(String fileName, int ttl){
+		AdvancedWalkerSearch search = new AdvancedWalkerSearch(this.getNewSearchIdentifier(), fileName, ttl, this.getPeer());
 		this.startSearch(search);
 	}
 	

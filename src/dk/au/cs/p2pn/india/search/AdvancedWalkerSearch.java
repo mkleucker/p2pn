@@ -9,6 +9,7 @@ public class AdvancedWalkerSearch extends BasicSearch {
 	public AdvancedWalkerSearch(String id, String filename, int ttl, Peer source){
 		super(id, filename, ttl, source);
 		this.setType(SearchTypes.AK_WALKER_SEARCH);
+		this.walkerCount = 5;
 	}
 
 	public AdvancedWalkerSearch(String id, String filename, int ttl, Peer source, int walkerCount){
