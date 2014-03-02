@@ -79,7 +79,11 @@ public class SearchPassTask extends DefaultAsyncTask {
 
 	private void executeAdvancedWalkerSearch() throws IOException, XmlRpcException {
 		// TODO
-		
+
+		AdvancedWalkerSearch aWalkerSearch = (AdvancedWalkerSearch)this.search;
+
+		((AdvancedWalkerSearch)this.search).addToPath(this.peer);
+
 		/** If this peer has never searched the file, he will create a new neightWeight entry and 
 		 * draw a neighbor uniformly at random to send the searching message to. */
 		if (!this.app.neighborWeight.containsKey(this.search.getFilename())) {	
@@ -99,9 +103,11 @@ public class SearchPassTask extends DefaultAsyncTask {
 		if (v.size() > 0) {
 			Map.Entry<Peer, Double> peerSearch = this.app.randomDrawDelete(v);
 			this.executeSearch(peerSearch.getKey());
-			this.app.neighborWeight.get(this.search.getFilename()).put(peerSearch.getKey(), peerSearch.getValue().doubleValue() / AdvancedWalkerSearch.DEC);
+			this.app.neighborWeight.get(this.search.getFilename()).put(peerSearch.getKey(), peerSearch.getValue() / AdvancedWalkerSearch.DEC);
 			this.app.normalizeWeight(this.search.getFilename());
 		}
+
+
 	}
 
 	private void executeSearch(Peer peer) throws IOException, XmlRpcException{

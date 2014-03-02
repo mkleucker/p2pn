@@ -5,6 +5,7 @@ import dk.au.cs.p2pn.india.PeerApp;
 import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 
+import dk.au.cs.p2pn.india.search.AdvancedWalkerSearch;
 import dk.au.cs.p2pn.india.search.BasicSearch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,19 +40,35 @@ public class SearchSuccessTask extends DefaultAsyncTask {
 		super(ownerApp);
 
 		this.search = search;
+		this.search.setSuccess(this.peer);
+
 	}
 
 	@Override
 	public void run() {
+		logger.info("Inside SearchSuccessTask, establishing connection");
+
 		try {
-			logger.info("Inside SearchSuccessTask, establishing connection");
-			this.client = ClientRequestFactory.getClient("http://" + search.getSource().getIP() + ':' + search.getSource().getPort() + '/');
-			this.client.execute("communication.respondSuccess", search.toVector());
+			if (this.search instanceof AdvancedWalkerSearch){
+				executeBacktrace();
+			}else{
+				executeDirectSucces();
+			}
 		} catch (IOException e) {
 			logger.error(e);
 		} catch (XmlRpcException e) {
 			logger.error(e);
 		}
+	}
+
+	private void executeDirectSucces() throws IOException, XmlRpcException{
+		this.client = ClientRequestFactory.getClient("http://" + search.getSource().getIP() + ':' + search.getSource().getPort() + '/');
+		this.client.execute("communication.respondSuccess", search.toVector());
+	}
+
+	private void executeBacktrace() throws IOException, XmlRpcException{
+		this.client = ClientRequestFactory.getClient("http://" + search.getSource().getIP() + ':' + search.getSource().getPort() + '/');
+		this.client.execute("communication.respondSuccess", search.toVector());
 	}
 
 }
