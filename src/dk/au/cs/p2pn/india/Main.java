@@ -485,8 +485,7 @@ public class Main {
 			//TODO
 			/** The method contains should not be used since "kfind" and "afind" and "find" they all contains "find". */
 			
-			if (input.contains("find") && input.length() > 5) {
-
+			if (input.substring(0, 4).equals("find") && input.length() > 5) {
 				String[] address = input.substring(5).split(" ");
 				String filename = address[0];
 				Integer time;
@@ -502,7 +501,8 @@ public class Main {
 
 			// Proper syntax for kfind:
 			//   kfind _filename_ _ttl_ _numOfWalkers_
-			if (input.contains("kfind")){
+			
+			if (input.substring(0, 5).equals("kfind") && input.length() > 6){
 				String[] args = input.substring(5).split(" ");
 				int ttl = 6;
 				if (args.length > 0){
@@ -520,7 +520,8 @@ public class Main {
 
 			/** Parsing the advanced walker search command */
 			//   akfind _filename_ _ttl_ _numOfWalkers_
-			if (input.contains("afind")){
+			
+			if (input.substring(0, 5).equals("afind") && input.length() > 6){
 				String[] args = input.substring(6).split(" ");
 				int ttl = 6;
 				if (args.length > 0){
@@ -535,22 +536,23 @@ public class Main {
 					}
 				}
 			}
-
-			if (input.contains("get") && input.length() > 4) {
+			
+			if (input.substring(0, 3).equals("get") && input.length() > 4) {
 				String nameFile = input.substring(4);
 				logger.info("Wrote get command with the name file argument: {}", nameFile);
 				this.peer.getP2pFile(nameFile, this.peer.knownDataList.get(nameFile).getIP(), this.peer.knownDataList.get(nameFile).getPort());
 			
 			}
 
-			if (input.contains("report")) {
+			if (input.equals("report")) {
 				System.out.println("Recorded Data:\n " + Reporter.getData());
 			}
 			
+
 			if (input.contains("testhostfile")) {
 				this.testProcessHostFile();
 			}
-			
+
 			if (input.contains("testm")) {
 				this.testMonday();
 			}
