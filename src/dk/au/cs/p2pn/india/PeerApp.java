@@ -426,6 +426,14 @@ public class PeerApp {
 		return searchIdentifier;
 	}
 
+	/**
+	 * @param v
+	 * @return a Map entry, the key is peer, value is the probability.
+	 * 
+	 * This function randomly draw a element in the vector according to the distribution
+	 * and return the entry as well as deleting it from the vector. Used when selecting a 
+	 * random neighbor to query.
+	 */
 	public Map.Entry<Peer, Double> randomDrawDelete(Vector<Map.Entry<Peer, Double>> v) {
 		double[] cumula = new double[v.size()];
 		cumula[0] = v.get(0).getValue().doubleValue();
