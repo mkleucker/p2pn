@@ -106,30 +106,22 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 		/** If this peer has never searched the file, he will create a new neightWeight entry and 
 		 * draw a neighbor uniformly at random to send the searching message to. */
 		if (!this.app.neighborWeight.containsKey(this.search.getFilename())) {	
-			
 			this.app.updateNeighborWeightAddFile(this.search.getFilename());
-			Random rand = new Random();
-			for (int i = 0; i < num; i++){
-				int randomInt = rand.nextInt(possiblePeers.size());
-				Peer peer = possiblePeers.get(randomInt);
-				possiblePeers.remove(randomInt);
-				this.executeSearch(peer);
-			}
-		} else {
-			//randomly draw some neighbors according to the distribution
-			this.app.normalizeWeight(this.search.getFilename());
-			Set<Map.Entry<Peer, Double>> distr = this.app.neighborWeight.get(this.search.getFilename()).entrySet();
-			Vector<Map.Entry<Peer, Double>> v = new Vector<Map.Entry<Peer, Double>>();
-			for (Map.Entry<Peer, Double> entry: distr) {
-				v.add(entry);
-			}
-			for (int i = 0; i < num; i++) {
-				Map.Entry<Peer, Double> peerSearch = this.app.randomDrawDelete(v);
-				this.executeSearch(peerSearch.getKey());
-				this.app.neighborWeight.get(this.search.getFilename()).put(peerSearch.getKey(), peerSearch.getValue().doubleValue() / AdvancedWalkerSearch.DEC);
-			}
-			this.app.normalizeWeight(this.search.getFilename());
 		}
+		
+		//randomly draw some neighbors according to the distribution
+		this.app.normalizeWeight(this.search.getFilename());
+		Set<Map.Entry<Peer, Double>> distr = this.app.neighborWeight.get(this.search.getFilename()).entrySet();
+		Vector<Map.Entry<Peer, Double>> v = new Vector<Map.Entry<Peer, Double>>();
+		for (Map.Entry<Peer, Double> entry: distr) {
+			v.add(entry);
+		}
+		for (int i = 0; i < num; i++) {
+			Map.Entry<Peer, Double> peerSearch = this.app.randomDrawDelete(v);
+			this.executeSearch(peerSearch.getKey());
+			this.app.neighborWeight.get(this.search.getFilename()).put(peerSearch.getKey(), peerSearch.getValue().doubleValue() / AdvancedWalkerSearch.DEC);
+		}
+		this.app.normalizeWeight(this.search.getFilename());
 	}
 
 	

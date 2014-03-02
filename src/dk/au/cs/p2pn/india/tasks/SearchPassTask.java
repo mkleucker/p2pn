@@ -4,9 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+import java.util.Vector;
+
 import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
+import dk.au.cs.p2pn.india.search.AdvancedWalkerSearch;
 import dk.au.cs.p2pn.india.search.BasicSearch;
 import dk.au.cs.p2pn.india.search.SearchTypes;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcException;
@@ -74,7 +79,29 @@ public class SearchPassTask extends DefaultAsyncTask {
 
 	private void executeAdvancedWalkerSearch() throws IOException, XmlRpcException {
 		// TODO
-		// when 
+		
+		/** If this peer has never searched the file, he will create a new neightWeight entry and 
+		 * draw a neighbor uniformly at random to send the searching message to. */
+		if (!this.app.neighborWeight.containsKey(this.search.getFilename())) {	
+			this.app.updateNeighborWeightAddFile(this.search.getFilename());
+		}
+		
+		//randomly draw some neighbors according to the distribution
+		this.app.normalizeWeight(this.search.getFilename());
+		Set<Map.Entry<Peer, Double>> distr = this.app.neighborWeight.get(this.search.getFilename()).entrySet();
+		Vector<Map.Entry<Peer, Double>> v = new Vector<Map.Entry<Peer, Double>>();
+		for (Map.Entry<Peer, Double> entry: distr) {
+			if (!this.app.getSearchList().get(this.search.getFilename()).contains(entry.getKey())) {
+				v.add(entry);
+			}
+		}
+		
+		if (v.size() > 0) {
+			Map.Entry<Peer, Double> peerSearch = this.app.randomDrawDelete(v);
+			this.executeSearch(peerSearch.getKey());
+			this.app.neighborWeight.get(this.search.getFilename()).put(peerSearch.getKey(), peerSearch.getValue().doubleValue() / AdvancedWalkerSearch.DEC);
+			this.app.normalizeWeight(this.search.getFilename());
+		}
 	}
 
 	private void executeSearch(Peer peer) throws IOException, XmlRpcException{
