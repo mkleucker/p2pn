@@ -426,7 +426,7 @@ public class PeerApp {
 		return searchIdentifier;
 	}
 
-	public Peer randomDrawDelete(Vector<Map.Entry<Peer, Double>> v) {
+	public Map.Entry<Peer, Double> randomDrawDelete(Vector<Map.Entry<Peer, Double>> v) {
 		double[] cumula = new double[v.size()];
 		cumula[0] = v.get(0).getValue().doubleValue();
 		for (int i = 1; i < v.size(); i++) {
@@ -443,7 +443,7 @@ public class PeerApp {
 				break;
 			}
 		}
-		Peer res = v.get(index).getKey();
+		Map.Entry<Peer, Double> res = v.get(index);
 		v.remove(index);
 		return res;
 	}

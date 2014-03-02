@@ -3,12 +3,14 @@ package dk.au.cs.p2pn.india;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import dk.au.cs.p2pn.india.reporting.Reporter;
 import dk.au.cs.p2pn.india.reporting.ReporterMeasurements;
+import dk.au.cs.p2pn.india.search.AdvancedWalkerSearch;
 import dk.au.cs.p2pn.india.search.BasicSearch;
 import dk.au.cs.p2pn.india.search.FloodSearch;
 import dk.au.cs.p2pn.india.search.SearchTypes;
 import dk.au.cs.p2pn.india.search.WalkerSearch;
 import dk.au.cs.p2pn.india.tasks.SearchPassTask;
 import dk.au.cs.p2pn.india.tasks.SearchSuccessTask;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -150,6 +152,8 @@ public class CommunicationHandler {
 			search = new FloodSearch(ident, fileName, ttl, peer);
 		} else if (type == SearchTypes.K_WALKER_SEARCH.getValue()) {
 			search = new WalkerSearch(ident, fileName, ttl, peer);
+		} else if (type == SearchTypes.AK_WALKER_SEARCH.getValue()){
+			search = new AdvancedWalkerSearch(ident, fileName, ttl, peer);
 		} else {
 			return new Vector();
 		}
@@ -164,6 +168,7 @@ public class CommunicationHandler {
 			// but only if i didn't yet.
 			if(!this.app.getSearchList().containsKey(search.getId())) {
 				logger.info("Inside respondSearch, file matched, starting a new success thread");
+				//TODO need to update the weight along the whole path
 				search.setSuccess(this.app.getPeer());
 				Thread success = new Thread(new SearchSuccessTask(search, this.app));
 				success.run();
@@ -196,14 +201,13 @@ public class CommunicationHandler {
 
 		// Process Walker search only if i have more neighbors left
 		// then I have already contacted for this.
-		if (search.getType() == SearchTypes.K_WALKER_SEARCH) {
+		if (search.getType() == SearchTypes.K_WALKER_SEARCH || search.getType() == SearchTypes.AK_WALKER_SEARCH) {
 			if (this.app.getSearchList().get(search.getId()).size() < this.app.getNeighborList().size()){
 				return true;
 			}
 		}
 
 		return false;
-		
 	}
 
 	/**
@@ -217,6 +221,4 @@ public class CommunicationHandler {
 		logger.info("The known data list is {}", this.app.knownDataList);
 		return new Vector();
 	}
-
-
 }

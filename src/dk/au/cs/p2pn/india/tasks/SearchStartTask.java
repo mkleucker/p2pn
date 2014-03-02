@@ -94,6 +94,7 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 	}
 	
 	private void executeAKWalkerSearch() throws IOException, XmlRpcException {
+		//TODO still need to add my self to the search path and decrease the weights of peers I send message to
 		AdvancedWalkerSearch aSearch = (AdvancedWalkerSearch) this.search;
 		int num = aSearch.getWalkerCount();
 		
@@ -123,8 +124,11 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 				v.add(entry);
 			}
 			for (int i = 0; i < num; i++) {
-				this.executeSearch(this.app.randomDrawDelete(v));
+				Map.Entry<Peer, Double> peerSearch = this.app.randomDrawDelete(v);
+				this.executeSearch(peerSearch.getKey());
+				this.app.neighborWeight.get(this.search.getFilename()).put(peerSearch.getKey(), peerSearch.getValue().doubleValue() / AdvancedWalkerSearch.DEC);
 			}
+			this.app.normalizeWeight(this.search.getFilename());
 		}
 	}
 
