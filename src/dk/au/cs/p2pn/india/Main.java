@@ -128,11 +128,10 @@ public class Main {
 				
 		try {
 			Thread.sleep(2000);
-			peer1.fileList.put("try.txt", new File("try.txt"));
 			
+			peer1.uploadFile("try.txt");
+						
 			Thread.sleep(1000);
-			
-			System.out.println("File list of peer1: " + peer1.fileList);
 			
 			//ping with from peer 1 to peer 2
 			peer1.ping("10.192.75.179", 18526);
@@ -184,7 +183,7 @@ public class Main {
 		
 		Thread.sleep(2000);
 		
-		peer1.fileList.put("duck.mp4", new File("duck.mp4"));
+		peer1.uploadFile("duck.mp4");
 		peer2.ping(peer1.getPeer().getIP(), peer1.getPeer().getPort());
 		
 		System.out.println("Peer 1's IP is " + peer1.getPeer().getIP());

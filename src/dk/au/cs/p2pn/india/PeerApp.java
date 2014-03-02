@@ -582,4 +582,16 @@ public class PeerApp {
 		output.println("}");
 		output.close();
 	}
+
+
+	/**
+	 * Add a file to the file list of the peer. 
+	 * 
+	 * @param nameFile Name of the file to be uploaded
+	 */
+	public void uploadFile(String fileName) {
+		fileList.put(fileName, new File(fileName));
+		logger.info("Added file {} to the file list.",fileName);
+		logger.info("Actual state of the file list of the peer{} : {}",this.getPeer().getId(),fileList);
+	}
 }
