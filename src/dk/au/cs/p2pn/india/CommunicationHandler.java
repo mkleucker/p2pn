@@ -262,8 +262,7 @@ public class CommunicationHandler {
 	@SuppressWarnings("rawtypes")
 	public Vector respondSuccess(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> owner) {
 		Reporter.addEvent(ReporterMeasurements.SEARCH_SUCCESSFUL);
-		this.app.addSearchSuccess(ident, CommunicationConverter.createPeer(owner));
-		this.app.knownDataList.put(fileName, CommunicationConverter.createPeer(owner));
+		this.app.addSearchSuccess(fileName, CommunicationConverter.createPeer(owner));
 		logger.info("The known data list is {}", this.app.knownDataList);
 		return new Vector();
 	}
