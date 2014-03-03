@@ -139,6 +139,8 @@ public class CommunicationHandler {
 	 * Responder for the AWalker Search
 	 */
 	public Vector respondSearch(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> path) {
+		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
+		Reporter.addEvent(ReporterMeasurements.SEARCH_RECEIVED);
 
 		AdvancedWalkerSearch search;
 		Peer peer = CommunicationConverter.createPeer(origin);
@@ -168,6 +170,8 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Vector respondSearch(Vector<Object> origin, String fileName, int ttl, String ident, int type) {
+		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
+		Reporter.addEvent(ReporterMeasurements.SEARCH_RECEIVED);
 
 		BasicSearch search;
 		Peer peer = CommunicationConverter.createPeer(origin);
@@ -188,6 +192,7 @@ public class CommunicationHandler {
 	}
 
 	private void processSearch(BasicSearch search){
+
 		// Case 1: Search
 		if (!shouldAnswerSearch(search)) {
 			return;
@@ -217,20 +222,25 @@ public class CommunicationHandler {
 			return false;
 		}
 
-		// Process all search types if thy haven't been passed yet.
-		if (!this.app.searchList.containsKey(search.getId())){
-			return true;
-		}
+
 
 		// Process Walker search only if i have more neighbors left
 		// then I have already contacted for this.
 		if (search.getType() == SearchTypes.K_WALKER_SEARCH || search.getType() == SearchTypes.AK_WALKER_SEARCH) {
-			if (this.app.getSearchList().get(search.getId()).size() < this.app.getNeighborList().size()){
+			if (!this.app.getSearchList().containsKey(search.getId())){
+				return true;
+			}else if(this.app.getSearchList().get(search.getId()).size() < this.app.getNeighborList().size()){
 				return true;
 			}
+			return false;
 		}
 
-		return false;
+		// Process all search types if thy haven't been passed yet.
+		if (this.app.searchList.containsKey(search.getId())){
+			return false;
+		}
+
+		return true;
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -245,6 +255,8 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Vector respondSuccess(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> owner) {
+		Reporter.addEvent(ReporterMeasurements.SEARCH_SUCCESSFUL);
+		this.app.addSearchSuccess(ident, CommunicationConverter.createPeer(owner));
 		logger.info("The known data list is {}", this.app.knownDataList);
 		return new Vector();
 	}

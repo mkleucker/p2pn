@@ -294,6 +294,10 @@ public class PeerApp {
 		return new HashMap<String, ArrayList<Peer>>(searchList);
 	}
 
+	public synchronized void addSearchSuccess(String id, Peer owner){
+		this.knownDataList.put(id,owner);
+	}
+
 	public synchronized void setNeighborRequest(String address, NeighborNegotiationState state) {
 		this.openNeighborRequests.put(address, state);
 	}
@@ -595,7 +599,7 @@ public class PeerApp {
 	/**
 	 * Add a file to the file list of the peer. 
 	 * 
-	 * @param nameFile Name of the file to be uploaded
+	 * @param fileName Name of the file to be uploaded
 	 */
 	public void uploadFile(String fileName) {
 		fileList.put(fileName, new File(fileName));

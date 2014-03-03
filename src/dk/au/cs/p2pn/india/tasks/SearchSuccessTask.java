@@ -62,6 +62,7 @@ public class SearchSuccessTask extends DefaultAsyncTask {
 	}
 
 	private void executeDirectSucces() throws IOException, XmlRpcException{
+		this.app.addToSearchList(this.search.getId(), this.search.getSource());
 		this.client = ClientRequestFactory.getClient("http://" + search.getSource().getIP() + ':' + search.getSource().getPort() + '/');
 		this.client.execute("communication.respondSuccess", search.toVector());
 	}

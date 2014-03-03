@@ -3,6 +3,8 @@ package dk.au.cs.p2pn.india.tasks;
 import dk.au.cs.p2pn.india.Peer;
 import dk.au.cs.p2pn.india.PeerApp;
 import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
+import dk.au.cs.p2pn.india.reporting.Reporter;
+import dk.au.cs.p2pn.india.reporting.ReporterMeasurements;
 import dk.au.cs.p2pn.india.search.BasicSearch;
 import dk.au.cs.p2pn.india.search.SearchTypes;
 import dk.au.cs.p2pn.india.search.WalkerSearch;
@@ -47,7 +49,7 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 
 	@Override
 	public void run() {
-
+		Reporter.addEvent(ReporterMeasurements.SEARCH_STARTED);
 		try {
 
 			if (this.search.getType() == SearchTypes.FLOOD_SEARCH) {
@@ -60,8 +62,10 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 
 		} catch (IOException e) {
 			logger.error(e);
+			e.printStackTrace();
 		} catch (XmlRpcException e) {
 			logger.error(e);
+			e.printStackTrace();
 		}
 
 	}
