@@ -93,11 +93,23 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 
 	}
 	
+	/**
+	 * @throws IOException
+	 * @throws XmlRpcException
+	 * 
+	 * Randomly pick num neighbors to pass the search to, every time a neighbor is
+	 *  chosen, it is deleted from the 
+	 * vector v, and a random draw over the rest elements is performed.
+	 */
 	private void executeAKWalkerSearch() throws IOException, XmlRpcException {
+<<<<<<< HEAD
+		//TODO still need to add my self to the search path
+=======
 		//TODO still need to add my self to the search path and decrease the weights of peers I send message to
 
 		((AdvancedWalkerSearch)this.search).addToPath(this.peer);
 
+>>>>>>> dbfa4291a3a57a316f206e0f25b1210bdf356054
 		AdvancedWalkerSearch aSearch = (AdvancedWalkerSearch) this.search;
 		int num = aSearch.getWalkerCount();
 		
@@ -122,6 +134,9 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 		for (int i = 0; i < num; i++) {
 			Map.Entry<Peer, Double> peerSearch = this.app.randomDrawDelete(v);
 			this.executeSearch(peerSearch.getKey());
+			/** When a message is passed to a peer, we decrease 
+			 * its weight, if the search is successful, 
+			 * we will then increase it by a larger amount. */
 			this.app.neighborWeight.get(this.search.getFilename()).put(peerSearch.getKey(), peerSearch.getValue().doubleValue() / AdvancedWalkerSearch.DEC);
 		}
 		this.app.normalizeWeight(this.search.getFilename());

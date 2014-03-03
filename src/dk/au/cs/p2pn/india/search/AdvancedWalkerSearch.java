@@ -1,6 +1,21 @@
 package dk.au.cs.p2pn.india.search;
 
 import dk.au.cs.p2pn.india.Peer;
+<<<<<<< HEAD
+/**
+ * 
+ * @author johnny
+ *
+ * Advanced walker search, automatically updates the weights of each neighbor so that 
+ * the searching message is most likely sent to the neighbor with the highest probability
+ * of success.
+ * 
+ */
+public class AdvancedWalkerSearch extends BasicSearch {
+
+	private int walkerCount;
+	/** Each time a search is not success, the weight is divided by DEC. */
+=======
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 
 import java.util.Vector;
@@ -8,6 +23,7 @@ import java.util.Vector;
 public class AdvancedWalkerSearch extends BasicSearch {
 
 	private int walkerCount = 5;
+>>>>>>> dbfa4291a3a57a316f206e0f25b1210bdf356054
 	public static final double DEC = 1.2;
 	private Vector<Peer> path = new Vector<Peer>();
 

@@ -117,7 +117,6 @@ public class CommunicationHandler {
 		try {
 			fileBytes = CommunicationConverter.fileToBytes(file);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return fileBytes;
@@ -177,6 +176,8 @@ public class CommunicationHandler {
 			search = new FloodSearch(ident, fileName, ttl, peer);
 		} else if (type == SearchTypes.K_WALKER_SEARCH.getValue()) {
 			search = new WalkerSearch(ident, fileName, ttl, peer);
+		} else if (type == SearchTypes.AK_WALKER_SEARCH.getValue()) {
+			search = new AdvancedWalkerSearch(ident, fileName, ttl, peer);
 		} else {
 			return new Vector();
 		}
@@ -202,7 +203,6 @@ public class CommunicationHandler {
 				success.run();
 			}
 			return;
-
 		}
 
 		Thread pass = new Thread(new SearchPassTask(this.app, search));
