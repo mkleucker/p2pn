@@ -138,6 +138,7 @@ public class CommunicationHandler {
 	/**
 	 * Responder for the AWalker Search
 	 */
+	@SuppressWarnings("rawtypes")
 	public Vector respondSearch(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> path) {
 		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
 		Reporter.addEvent(ReporterMeasurements.SEARCH_RECEIVED);
@@ -170,8 +171,6 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Vector respondSearch(Vector<Object> origin, String fileName, int ttl, String ident, int type) {
-		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
-		Reporter.addEvent(ReporterMeasurements.SEARCH_RECEIVED);
 
 		BasicSearch search;
 		Peer peer = CommunicationConverter.createPeer(origin);
@@ -192,7 +191,6 @@ public class CommunicationHandler {
 	}
 
 	private void processSearch(BasicSearch search){
-
 		// Case 1: Search
 		if (!shouldAnswerSearch(search)) {
 			return;
@@ -204,6 +202,10 @@ public class CommunicationHandler {
 			if(!this.app.getSearchList().containsKey(search.getId())) {
 				logger.info("Inside respondSearch, file matched, starting a new success thread");
 				//TODO need to update the weight along the whole path
+				if (search.getType() == SearchTypes.AK_WALKER_SEARCH) {
+					AdvancedWalkerSearch aWalkerSearch = (AdvancedWalkerSearch)search;
+					aWalkerSearch.addToPath(this.peer);
+				}
 				Thread success = new Thread(new SearchSuccessTask(search, this.app));
 				success.run();
 			}
@@ -243,6 +245,10 @@ public class CommunicationHandler {
 		return true;
 	}
 	
+	/**
+	 * 
+	 * @return an empty vector
+	 */
 	@SuppressWarnings("rawtypes")
 	public Vector updateSuccess() {
 		return new Vector();
@@ -257,6 +263,7 @@ public class CommunicationHandler {
 	public Vector respondSuccess(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> owner) {
 		Reporter.addEvent(ReporterMeasurements.SEARCH_SUCCESSFUL);
 		this.app.addSearchSuccess(ident, CommunicationConverter.createPeer(owner));
+		this.app.knownDataList.put(fileName, CommunicationConverter.createPeer(owner));
 		logger.info("The known data list is {}", this.app.knownDataList);
 		return new Vector();
 	}

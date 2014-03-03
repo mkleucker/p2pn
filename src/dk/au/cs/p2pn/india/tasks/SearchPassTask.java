@@ -82,9 +82,9 @@ public class SearchPassTask extends DefaultAsyncTask {
 
 		AdvancedWalkerSearch aWalkerSearch = (AdvancedWalkerSearch)this.search;
 
-		((AdvancedWalkerSearch)this.search).addToPath(this.peer);
+		aWalkerSearch.addToPath(this.peer);
 
-		/** If this peer has never searched the file, he will create a new neightWeight entry and 
+		/** If this peer has never searched the file, he will create a new neighborWeight entry and 
 		 * draw a neighbor uniformly at random to send the searching message to. */
 		if (!this.app.neighborWeight.containsKey(this.search.getFilename())) {	
 			this.app.updateNeighborWeightAddFile(this.search.getFilename());
