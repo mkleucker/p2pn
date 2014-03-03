@@ -78,11 +78,6 @@ public class SearchPassTask extends DefaultAsyncTask {
 	}
 
 	private void executeAdvancedWalkerSearch() throws IOException, XmlRpcException {
-		// TODO
-
-		AdvancedWalkerSearch aWalkerSearch = (AdvancedWalkerSearch)this.search;
-
-		aWalkerSearch.addToPath(this.peer);
 
 		/** If this peer has never searched the file, he will create a new neighborWeight entry and 
 		 * draw a neighbor uniformly at random to send the searching message to. */

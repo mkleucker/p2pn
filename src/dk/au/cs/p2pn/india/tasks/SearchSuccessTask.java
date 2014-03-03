@@ -41,7 +41,6 @@ public class SearchSuccessTask extends DefaultAsyncTask {
 
 		this.search = search;
 		this.search.setSuccess(this.peer);
-
 	}
 
 	@Override
@@ -49,11 +48,7 @@ public class SearchSuccessTask extends DefaultAsyncTask {
 		logger.info("Inside SearchSuccessTask, establishing connection");
 
 		try {
-			if (this.search instanceof AdvancedWalkerSearch){
-				executeBacktrace();
-			}else{
-				executeDirectSucces();
-			}
+				executeDirectSuccess();
 		} catch (IOException e) {
 			logger.error(e);
 		} catch (XmlRpcException e) {
@@ -61,12 +56,7 @@ public class SearchSuccessTask extends DefaultAsyncTask {
 		}
 	}
 
-	private void executeDirectSucces() throws IOException, XmlRpcException{
-		this.client = ClientRequestFactory.getClient("http://" + search.getSource().getIP() + ':' + search.getSource().getPort() + '/');
-		this.client.execute("communication.respondSuccess", search.toVector());
-	}
-
-	private void executeBacktrace() throws IOException, XmlRpcException{
+	private void executeDirectSuccess() throws IOException, XmlRpcException{
 		this.client = ClientRequestFactory.getClient("http://" + search.getSource().getIP() + ':' + search.getSource().getPort() + '/');
 		this.client.execute("communication.respondSuccess", search.toVector());
 	}
