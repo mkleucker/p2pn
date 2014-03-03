@@ -1,7 +1,9 @@
 package dk.au.cs.p2pn.india.search;
 
+import java.util.Vector;
+
 import dk.au.cs.p2pn.india.Peer;
-<<<<<<< HEAD
+import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 /**
  * 
  * @author johnny
@@ -13,17 +15,9 @@ import dk.au.cs.p2pn.india.Peer;
  */
 public class AdvancedWalkerSearch extends BasicSearch {
 
-	private int walkerCount;
-	/** Each time a search is not success, the weight is divided by DEC. */
-=======
-import dk.au.cs.p2pn.india.helper.CommunicationConverter;
-
-import java.util.Vector;
-
-public class AdvancedWalkerSearch extends BasicSearch {
-
 	private int walkerCount = 5;
->>>>>>> dbfa4291a3a57a316f206e0f25b1210bdf356054
+	/** Each time a search is not success, the weight is divided by DEC. */
+
 	public static final double DEC = 1.2;
 	private Vector<Peer> path = new Vector<Peer>();
 
@@ -76,6 +70,7 @@ public class AdvancedWalkerSearch extends BasicSearch {
 		return params;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private Vector<Vector> getPathAsVectors(){
 		Vector<Vector> vPeers = new Vector<Vector>();
 		for (Peer p : this.path){
