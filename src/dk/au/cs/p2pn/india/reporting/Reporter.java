@@ -45,4 +45,8 @@ public class Reporter {
 		}
 		return retVal;
 	}
+
+	public static void resetReporter(){
+		Reporter.init();
+	}
 }

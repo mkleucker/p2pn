@@ -71,9 +71,7 @@ public class Main {
 		ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
 		try {
 
-
-			peers.add(this.peer);
-			int numOfPeers = 50;
+			int numOfPeers = 100;
 			int port = this.peer.getPeer().getPort();
 			for (int i = 1; i < numOfPeers; i++) {
 				peers.add(new PeerApp(i, "127.0.0.1", port + i, rand.nextInt(9) + 1));
@@ -101,6 +99,7 @@ public class Main {
 				peer.startNegotiate();
 			}
 
+			Thread.sleep(5000);
 
 
 		} catch (Exception e) {
@@ -384,24 +383,36 @@ public class Main {
 
 	private void testSearching() throws InterruptedException{
 		try {
-
+			Reporter.resetReporter();
 			ArrayList<PeerApp> peers = setupNetwork();
+			String shoot = "Stats\nBuildingNetwork:" + Reporter.getData().toString()+"\n";
+			Random random = new Random();
+			peers.get(random.nextInt(peers.size())).fileList.put("file", new File("p2p3.dot"));
+			peers.get(random.nextInt(peers.size())).fileList.put("file2", new File("output.dot"));
 
-			peers.get(5).fileList.put("file", new File("p2p3.dot"));
+			Reporter.resetReporter();
 
+			peers.get(random.nextInt(peers.size())).startFloodSearch("file", 6);
 
-			//peers.get(0).startFloodSearch("file", 6);
-			peers.get(0).startWalkerSearch("file", 20, 3);
+			Thread.sleep(10000);
+			shoot += "\nFloodSearch: \n"+Reporter.getData().toString()+"\n";
+			Reporter.resetReporter();
+			peers.get(random.nextInt(peers.size())).startWalkerSearch("file", 20, 3);
 
-			Thread.sleep(30000);
+			Thread.sleep(10000);
+			shoot += "\nWalkerSearch: \n"+Reporter.getData().toString()+"\n";
 			for (PeerApp peer : peers) {
 				peer.destroy();
 			}
+
+			logger.info(shoot);
 
 		} catch (Exception e) {
 
 		}
 	}
+
+
 
 
 	/**

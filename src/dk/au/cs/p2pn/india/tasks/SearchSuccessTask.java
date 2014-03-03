@@ -48,7 +48,7 @@ public class SearchSuccessTask extends DefaultAsyncTask {
 		logger.info("Inside SearchSuccessTask, establishing connection");
 
 		try {
-				executeDirectSuccess();
+			executeDirectSuccess();
 		} catch (IOException e) {
 			logger.error(e);
 		} catch (XmlRpcException e) {
