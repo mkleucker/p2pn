@@ -71,8 +71,6 @@ public class Main {
 		ArrayList<PeerApp> peers = new ArrayList<PeerApp>();
 		try {
 
-
-			peers.add(this.peer);
 			int numOfPeers = 50;
 			int port = this.peer.getPeer().getPort();
 			for (int i = 1; i < numOfPeers; i++) {
