@@ -138,6 +138,7 @@ public class CommunicationHandler {
 	/**
 	 * Responder for the AWalker Search
 	 */
+	@SuppressWarnings("rawtypes")
 	public Vector respondSearch(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> path) {
 
 		AdvancedWalkerSearch search;
@@ -176,8 +177,6 @@ public class CommunicationHandler {
 			search = new FloodSearch(ident, fileName, ttl, peer);
 		} else if (type == SearchTypes.K_WALKER_SEARCH.getValue()) {
 			search = new WalkerSearch(ident, fileName, ttl, peer);
-		} else if (type == SearchTypes.AK_WALKER_SEARCH.getValue()) {
-			search = new AdvancedWalkerSearch(ident, fileName, ttl, peer);
 		} else {
 			return new Vector();
 		}
@@ -199,6 +198,10 @@ public class CommunicationHandler {
 			if(!this.app.getSearchList().containsKey(search.getId())) {
 				logger.info("Inside respondSearch, file matched, starting a new success thread");
 				//TODO need to update the weight along the whole path
+				if (search.getType() == SearchTypes.AK_WALKER_SEARCH) {
+					AdvancedWalkerSearch aWalkerSearch = (AdvancedWalkerSearch)search;
+					aWalkerSearch.addToPath(this.peer);
+				}
 				Thread success = new Thread(new SearchSuccessTask(search, this.app));
 				success.run();
 			}
@@ -233,6 +236,10 @@ public class CommunicationHandler {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @return an empty vector
+	 */
 	@SuppressWarnings("rawtypes")
 	public Vector updateSuccess() {
 		return new Vector();
@@ -245,6 +252,7 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Vector respondSuccess(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> owner) {
+		this.app.knownDataList.put(fileName, CommunicationConverter.createPeer(owner));
 		logger.info("The known data list is {}", this.app.knownDataList);
 		return new Vector();
 	}

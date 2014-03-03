@@ -4,15 +4,14 @@ import dk.au.cs.p2pn.india.Peer;
 import dk.au.cs.p2pn.india.PeerApp;
 import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
 import dk.au.cs.p2pn.india.helper.CommunicationConverter;
-
 import dk.au.cs.p2pn.india.search.AdvancedWalkerSearch;
 import dk.au.cs.p2pn.india.search.BasicSearch;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcException;
 
 import java.io.IOException;
-import java.util.Vector;
 
 /**
  * 
@@ -30,6 +29,7 @@ import java.util.Vector;
  * 
  * Owner of the file:Peer
  */
+@SuppressWarnings("unused")
 public class SearchSuccessTask extends DefaultAsyncTask {
 
 	private static final Logger logger = LogManager.getLogger(SearchStartTask.class.getSimpleName());
