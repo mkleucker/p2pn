@@ -102,14 +102,10 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 	 * vector v, and a random draw over the rest elements is performed.
 	 */
 	private void executeAKWalkerSearch() throws IOException, XmlRpcException {
-<<<<<<< HEAD
-		//TODO still need to add my self to the search path
-=======
 		//TODO still need to add my self to the search path and decrease the weights of peers I send message to
 
 		((AdvancedWalkerSearch)this.search).addToPath(this.peer);
 
->>>>>>> dbfa4291a3a57a316f206e0f25b1210bdf356054
 		AdvancedWalkerSearch aSearch = (AdvancedWalkerSearch) this.search;
 		int num = aSearch.getWalkerCount();
 		

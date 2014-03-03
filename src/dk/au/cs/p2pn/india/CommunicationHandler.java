@@ -232,6 +232,11 @@ public class CommunicationHandler {
 
 		return false;
 	}
+	
+	@SuppressWarnings("rawtypes")
+	public Vector updateSuccess() {
+		return new Vector();
+	}
 
 	/**
 	 * XML-RPC: Answers the call to `communication.respondSuccess` when another peer has the file that the
@@ -243,7 +248,4 @@ public class CommunicationHandler {
 		logger.info("The known data list is {}", this.app.knownDataList);
 		return new Vector();
 	}
-
-
-
 }
