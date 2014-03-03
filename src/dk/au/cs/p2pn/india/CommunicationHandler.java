@@ -10,6 +10,7 @@ import dk.au.cs.p2pn.india.search.SearchTypes;
 import dk.au.cs.p2pn.india.search.WalkerSearch;
 import dk.au.cs.p2pn.india.tasks.SearchPassTask;
 import dk.au.cs.p2pn.india.tasks.SearchSuccessTask;
+import dk.au.cs.p2pn.india.tasks.SearchSuccessUpdateTask;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -201,9 +202,11 @@ public class CommunicationHandler {
 				if (search.getType() == SearchTypes.AK_WALKER_SEARCH) {
 					AdvancedWalkerSearch aWalkerSearch = (AdvancedWalkerSearch)search;
 					aWalkerSearch.addToPath(this.peer);
+					Thread update = new Thread(new SearchSuccessUpdateTask(aWalkerSearch, this.app));
+					update.start();
 				}
 				Thread success = new Thread(new SearchSuccessTask(search, this.app));
-				success.run();
+				success.start();
 			}
 			return;
 		}
@@ -237,11 +240,43 @@ public class CommunicationHandler {
 	}
 	
 	/**
-	 * 
-	 * @return an empty vector
+	 * This function takes the last element from the path and update the weight of it in the 
+	 * neighbor weight hashmap when there is a successful search.
+	 * @return an empty vector, which doesn't mean anything.
 	 */
 	@SuppressWarnings("rawtypes")
-	public Vector updateSuccess() {
+	public Vector updateSuccess(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> path) {
+		
+		AdvancedWalkerSearch aWalkerSearch = new AdvancedWalkerSearch(ident, fileName, ttl, peer);
+
+		/** Build the path from the generic vector. */
+		
+		Vector<Peer> peerPath = new Vector<Peer>();
+		for (Object e : path){
+			peerPath.add(CommunicationConverter.createPeer((Vector) e));
+		}
+		
+		Peer updatePeer = peerPath.lastElement();
+		
+		/** Updating the probability. */
+		Double newProb = new Double(this.app.neighborWeight.get(fileName).get(updatePeer).doubleValue() * AdvancedWalkerSearch.INC);
+		this.app.neighborWeight.get(fileName).put(updatePeer, newProb);
+		this.app.normalizeWeight(fileName);
+		
+		/** Remove the one we have processed. */
+		peerPath.removeElementAt(peerPath.size() - 1);
+		
+		/** Using the new path. */
+		aWalkerSearch.setPath(peerPath);
+		
+		/** If the size is only 1, we stop. */
+		if (peerPath.size() < 2) {
+			return new Vector();
+		}
+
+		Thread update = new Thread(new SearchSuccessUpdateTask(aWalkerSearch, this.app));
+		update.start();
+	
 		return new Vector();
 	}
 

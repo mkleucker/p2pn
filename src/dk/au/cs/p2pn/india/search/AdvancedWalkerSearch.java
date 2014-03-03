@@ -16,9 +16,11 @@ import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 public class AdvancedWalkerSearch extends BasicSearch {
 
 	private int walkerCount = 5;
-	/** Each time a search is not success, the weight is divided by DEC. */
-
+	/** Each time a search is not successful, the weight is divided by DEC. */
 	public static final double DEC = 1.2;
+	/** Each time a search is successful, the weight is multiplied by INC. */
+	public static final double INC = 1.6;
+
 	private Vector<Peer> path = new Vector<Peer>();
 
 	public AdvancedWalkerSearch(String id, String filename, int ttl, Peer source){
