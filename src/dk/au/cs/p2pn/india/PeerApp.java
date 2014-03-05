@@ -608,9 +608,9 @@ public class PeerApp {
 	}
 	
 	public void printWeight(){
-		Set<Entry<String, File>> set0 = fileList.entrySet();			
-		for (Entry<String, File> entry0: set0) {
-			String fileName = entry0.getValue().getName();
+		Set<Entry<String, HashMap<Peer, Double>>> set0 = neighborWeight.entrySet();			
+		for (Entry<String, HashMap<Peer, Double>> entry0: set0) {
+			String fileName = ((Logger) entry0.getValue()).getName();
 			System.out.println("--------------------------------");
 			System.out.println("    File name: " + fileName);
 			System.out.println("--------------------------------");
