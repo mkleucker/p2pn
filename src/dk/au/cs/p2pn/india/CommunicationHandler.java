@@ -298,7 +298,7 @@ public class CommunicationHandler {
 	public Vector respondSuccess(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> owner) {
 		Reporter.addEvent(ReporterMeasurements.SEARCH_SUCCESSFUL);
 		this.app.addSearchSuccess(fileName, CommunicationConverter.createPeer(owner));
-		logger.info("The known data list is {}", this.app.knownDataList);
+		logger.info("The known data list of peer " + this.app.getPeer().getId() + " is {}", this.app.knownDataList);
 		return new Vector();
 	}
 	@SuppressWarnings("rawtypes")

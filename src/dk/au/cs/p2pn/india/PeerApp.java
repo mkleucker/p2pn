@@ -608,19 +608,25 @@ public class PeerApp {
 	}
 	
 	public void printWeight(){
+		System.out.println("--------------------------------");
+		System.out.println("Printing weight!!!!!!!!!!!");
+		System.out.println("--------------------------------");
+
 		Set<Entry<String, HashMap<Peer, Double>>> set0 = neighborWeight.entrySet();			
 		for (Entry<String, HashMap<Peer, Double>> entry0: set0) {
-			String fileName = ((Logger) entry0.getValue()).getName();
+			String fileName = entry0.getKey();
 			System.out.println("--------------------------------");
 			System.out.println("    File name: " + fileName);
 			System.out.println("--------------------------------");
-			HashMap<Peer, Double> neighbours = neighborWeight.get(peer);
+			HashMap<Peer, Double> neighbours = neighborWeight.get(fileName);
 			Set<Entry<Peer, Double>> set1 = neighbours.entrySet();
-			for (Entry<Peer, Double> entry1: set1) {
-				String peerID = entry1.getKey().getIP();
-				Double weight = entry1.getValue();
-				System.out.println("      " + peerID + " : " + weight);
-			}		
+			if(!neighbours.isEmpty()){
+				for (Entry<Peer, Double> entry1: set1) {
+					String peerID = entry1.getKey().getIP();
+					Double weight = entry1.getValue();
+					System.out.println("      " + peerID + " : " + weight);
+				}		
+			}
 		}
 	}
 	
