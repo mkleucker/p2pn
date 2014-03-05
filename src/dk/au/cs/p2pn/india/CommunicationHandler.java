@@ -254,7 +254,7 @@ public class CommunicationHandler {
 	 * @return an empty vector, which doesn't mean anything.
 	 */
 	@SuppressWarnings("rawtypes")
-	public Vector updateSuccess(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> path) {
+	public Vector updateSuccess(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> owner, Vector<Object> path) {
 		
 		AdvancedWalkerSearch aWalkerSearch = new AdvancedWalkerSearch(ident, fileName, ttl, peer);
 
@@ -296,6 +296,13 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Vector respondSuccess(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> owner) {
+		Reporter.addEvent(ReporterMeasurements.SEARCH_SUCCESSFUL);
+		this.app.addSearchSuccess(fileName, CommunicationConverter.createPeer(owner));
+		logger.info("The known data list is {}", this.app.knownDataList);
+		return new Vector();
+	}
+	@SuppressWarnings("rawtypes")
+	public Vector respondSuccess(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> owner, Vector<Object> path) {
 		Reporter.addEvent(ReporterMeasurements.SEARCH_SUCCESSFUL);
 		this.app.addSearchSuccess(fileName, CommunicationConverter.createPeer(owner));
 		logger.info("The known data list is {}", this.app.knownDataList);

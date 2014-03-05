@@ -19,7 +19,7 @@ import dk.au.cs.p2pn.india.search.AdvancedWalkerSearch;
 public class SearchSuccessUpdateTask extends DefaultAsyncTask {
 
 	private AdvancedWalkerSearch search;
-	private static final Logger logger = LogManager.getLogger(SearchStartTask.class.getSimpleName());
+	private static final Logger logger = LogManager.getLogger(SearchSuccessUpdateTask.class.getSimpleName());
 	
 	/**
 	 * 

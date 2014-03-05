@@ -212,7 +212,7 @@ public class Main {
 		}
 	}
 	
-	private void testWednesday(){
+	private void testWed(){
 
 		try {
 			
@@ -513,6 +513,10 @@ public class Main {
 			if (input.equals("testm")) {
 				this.testMonday();
 			}
+		
+			if (input.equals("testw")) {
+				this.testWed();
+			}
 			
 			if (input.equals("test0")) {
 				this.test0();
@@ -604,7 +608,7 @@ public class Main {
 				}
 			}
 			
-			if (input.substring(0, 3).equals("	") && input.length() > 4) {
+			if (input.substring(0, 3).equals("get") && input.length() > 4) {
 				String nameFile = input.substring(4);
 				logger.info("Wrote get command with the name file argument: {}", nameFile);
 				this.peer.getP2pFile(nameFile, this.peer.knownDataList.get(nameFile).getIP(), this.peer.knownDataList.get(nameFile).getPort());
