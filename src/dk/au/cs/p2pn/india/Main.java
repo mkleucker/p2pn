@@ -222,7 +222,7 @@ public class Main {
 		
 		Thread.sleep(2000);
 		
-		peer1.uploadFile("duck.mp4");
+		peer1.uploadFile("duck.mp3");
 		peer2.ping(peer1.getPeer().getIP(), peer1.getPeer().getPort());
 		
 		System.out.println("Peer 1's IP is " + peer1.getPeer().getIP());
@@ -230,22 +230,37 @@ public class Main {
 		
 		Thread.sleep(3000);
 		
-		System.out.println("Peer 2's peer list is " + peer2.plist());
 		System.out.println("Peer 1's peer list is " + peer1.plist());
+		System.out.println("Peer 2's peer list is " + peer2.plist());
+		System.out.println("Peer 3's peer list is " + peer3.plist());
 		
 		peer1.startNegotiate();
 
 		Thread.sleep(2000);
 		
-		System.out.println("Peer 2's neighbor list is " + peer2.getNeighborList());
+		peer2.ping(peer3.getPeer().getIP(), peer3.getPeer().getPort());
+		
+		Thread.sleep(2000);
+
+		System.out.println("Peer 1's peer list is " + peer1.plist());
+		System.out.println("Peer 2's peer list is " + peer2.plist());
+		System.out.println("Peer 3's peer list is " + peer3.plist());
+
+		peer3.startNegotiate();
+
+		Thread.sleep(2000);
+		
 		System.out.println("Peer 1's neighbor list is " + peer1.getNeighborList());
+		System.out.println("Peer 2's neighbor list is " + peer2.getNeighborList());
+		System.out.println("Peer 3's neighbor list is " + peer3.getNeighborList());
 		
 		Thread.sleep(3000);
 		
-		System.out.println("Peer 2's neighbor list is " + peer2.getNeighborList());
+		peer2.startAdvancedWalkerSearch("duck.mp3", 1, 2);		
 		
-		Thread.sleep(2000);
+		Thread.sleep(4000);
 		
+		peer2.printWeight();
 		
 		} catch (Exception e) {
 			e.printStackTrace();
