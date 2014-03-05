@@ -212,6 +212,47 @@ public class Main {
 		}
 	}
 	
+	private void testWednesday(){
+
+		try {
+			
+		PeerApp peer1 = new PeerApp(1, "10.192.4.119", 18527, 5);
+		PeerApp peer2 = new PeerApp(2, "10.192.4.119", 18528, 5);
+		PeerApp peer3 = new PeerApp(3, "10.192.4.119", 18529, 5);
+		
+		Thread.sleep(2000);
+		
+		peer1.uploadFile("duck.mp4");
+		peer2.ping(peer1.getPeer().getIP(), peer1.getPeer().getPort());
+		
+		System.out.println("Peer 1's IP is " + peer1.getPeer().getIP());
+		System.out.println("Peer 1's port is " + peer1.getPeer().getPort());
+		
+		Thread.sleep(3000);
+		
+		System.out.println("Peer 2's peer list is " + peer2.plist());
+		System.out.println("Peer 1's peer list is " + peer1.plist());
+		
+		peer1.startNegotiate();
+
+		Thread.sleep(2000);
+		
+		System.out.println("Peer 2's neighbor list is " + peer2.getNeighborList());
+		System.out.println("Peer 1's neighbor list is " + peer1.getNeighborList());
+		
+		Thread.sleep(3000);
+		
+		System.out.println("Peer 2's neighbor list is " + peer2.getNeighborList());
+		
+		Thread.sleep(2000);
+		
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	private void test() {
 		try {
 			logger.info("Starting test...");
