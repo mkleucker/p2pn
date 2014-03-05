@@ -114,7 +114,7 @@ public class PeerApp {
 		for (int i = 1; i < 10; i++) {
 			POWERLAWCUMULATIVE[i] /= POWERLAWCUMULATIVE[9];
 		}
-
+		
 		double r = Math.random();
 		for (int i = 0; i < 10; i++) {
 			if (r <= POWERLAWCUMULATIVE[i]) {
@@ -606,4 +606,22 @@ public class PeerApp {
 		logger.info("Added file {} to the file list.",fileName);
 		logger.info("Actual state of the file list of the peer{} : {}",this.getPeer().getId(),fileList);
 	}
+	
+	public void printWeight(){
+		Set<Entry<String, File>> set0 = fileList.entrySet();			
+		for (Entry<String, File> entry0: set0) {
+			String fileName = entry0.getValue().getName();
+			System.out.println("--------------------------------");
+			System.out.println("    File name: " + fileName);
+			System.out.println("--------------------------------");
+			HashMap<Peer, Double> neighbours = neighborWeight.get(peer);
+			Set<Entry<Peer, Double>> set1 = neighbours.entrySet();
+			for (Entry<Peer, Double> entry1: set1) {
+				String peerID = entry1.getKey().getIP();
+				Double weight = entry1.getValue();
+				System.out.println("      " + peerID + " : " + weight);
+			}		
+		}
+	}
+	
 }
