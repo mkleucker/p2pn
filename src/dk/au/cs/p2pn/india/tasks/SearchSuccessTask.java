@@ -32,7 +32,7 @@ import java.io.IOException;
 @SuppressWarnings("unused")
 public class SearchSuccessTask extends DefaultAsyncTask {
 
-	private static final Logger logger = LogManager.getLogger(SearchStartTask.class.getSimpleName());
+	private static final Logger logger = LogManager.getLogger(SearchSuccessTask.class.getSimpleName());
 
 	private BasicSearch search;
 

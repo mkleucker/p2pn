@@ -90,7 +90,10 @@ public class SearchPassTask extends DefaultAsyncTask {
 		Set<Map.Entry<Peer, Double>> distr = this.app.neighborWeight.get(this.search.getFilename()).entrySet();
 		Vector<Map.Entry<Peer, Double>> v = new Vector<Map.Entry<Peer, Double>>();
 		for (Map.Entry<Peer, Double> entry: distr) {
-			if (!this.app.getSearchList().get(this.search.getFilename()).contains(entry.getKey())) {
+			if (!this.app.getSearchList().containsKey(this.search.getFilename())) {
+				System.out.println("We don't have the file in the searchList!");
+			}
+			if (this.app.getSearchList().isEmpty() || !this.app.getSearchList().get(this.search.getFilename()).contains(entry.getKey())) {
 				v.add(entry);
 			}
 		}
