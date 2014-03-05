@@ -550,7 +550,7 @@ public class Main {
 			}
 
 			//TODO
-			/** The method contains should not be used since "kfind" and "afind" and "find" they all contains "find". */
+
 			
 			if (input.substring(0, 4).equals("find") && input.length() > 5) {
 				String[] address = input.substring(5).split(" ");
@@ -604,7 +604,7 @@ public class Main {
 				}
 			}
 			
-			if (input.substring(0, 3).equals("get") && input.length() > 4) {
+			if (input.substring(0, 3).equals("	") && input.length() > 4) {
 				String nameFile = input.substring(4);
 				logger.info("Wrote get command with the name file argument: {}", nameFile);
 				this.peer.getP2pFile(nameFile, this.peer.knownDataList.get(nameFile).getIP(), this.peer.knownDataList.get(nameFile).getPort());
