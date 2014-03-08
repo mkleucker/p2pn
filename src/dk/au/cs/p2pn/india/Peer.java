@@ -56,14 +56,14 @@ public class Peer {
 
 		Peer peer = (Peer) o;
 
-		if (id != peer.id) return false;
+		if (!this.ip.equals(peer.ip) || this.port != peer.port) return false;
 
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		return id;
+		return (ip+Integer.toString(port)).hashCode();
 	}
 
 	public boolean smallerThan(Peer p) {
