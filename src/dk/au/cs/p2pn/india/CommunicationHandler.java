@@ -215,6 +215,7 @@ public class CommunicationHandler {
 			return;
 		}
 
+		logger.info("Inside respondSearch, file not matched, starting passing task, current peer is {}", this.app.getPeer().getId());
 		Thread pass = new Thread(new SearchPassTask(this.app, search));
 		pass.start();
 	}

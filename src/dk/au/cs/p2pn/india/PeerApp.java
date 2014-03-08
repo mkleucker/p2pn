@@ -318,7 +318,6 @@ public class PeerApp {
 
 	@SuppressWarnings("rawtypes")
 	public synchronized void receiveConnectionAnswer(Vector data) {
-		logger.debug("Received Connection answer with length {}", data.size());
 		if (data.size() == 5) {
 			boolean neighborResponse = (Boolean) data.get(4);
 			data.setSize(4);

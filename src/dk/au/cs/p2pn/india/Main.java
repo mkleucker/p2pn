@@ -231,12 +231,14 @@ public class Main {
 		
 		Thread.sleep(2000);
 
+		/*
 		System.out.println("Peer 1's peer list is " + peer1.plist());
 		System.out.println("Peer 2's peer list is " + peer2.plist());
 		System.out.println("Peer 3's peer list is " + peer3.plist());
 		System.out.println("Peer 4's peer list is " + peer4.plist());
 		System.out.println("Peer 5's peer list is " + peer5.plist());
-
+		*/
+		
 		peer1.startNegotiate();
 		peer3.startNegotiate();
 		
@@ -247,23 +249,25 @@ public class Main {
 		
 		Thread.sleep(2000);
 
+		/*
 		System.out.println("Peer 1's peer list is " + peer1.plist());
 		System.out.println("Peer 2's peer list is " + peer2.plist());
 		System.out.println("Peer 3's peer list is " + peer3.plist());
 		System.out.println("Peer 4's peer list is " + peer4.plist());
 		System.out.println("Peer 5's peer list is " + peer5.plist());
+		*/
 
 		peer2.startNegotiate();
 		peer5.startNegotiate();
 
 		Thread.sleep(2000);
-		
+		/*
 		System.out.println("Peer 1's neighbor list is " + peer1.getNeighborList());
 		System.out.println("Peer 2's neighbor list is " + peer2.getNeighborList());
 		System.out.println("Peer 3's neighbor list is " + peer3.getNeighborList());
 		System.out.println("Peer 4's neighbor list is " + peer4.getNeighborList());
 		System.out.println("Peer 5's neighbor list is " + peer5.getNeighborList());
-
+		*/
 		Thread.sleep(3000);
 		
 		peer3.startAdvancedWalkerSearch("duck.mp3", 2, 2);		

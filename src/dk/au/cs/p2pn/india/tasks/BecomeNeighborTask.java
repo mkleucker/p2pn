@@ -25,11 +25,11 @@ public class BecomeNeighborTask extends DefaultTask {
 
 	public boolean execute(){
 		try {
-			logger.debug("before the connection of {} to {}:{}", this.peer.getId(), this.ip, this.port);
+			//logger.debug("before the connection of {} to {}:{}", this.peer.getId(), this.ip, this.port);
 
 			// Create the client, identifying the server
 			this.client = ClientRequestFactory.getClient("http://" + ip + ':' + port + '/');
-			logger.debug("{} Connection establish to {}:{}", this.peer.getId(), this.ip, this.port);
+			//logger.debug("{} Connection establish to {}:{}", this.peer.getId(), this.ip, this.port);
 
 			// Issue a request
 

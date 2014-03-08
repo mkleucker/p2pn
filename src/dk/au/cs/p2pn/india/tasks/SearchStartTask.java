@@ -106,7 +106,7 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 	 * vector v, and a random draw over the rest elements is performed.
 	 */
 	private void executeAKWalkerSearch() throws IOException, XmlRpcException {
-		//TODO still need to add my self to the search path and decrease the weights of peers I send message to
+		logger.error("Inside SearchStartTask, executeAKWalkerSearch, current peer is {}", this.app.getPeer().getId());
 
 		((AdvancedWalkerSearch)this.search).addToPath(this.peer);
 
@@ -133,6 +133,7 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 		}
 		for (int i = 0; i < num; i++) {
 			Map.Entry<Peer, Double> peerSearch = this.app.randomDrawDelete(v);
+			logger.error("Current peer is {}, passing search to peer {}", this.app.getPeer().getId(), peerSearch.getKey().getId());
 			this.executeSearch(peerSearch.getKey());
 			/** When a message is passed to a peer, we decrease 
 			 * its weight, if the search is successful, 

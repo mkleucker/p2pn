@@ -84,22 +84,22 @@ public class SearchPassTask extends DefaultAsyncTask {
 		if (!this.app.neighborWeight.containsKey(this.search.getFilename())) {	
 			this.app.updateNeighborWeightAddFile(this.search.getFilename());
 		}
-		
+
+		((AdvancedWalkerSearch)this.search).addToPath(this.peer);
+
 		//randomly draw some neighbors according to the distribution
 		this.app.normalizeWeight(this.search.getFilename());
 		Set<Map.Entry<Peer, Double>> distr = this.app.neighborWeight.get(this.search.getFilename()).entrySet();
 		Vector<Map.Entry<Peer, Double>> v = new Vector<Map.Entry<Peer, Double>>();
 		for (Map.Entry<Peer, Double> entry: distr) {
-			if (!this.app.getSearchList().containsKey(this.search.getFilename())) {
-				System.out.println("We don't have the file in the searchList!");
-			}
-			if (this.app.getSearchList().isEmpty() || !this.app.getSearchList().get(this.search.getFilename()).contains(entry.getKey())) {
+			if (this.app.getSearchList().isEmpty() || !this.app.getSearchList().containsKey(this.search.getFilename()) || !this.app.getSearchList().get(this.search.getFilename()).contains(entry.getKey())) {
 				v.add(entry);
 			}
 		}
 		
 		if (v.size() > 0) {
 			Map.Entry<Peer, Double> peerSearch = this.app.randomDrawDelete(v);
+			logger.info("Inside pass AKWalkerSearch, passing the search to peer {}, current peer is {}", peerSearch.getKey().getId(), this.app.getPeer().getId());
 			this.executeSearch(peerSearch.getKey());
 			this.app.neighborWeight.get(this.search.getFilename()).put(peerSearch.getKey(), peerSearch.getValue() / AdvancedWalkerSearch.DEC);
 			this.app.normalizeWeight(this.search.getFilename());
