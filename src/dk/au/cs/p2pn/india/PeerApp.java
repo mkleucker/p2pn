@@ -31,7 +31,7 @@ public class PeerApp {
 	/** List of my current neighbors. */
 	Map<String, Peer> neighborList = Collections.synchronizedMap(new HashMap<String, Peer>());
 	/** List the timestamps that a peer has been seen the last time. */
-	Map<String, Date> lastSeenList = Collections.synchronizedMap(new HashMap<String, Date>());
+	Map<Peer, Date> lastSeenList = Collections.synchronizedMap(new HashMap<Peer, Date>());
 
 	/** List of all files this peer has locally. */
 	Map<String, File> fileList = Collections.synchronizedMap(new HashMap<String, File>());
@@ -223,7 +223,7 @@ public class PeerApp {
 	 */
 	public synchronized void addPeer(Peer peer) {
 		this.peerList.put(peer.getAddress(), peer);
-		this.lastSeenList.put(peer.getAddress(), new Date());
+		this.lastSeenList.put(peer, new Date());
 
 
 	}
@@ -282,8 +282,8 @@ public class PeerApp {
 	 *
 	 * @return HashMap containing all LastSeen information
 	 */
-	public synchronized Map<String, Date> getLastSeenList() {
-		return new HashMap<String, Date>(this.lastSeenList);
+	public synchronized Map<Peer, Date> getLastSeenList() {
+		return new HashMap<Peer, Date>(this.lastSeenList);
 	}
 
 	/**
@@ -370,7 +370,7 @@ public class PeerApp {
 	 * @param peer Peer object to update timestamp on
 	 */
 	private void updateLastSeen(Peer peer) {
-		this.lastSeenList.put(peer.getAddress(), new Date());
+		this.lastSeenList.put(peer, new Date());
 	}
 
 	/**

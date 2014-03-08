@@ -30,6 +30,7 @@ public class ConnectionAsyncTask extends DefaultAsyncTask {
 			Vector<Object> params = CommunicationConverter.createVector(this.peer);
 			Vector result = (Vector)this.client.execute("communication.pong", params);
 			Reporter.addEvent(ReporterMeasurements.PING_SENT);
+
 			if(result == null){
 				logger.debug("No result from Discovery");
 			}else{
