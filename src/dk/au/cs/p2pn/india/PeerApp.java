@@ -141,6 +141,9 @@ public class PeerApp {
 		this.server = new ListeningTask(this.peer, this);
 		Thread listening = new Thread(this.server);   //start listening to the port
 		listening.start();
+
+		Thread checkConnections = new Thread(new Checking(this));
+		checkConnections.start();
 	}
 
 	/**
