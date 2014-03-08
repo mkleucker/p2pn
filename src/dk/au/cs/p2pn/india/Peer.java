@@ -25,10 +25,6 @@ public class Peer {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public String getIP() {
 		return ip;
 	}
@@ -37,16 +33,12 @@ public class Peer {
 		return port;
 	}
 
-	public void setPort(int port) {
-		this.port = port;
-	}
-
 	public int getCapacity() {
 		return capacity;
 	}
 
-	public void setCapacity(int capacity) {
-		this.capacity = capacity;
+	public String getAddress(){
+		return (ip +":"+ Integer.toString(port));
 	}
 
 	@Override
@@ -56,14 +48,12 @@ public class Peer {
 
 		Peer peer = (Peer) o;
 
-		if (!this.ip.equals(peer.ip) || this.port != peer.port) return false;
-
-		return true;
+		return !(!this.ip.equals(peer.ip) || this.port != peer.port);
 	}
 
 	@Override
 	public int hashCode() {
-		return (ip+Integer.toString(port)).hashCode();
+		return this.getAddress().hashCode();
 	}
 
 	public boolean smallerThan(Peer p) {

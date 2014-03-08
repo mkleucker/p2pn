@@ -27,11 +27,11 @@ public class PeerApp {
 	int searchCount;
 
 	/** List of all known peers in the network. */
-	Map<Integer, Peer> peerList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
+	Map<String, Peer> peerList = Collections.synchronizedMap(new HashMap<String, Peer>());
 	/** List of my current neighbors. */
-	Map<Integer, Peer> neighborList = Collections.synchronizedMap(new HashMap<Integer, Peer>());
+	Map<String, Peer> neighborList = Collections.synchronizedMap(new HashMap<String, Peer>());
 	/** List the timestamps that a peer has been seen the last time. */
-	Map<Integer, Date> lastSeenList = Collections.synchronizedMap(new HashMap<Integer, Date>());
+	Map<String, Date> lastSeenList = Collections.synchronizedMap(new HashMap<String, Date>());
 
 	/** List of all files this peer has locally. */
 	Map<String, File> fileList = Collections.synchronizedMap(new HashMap<String, File>());
@@ -148,7 +148,7 @@ public class PeerApp {
 	 *
 	 * @return Set of Peers.
 	 */
-	public Set<Map.Entry<Integer, Peer>> getPeerSet() {
+	public Set<Map.Entry<String, Peer>> getPeerSet() {
 		return peerList.entrySet();
 	}
 
@@ -159,8 +159,8 @@ public class PeerApp {
 	 */
 	public String plist() {
 		String str = "List of known peers to Peer " + this.peer.getId() + " (" + this.peer.getIP() + ":" + this.peer.getPort() + "):\n";
-		Set<Map.Entry<Integer, Peer>> peerSet = getPeerSet();
-		for (Map.Entry<Integer, Peer> entry : peerSet) {
+
+		for (Map.Entry<String, Peer> entry : this.peerList.entrySet()) {
 			Peer peer = entry.getValue();
 			str += "Name: P" + peer.getId() + "  ";
 			str += "IP: " + peer.getIP() + "  ";
@@ -179,8 +179,8 @@ public class PeerApp {
 	 */
 	public String nlist() {
 		String str = "List of neighbors to Peer " + this.peer.getId() + " (" + this.peer.getIP() + ":" + this.peer.getPort() + " / Capacity: "+this.peer.getCapacity()+"):\n";
-		Set<Map.Entry<Integer, Peer>> peerSet = this.getNeighborList().entrySet();
-		for (Map.Entry<Integer, Peer> entry : peerSet) {
+		Set<Map.Entry<String, Peer>> peerSet = this.getNeighborList().entrySet();
+		for (Map.Entry<String, Peer> entry : peerSet) {
 			Peer peer = entry.getValue();
 			str += "Name: P" + peer.getId() + "  ";
 			str += "IP: " + peer.getIP() + "  ";
@@ -219,8 +219,8 @@ public class PeerApp {
 	 * @param peer Peer object to add to registry.
 	 */
 	public synchronized void addPeer(Peer peer) {
-		this.peerList.put(peer.getId(), peer);
-		this.lastSeenList.put(peer.getId(), new Date());
+		this.peerList.put(peer.getAddress(), peer);
+		this.lastSeenList.put(peer.getAddress(), new Date());
 
 
 	}
@@ -237,7 +237,7 @@ public class PeerApp {
 			this.openNeighborRequests.remove(peer.getIP() + ":" + peer.getPort());
 		}
 		if (success) {
-			this.neighborList.put(peer.getId(), peer);
+			this.neighborList.put(peer.getAddress(), peer);
 			this.updateLastSeen(peer);
 
 		}
@@ -264,9 +264,9 @@ public class PeerApp {
 	 *  
 	 */
 	public void updateNeighborWeightAddFile(String fileName){
-		Set<Entry<Integer, Peer>> set = this.neighborList.entrySet();
+		Set<Entry<String, Peer>> set = this.neighborList.entrySet();
 		HashMap<Peer, Double> neighbours = new HashMap<Peer, Double>();
-		for (Entry<Integer, Peer> entry: set) {
+		for (Entry<String, Peer> entry: set) {
 			neighbours.put(entry.getValue(), 0.5); 
 		}
 		neighborWeight.put(fileName, neighbours);
@@ -279,15 +279,15 @@ public class PeerApp {
 	 *
 	 * @return HashMap containing all LastSeen information
 	 */
-	public synchronized Map<Integer, Date> getLastSeenList() {
-		return new HashMap<Integer, Date>(this.lastSeenList);
+	public synchronized Map<String, Date> getLastSeenList() {
+		return new HashMap<String, Date>(this.lastSeenList);
 	}
 
 	/**
 	 * Converts the Map neighborlist to an HashMap
 	 */
-	public synchronized Map<Integer, Peer> getNeighborList() {
-		return new HashMap<Integer, Peer>(this.neighborList);
+	public synchronized Map<String, Peer> getNeighborList() {
+		return new HashMap<String, Peer>(this.neighborList);
 	}
 
 	public synchronized HashMap<String, ArrayList<Peer>> getSearchList() {
@@ -344,8 +344,8 @@ public class PeerApp {
 	/**
 	 * Converts the Map peerlist to an HashMap
 	 */
-	public synchronized Map<Integer, Peer> getPeerList() {
-		return new HashMap<Integer, Peer>(this.peerList);
+	public synchronized Map<String, Peer> getPeerList() {
+		return new HashMap<String, Peer>(this.peerList);
 	}
 
 	/**
@@ -354,10 +354,10 @@ public class PeerApp {
 	 * @param peer Peer object to remove form my registry
 	 */
 	public synchronized void removePeer(Peer peer) {
-		Integer peerId = peer.getId();
-		this.peerList.remove(peerId);
-		this.neighborList.remove(peerId);
-		this.lastSeenList.remove(peerId);
+		String peerAddress = peer.getAddress();
+		this.peerList.remove(peerAddress);
+		this.neighborList.remove(peerAddress);
+		this.lastSeenList.remove(peerAddress);
 	}
 
 	/**
@@ -367,7 +367,7 @@ public class PeerApp {
 	 * @param peer Peer object to update timestamp on
 	 */
 	private void updateLastSeen(Peer peer) {
-		this.lastSeenList.put(peer.getId(), new Date());
+		this.lastSeenList.put(peer.getAddress(), new Date());
 	}
 
 	/**
@@ -511,12 +511,9 @@ public class PeerApp {
 
 		if (!all && peers == null) {
 			output.println("      \"P" + this.peer.getId() + '(' + this.peer.getCapacity() + ")\";");
-			Set<Map.Entry<Integer, Peer>> neighborSet = this.getNeighborList().entrySet();
-			for (Map.Entry<Integer, Peer> entry : neighborSet) {
-				Peer itPeer = entry.getValue();
-				output.println("      \"P" + itPeer.getId() + '(' + itPeer.getCapacity() + ")\";");
-			}
-			for (Map.Entry<Integer, Peer> entry : neighborSet) {
+			Set<Map.Entry<String, Peer>> neighborSet = this.getNeighborList().entrySet();
+
+			for (Map.Entry<String, Peer> entry : neighborSet) {
 				Peer itPeer = entry.getValue();
 				output.println("      \"P" + this.peer.getId() + '(' + this.peer.getCapacity() + ")\" -- " + "\"P" + itPeer.getId() + '(' + itPeer.getCapacity() + ")\";");
 			}
