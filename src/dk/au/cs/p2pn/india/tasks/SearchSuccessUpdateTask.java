@@ -36,7 +36,7 @@ public class SearchSuccessUpdateTask extends DefaultAsyncTask {
 
 	@Override
 	public void run() {
-		logger.info("Inside SearchSuccessTask, establishing connection");
+		logger.info("Inside SearchSuccessUpdateTask of peer " + this.app.getPeer().getId() + ", establishing connection, the path is {}", search.getPath());
 
 		try {
 			/** The destination peer is stored in the penultimate position of the path. */

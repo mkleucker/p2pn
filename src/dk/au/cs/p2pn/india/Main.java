@@ -216,51 +216,61 @@ public class Main {
 
 		try {
 			
-		PeerApp peer1 = new PeerApp(1, "10.192.4.119", 18527, 5);
-		PeerApp peer2 = new PeerApp(2, "10.192.4.119", 18528, 5);
-		PeerApp peer3 = new PeerApp(3, "10.192.4.119", 18529, 5);
+		String ip = "84.238.27.224";
+		PeerApp peer1 = new PeerApp(1, ip, 18527, 5);
+		PeerApp peer2 = new PeerApp(2, ip, 18528, 5);
+		PeerApp peer3 = new PeerApp(3, ip, 18529, 5);
+		PeerApp peer4 = new PeerApp(4, ip, 18530, 5);
+		PeerApp peer5 = new PeerApp(5, ip, 18531, 5);
 		
 		Thread.sleep(2000);
 		
 		peer1.uploadFile("duck.mp3");
 		peer2.ping(peer1.getPeer().getIP(), peer1.getPeer().getPort());
+		peer3.ping(peer4.getPeer().getIP(), peer4.getPeer().getPort());
 		
-		System.out.println("Peer 1's IP is " + peer1.getPeer().getIP());
-		System.out.println("Peer 1's port is " + peer1.getPeer().getPort());
-		
-		Thread.sleep(3000);
-		
+		Thread.sleep(2000);
+
 		System.out.println("Peer 1's peer list is " + peer1.plist());
 		System.out.println("Peer 2's peer list is " + peer2.plist());
 		System.out.println("Peer 3's peer list is " + peer3.plist());
-		
+		System.out.println("Peer 4's peer list is " + peer4.plist());
+		System.out.println("Peer 5's peer list is " + peer5.plist());
+
 		peer1.startNegotiate();
-
-		Thread.sleep(2000);
+		peer3.startNegotiate();
 		
-		peer2.ping(peer3.getPeer().getIP(), peer3.getPeer().getPort());
+		Thread.sleep(2000);
+
+		peer2.ping(peer3.getPeer().getIP(), peer3.getPeer().getPort());		
+		peer5.ping(peer4.getPeer().getIP(), peer4.getPeer().getPort());
 		
 		Thread.sleep(2000);
 
 		System.out.println("Peer 1's peer list is " + peer1.plist());
 		System.out.println("Peer 2's peer list is " + peer2.plist());
 		System.out.println("Peer 3's peer list is " + peer3.plist());
+		System.out.println("Peer 4's peer list is " + peer4.plist());
+		System.out.println("Peer 5's peer list is " + peer5.plist());
 
-		peer3.startNegotiate();
+		peer2.startNegotiate();
+		peer5.startNegotiate();
 
 		Thread.sleep(2000);
 		
 		System.out.println("Peer 1's neighbor list is " + peer1.getNeighborList());
 		System.out.println("Peer 2's neighbor list is " + peer2.getNeighborList());
 		System.out.println("Peer 3's neighbor list is " + peer3.getNeighborList());
-		
+		System.out.println("Peer 4's neighbor list is " + peer4.getNeighborList());
+		System.out.println("Peer 5's neighbor list is " + peer5.getNeighborList());
+
 		Thread.sleep(3000);
 		
-		peer2.startAdvancedWalkerSearch("duck.mp3", 1, 2);		
+		peer3.startAdvancedWalkerSearch("duck.mp3", 2, 2);		
 		
 		Thread.sleep(4000);
 		
-		peer2.printWeight();
+		peer3.printWeight();
 		
 		} catch (Exception e) {
 			e.printStackTrace();
