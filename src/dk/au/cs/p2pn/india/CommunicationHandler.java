@@ -197,9 +197,8 @@ public class CommunicationHandler {
 			return;
 		}
 
-		//TODO we need to add the peer that sends us the search to our search list to avoid passing back the search.
-		//     but I don't know how to deal with this, at least no simple solution. Perhaps we can add passer to the 
-		//		search object. Then there are lots of places we need to modify.
+		this.app.addToSearchList(search.getId(), peer);
+
 		
 		// Send success
 		if (this.app.fileList.containsKey(search.getFilename())) {
@@ -219,6 +218,7 @@ public class CommunicationHandler {
 		}
 
 		logger.info("Inside respondSearch, file not matched, starting passing task, current peer is {}", this.app.getPeer().getId());
+
 		Thread pass = new Thread(new SearchPassTask(this.app, search));
 		pass.start();
 	}
