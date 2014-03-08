@@ -26,7 +26,7 @@ import dk.au.cs.p2pn.india.PeerApp;
 public class SearchPassTask extends DefaultAsyncTask {
 
 	private BasicSearch search;
-	private static final Logger logger = LogManager.getLogger(SearchStartTask.class.getSimpleName());
+	private static final Logger logger = LogManager.getLogger(SearchPassTask.class.getSimpleName());
 
 	public SearchPassTask(PeerApp app, BasicSearch search) {
 		super(app);

@@ -197,12 +197,15 @@ public class CommunicationHandler {
 			return;
 		}
 
+		//TODO we need to add the peer that sends us the search to our search list to avoid passing back the search.
+		//     but I don't know how to deal with this, at least no simple solution. Perhaps we can add passer to the 
+		//		search object. Then there are lots of places we need to modify.
+		
 		// Send success
 		if (this.app.fileList.containsKey(search.getFilename())) {
 			// but only if i didn't yet.
 			if(!this.app.getSearchList().containsKey(search.getId())) {
 				logger.info("Inside respondSearch, file matched, starting a new success thread");
-				//TODO need to update the weight along the whole path
 				if (search.getType() == SearchTypes.AK_WALKER_SEARCH) {
 					AdvancedWalkerSearch aWalkerSearch = (AdvancedWalkerSearch)search;
 					aWalkerSearch.addToPath(this.peer);
