@@ -31,8 +31,8 @@ public class NegotiationTask extends DefaultAsyncTask {
 
 	private void startNegotiate(){
 		Vector<Peer> peers = new Vector<Peer>();
-		Set<Map.Entry<Integer, Peer>> set = this.app.getPeerList().entrySet();
-		for (Map.Entry<Integer, Peer> entry: set) {
+		Set<Map.Entry<String, Peer>> set = this.app.getPeerList().entrySet();
+		for (Map.Entry<String, Peer> entry: set) {
 			if (!entry.getValue().equals(this.app.getPeer()))
 				peers.add(entry.getValue());
 		}

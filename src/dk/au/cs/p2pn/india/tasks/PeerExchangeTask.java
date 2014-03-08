@@ -37,9 +37,9 @@ public class PeerExchangeTask extends DefaultAsyncTask {
 
             HashMap<String, Peer> foundPeers = new HashMap<String, Peer>();
 
-            HashMap<Integer, Peer> startingPeers = (HashMap<Integer, Peer>) this.app.getPeerList();
+            HashMap<String, Peer> startingPeers = (HashMap<String, Peer>) this.app.getPeerList();
 
-            for (Map.Entry<Integer, Peer> entry : startingPeers.entrySet()) {
+            for (Map.Entry<String, Peer> entry : startingPeers.entrySet()) {
                 try {
                     Peer currentPeer = entry.getValue();
 

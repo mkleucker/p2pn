@@ -29,7 +29,6 @@ public class BecomeNeighborTask extends DefaultTask {
 
 			// Create the client, identifying the server
 			this.client = ClientRequestFactory.getClient("http://" + ip + ':' + port + '/');
-			//logger.debug("{} Connection establish to {}:{}", this.peer.getId(), this.ip, this.port);
 
 			// Issue a request
 

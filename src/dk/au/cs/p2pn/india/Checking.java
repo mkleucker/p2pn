@@ -33,7 +33,7 @@ public class Checking implements Runnable {
 	 */
 	public void checkConnection() throws InterruptedException{
 		if(randInt(1,5) == 3){
-			for (Map.Entry<Integer, Peer> entry: this.peerApp.getPeerList().entrySet()) {
+			for (Map.Entry<String, Peer> entry: this.peerApp.getPeerList().entrySet()) {
 				this.peerApp.ping(entry.getValue().getIP(), entry.getValue().getPort());
 			}
 		}

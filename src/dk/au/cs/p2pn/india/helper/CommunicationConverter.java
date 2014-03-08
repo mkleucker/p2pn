@@ -51,12 +51,12 @@ public class CommunicationConverter {
 	 * @param rawData Map of Peers in their Vector representation.
 	 * @return Hashtable with the format: Hashtable<String, Vector>
 	 */
-	public static Hashtable<String, Vector> createVector(Map<Integer, Peer> rawData){
+	public static Hashtable<String, Vector> createVector(Map<String, Peer> rawData){
 		Hashtable<String, Vector> result = new Hashtable<String, Vector>();
 
-		for (Map.Entry<Integer, Peer> entry : rawData.entrySet()) {
+		for (Map.Entry<String, Peer> entry : rawData.entrySet()) {
 			// TODO: fix depth parameter
-			result.put(Integer.toString(entry.getKey()), CommunicationConverter.createVector(entry.getValue()));
+			result.put(entry.getKey(), CommunicationConverter.createVector(entry.getValue()));
 		}
 
 		return result;

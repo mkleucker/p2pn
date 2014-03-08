@@ -54,7 +54,7 @@ public class SearchPassTask extends DefaultAsyncTask {
 	}
 
 	private void executeFloodSearch() throws IOException, XmlRpcException {
-		for (Map.Entry<Integer, Peer> entry : this.app.getNeighborList().entrySet()) {
+		for (Map.Entry<String, Peer> entry : this.app.getNeighborList().entrySet()) {
 			Peer peer = entry.getValue();
 			this.executeSearch(peer);
 		}

@@ -28,9 +28,9 @@ public class ClientRequest extends XmlRpcClient {
 
 	/**
 	 * Overloaded execute() function to enable
-	 * @param method
-	 * @param params
-	 * @return
+	 * @param method Function to be called
+	 * @param params Data to be passed
+	 * @return Return data
 	 * @throws XmlRpcException
 	 * @throws IOException
 	 */
