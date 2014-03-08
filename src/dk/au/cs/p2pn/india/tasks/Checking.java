@@ -34,7 +34,7 @@ public class Checking implements Runnable {
 	 *
 	 */
 	public void checkConnection() throws InterruptedException{
-		if(randInt(1,5) == 3){
+		if((new Random()).nextInt(5) == 3){
 			for (Peer entry: this.getPeersForChecking()) {
 				this.app.ping(entry.getIP(), entry.getPort());
 			}
@@ -74,17 +74,5 @@ public class Checking implements Runnable {
 		}
 
 		return toContact;
-	}
-
-	/**
-	 * It returns a random number between min and max parameters.
-	 *
-	 * @param min Lower boundary for radnom number
-	 * @param max Upper boundary for random number
-	 * @return random number
-	 */
-	private static int randInt(int min, int max) {
-		Random rand = new Random();
-		return rand.nextInt((max - min) + 1) + min;
 	}
 }

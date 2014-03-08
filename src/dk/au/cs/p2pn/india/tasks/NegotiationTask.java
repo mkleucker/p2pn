@@ -43,7 +43,6 @@ public class NegotiationTask extends DefaultAsyncTask {
 
 		// I only know one peer -> Add him / her
 		if (peers.size() == 1){
-			System.out.println("let's become neighbors!!!");
 			this.becomeNeighbor(peers.get(0).getIP(), peers.get(0).getPort());
 			return;
 		}

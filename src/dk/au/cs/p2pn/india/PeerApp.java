@@ -500,25 +500,20 @@ public class PeerApp {
 	}
 
 
-	public void nlistGraph(int[] peers, String dir, boolean all) throws IOException {
+	public String nlistGraph(int[] peers, String dir, boolean all) throws IOException {
 
-		PrintWriter output;
-		if (dir == null) {
-			output = new PrintWriter(System.out);
-		} else {
-			String fileName = dir.substring(0, dir.length());
-			output = new PrintWriter(fileName);
-		}
 
-		output.println("graph network {");
+		String outputVal = "";
+
+		outputVal += "graph network {\n";
 
 		if (!all && peers == null) {
-			output.println("      \"P" + this.peer.getId() + '(' + this.peer.getCapacity() + ")\";");
+			outputVal += "      \"P" + this.peer.getId() + '(' + this.peer.getCapacity() + ")\";\n";
 			Set<Map.Entry<String, Peer>> neighborSet = this.getNeighborList().entrySet();
 
 			for (Map.Entry<String, Peer> entry : neighborSet) {
 				Peer itPeer = entry.getValue();
-				output.println("      \"P" + this.peer.getId() + '(' + this.peer.getCapacity() + ")\" -- " + "\"P" + itPeer.getId() + '(' + itPeer.getCapacity() + ")\";");
+				outputVal += "      \"P" + this.peer.getId() + '(' + this.peer.getCapacity() + ")\" -- " + "\"P" + itPeer.getId() + '(' + itPeer.getCapacity() + ")\";\n";
 			}
 		} else {
 			//peers from the arguments
@@ -527,29 +522,27 @@ public class PeerApp {
 			HashMap<Integer, Peer> peerInvolved = new HashMap<Integer, Peer>();		
 
 			MapNeighborhoodTask nbTask = new MapNeighborhoodTask(this.peer, this);
-			HashMap<Peer, ArrayList<Peer>> topo = nbTask.getTopology();
-			Set<Peer> peerTopo = topo.keySet();
+			HashMap<Peer, ArrayList<Peer>> topology = nbTask.getTopology();
+			Set<Peer> peerTopology = topology.keySet();
 
-			System.out.print("The result is  ");
-			System.out.println(topo);
 
 			if (all) {
 				if (peers != null) {
 					logger.error("ERROR! When ALL is specified peers should be empty!");
-					return;
+					return "error";
 				}
-				for (Peer itPeer : peerTopo) {
+				for (Peer itPeer : peerTopology) {
 					peerIndicated.add(itPeer);
 					peerInvolved.put(itPeer.getId(), itPeer);
 				}
 			} else {
 				Arrays.sort(peers);
 				for (int i : peers) {
-					for (Peer itPeer : peerTopo) {
+					for (Peer itPeer : peerTopology) {
 						if (itPeer.getId() == i) {
 							peerIndicated.add(itPeer);
 							peerInvolved.put(itPeer.getId(), itPeer);
-							for (Peer peerEntry: topo.get(itPeer))
+							for (Peer peerEntry: topology.get(itPeer))
 								peerInvolved.put(peerEntry.getId(), peerEntry);
 						}
 					}
@@ -563,7 +556,7 @@ public class PeerApp {
 			Set<Map.Entry<Integer, Peer>> setInv = peerInvolved.entrySet();
 
 			for (Map.Entry<Integer, Peer> aPv : setInv) {
-				output.println("      \"P" + aPv.getValue().getId() + '(' + aPv.getValue().getCapacity() + ")\";");
+				outputVal += "      \"P" + aPv.getValue().getId() + '(' + aPv.getValue().getCapacity() + ")\";\n";
 			}
 
 			HashMap<Integer, Peer> peerIndict = new HashMap<Integer, Peer>();
@@ -573,7 +566,7 @@ public class PeerApp {
 			}
 
 			for (int i = 0; i < peerIndicated.size(); i++) {
-				ArrayList<Peer> nl = topo.get(peerIndicated.get(i));
+				ArrayList<Peer> nl = topology.get(peerIndicated.get(i));
 				for (int j = 0; j < nl.size(); j++) {
 					if (peerIndict.containsKey(nl.get(j).getId()) && !peerIndicated.get(i).smallerThan(nl.get(j)))
 						continue;
@@ -584,14 +577,25 @@ public class PeerApp {
 						}
 					}
 					if (contains) {
-						output.println("      \"P" + peerIndicated.get(i).getId() + '(' + peerIndicated.get(i).getCapacity() + ")\" -- " + "\"P" + nl.get(j).getId() + '(' + nl.get(j).getCapacity() + ")\";");
+						outputVal += "      \"P" + peerIndicated.get(i).getId() + '(' + peerIndicated.get(i).getCapacity() + ")\" -- " + "\"P" + nl.get(j).getId() + '(' + nl.get(j).getCapacity() + ")\";\n";
 					}
 				}
 
 			}
 		}
-		output.println("}");
+		outputVal += "}";
+
+		PrintWriter output;
+		if (dir == null) {
+			output = new PrintWriter(System.out);
+		} else {
+			String fileName = dir.substring(0, dir.length());
+			output = new PrintWriter(fileName);
+		}
+		output.write(outputVal);
 		output.close();
+
+		return outputVal;
 	}
 
 
