@@ -10,8 +10,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
-import dk.au.cs.p2pn.india.Peer;
-
 
 public class CommunicationConverter {
 
