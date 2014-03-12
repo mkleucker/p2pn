@@ -53,7 +53,6 @@ public class CommunicationConverter {
 		Hashtable<String, Vector> result = new Hashtable<String, Vector>();
 
 		for (Map.Entry<String, Peer> entry : rawData.entrySet()) {
-			// TODO: fix depth parameter
 			result.put(entry.getKey(), CommunicationConverter.createVector(entry.getValue()));
 		}
 
@@ -119,7 +118,7 @@ public class CommunicationConverter {
 		byte[] bytesArray = new byte[(int)fileSize];
 
 		int offset = 0;
-		int bytesRead = 0;
+		int bytesRead;
 		while (offset < bytesArray.length && (bytesRead=input.read(bytesArray, offset, bytesArray.length-offset)) >= 0) {
 			offset += bytesRead;
 		}

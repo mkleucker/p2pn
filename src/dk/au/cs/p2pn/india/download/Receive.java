@@ -1,6 +1,5 @@
 package dk.au.cs.p2pn.india.download;
 
-import dk.au.cs.p2pn.india.Peer;
 import dk.au.cs.p2pn.india.PeerApp;
 import dk.au.cs.p2pn.india.communication.ClientRequestFactory;
 import org.apache.logging.log4j.LogManager;
@@ -24,8 +23,7 @@ public class Receive implements Runnable{
 
 	String fileName;
 	PeerApp app;
-	Peer peer;
-	XmlRpcClient client;	
+	XmlRpcClient client;
 	String ip; 
 	int port; 
 
