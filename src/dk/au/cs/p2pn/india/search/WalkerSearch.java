@@ -2,9 +2,6 @@ package dk.au.cs.p2pn.india.search;
 
 import dk.au.cs.p2pn.india.Peer;
 
-/**
- * Created by max on 26/02/14.
- */
 public class WalkerSearch extends BasicSearch {
 
 	private int walkerCount;

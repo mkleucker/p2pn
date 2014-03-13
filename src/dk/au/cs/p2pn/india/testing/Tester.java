@@ -127,13 +127,7 @@ public class Tester {
 				}
 			}
 
-			Thread.sleep(3000);
-
-			for (PeerApp peer : peers) {
-				logger.info("{}", peer.plist());
-			}
-
-			Thread.sleep(3000);
+			Thread.sleep(5000);
 
 			for (PeerApp peer : peers) {
 				peer.startNegotiate();
@@ -141,6 +135,9 @@ public class Tester {
 
 			Thread.sleep(5000);
 
+			for (PeerApp peer : peers) {
+				logger.info("{}", peer.nlist());
+			}
 
 		} catch (Exception e) {
 
@@ -271,13 +268,7 @@ public class Tester {
 
 			Thread.sleep(2000);
 
-		/*
-		System.out.println("Peer 1's peer list is " + peer1.plist());
-		System.out.println("Peer 2's peer list is " + peer2.plist());
-		System.out.println("Peer 3's peer list is " + peer3.plist());
-		System.out.println("Peer 4's peer list is " + peer4.plist());
-		System.out.println("Peer 5's peer list is " + peer5.plist());
-		*/
+
 
 			peer1.startNegotiate();
 			peer3.startNegotiate();
@@ -289,25 +280,12 @@ public class Tester {
 
 			Thread.sleep(2000);
 
-		/*
-		System.out.println("Peer 1's peer list is " + peer1.plist());
-		System.out.println("Peer 2's peer list is " + peer2.plist());
-		System.out.println("Peer 3's peer list is " + peer3.plist());
-		System.out.println("Peer 4's peer list is " + peer4.plist());
-		System.out.println("Peer 5's peer list is " + peer5.plist());
-		*/
 
 			peer2.startNegotiate();
 			peer5.startNegotiate();
 
 			Thread.sleep(2000);
-		/*
-		System.out.println("Peer 1's neighbor list is " + peer1.getNeighborList());
-		System.out.println("Peer 2's neighbor list is " + peer2.getNeighborList());
-		System.out.println("Peer 3's neighbor list is " + peer3.getNeighborList());
-		System.out.println("Peer 4's neighbor list is " + peer4.getNeighborList());
-		System.out.println("Peer 5's neighbor list is " + peer5.getNeighborList());
-		*/
+
 			Thread.sleep(3000);
 
 			peer3.startAdvancedWalkerSearch("duck.mp3", 2, 2);
@@ -503,12 +481,28 @@ public class Tester {
 			ArrayList<PeerApp> peers = setupNetwork();
 			String shoot = "Stats\nBuildingNetwork:" + Reporter.getData().toString()+"\n";
 			Random random = new Random();
+			/*
+<<<<<<< HEAD
 			int fi = random.nextInt(peers.size());
 			peers.get(fi).uploadFile("file");
+=======
+*/
+
+			// Place files
+			PeerApp fileHolder = peers.get(random.nextInt(peers.size()));
+			PeerApp searchOrigin = peers.get(random.nextInt(peers.size()));
+
+			shoot += "Starting search from "+searchOrigin.getPeer().getId();
+
+			for(int i = 0; i <10; i++){
+				fileHolder.uploadFile("file" + i);
+			}
 
 			int r = random.nextInt(peers.size());
 			Reporter.resetReporter();
 
+			/*
+<<<<<<< HEAD
 			peers.get(r).startFloodSearch("file", 4);
 
 			Thread.sleep(3000);
@@ -578,6 +572,38 @@ public class Tester {
 			
 			peers.get(r).nlistGraph(null, "graph.dot", true);
 			
+=======
+	*/
+			searchOrigin.startFloodSearch("file0", 3);
+			Thread.sleep(5000);
+			shoot += "\nFloodSearch (ttl: 3): \n"+Reporter.getData().toString()+"\n";
+			Reporter.resetReporter();
+
+			searchOrigin.startFloodSearch("file1", 5);
+			Thread.sleep(5000);
+			shoot += "\nFloodSearch (ttl: 5): \n"+Reporter.getData().toString()+"\n";
+			Reporter.resetReporter();
+
+			searchOrigin.startFloodSearch("file2", 10);
+			Thread.sleep(5000);
+			shoot += "\nFloodSearch (ttl: 10): \n"+Reporter.getData().toString()+"\n";
+			Reporter.resetReporter();
+
+			searchOrigin.startWalkerSearch("file3", 3, 5);
+			Thread.sleep(5000);
+			shoot += "\nWalkerSearch (ttl: 3): \n"+Reporter.getData().toString()+"\n";
+			Reporter.resetReporter();
+
+			searchOrigin.startWalkerSearch("file4", 5, 5);
+			Thread.sleep(5000);
+			shoot += "\nWalkerSearch (ttl: 5): \n"+Reporter.getData().toString()+"\n";
+			Reporter.resetReporter();
+
+			searchOrigin.startWalkerSearch("file5", 10, 5);
+			Thread.sleep(5000);
+			shoot += "\nWalkerSearch (ttl: 10): \n"+Reporter.getData().toString()+"\n";
+			Reporter.resetReporter();
+
 			for (PeerApp peer : peers) {
 				peer.destroy();
 			}

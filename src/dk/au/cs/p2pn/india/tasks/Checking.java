@@ -20,6 +20,10 @@ public class Checking implements Runnable {
 		this.app = app;
 	}
 
+	public void setConnectionsPerRun(int val){
+		this.connectionsPerRun = val;
+	}
+
 	public void run (){
 		try{
 			this.checkConnection();

@@ -1,10 +1,15 @@
 package dk.au.cs.p2pn.india;
 
 public class Peer {
-	int id; // the id number for each Peer
-	String ip; // the IP 
-	int port; // the port number  
-	int capacity; // the maximum number of neighbors
+
+	/** ID */
+	private int id;
+	/** IP */
+	private String ip; // the IP
+	/** Port */
+	private int port; // the port number
+	/** Capacity */
+	private int capacity; // the maximum number of neighbors
 
 	/**
 	 * Constructor of the class Peer
