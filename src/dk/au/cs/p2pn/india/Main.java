@@ -30,13 +30,16 @@ public class Main {
 
 			this.reader = new BufferedReader(new InputStreamReader(System.in));
 
-			if (args.length != 3) {
-				this.peer = new PeerApp(0, "127.0.0.1", 18523, 9);
+			if (args.length < 2 || args.length > 4) {
+				this.peer = new PeerApp(0, 18523, 9);
 			} else {
+				if(args.length == 3){
+
+				}
 				int id = Integer.parseInt(args[0]);
 				String ip = args[1];
 				Integer port = Integer.parseInt(args[2]);
-				this.peer = new PeerApp(id, ip, port, 9);
+				this.peer = new PeerApp(id, ip, port, Integer.parseInt(args[3]));
 			}
 
 			this.parseInput();
@@ -114,7 +117,7 @@ public class Main {
 			// Proper syntax for kfind:
 			//   kfind _filename_ _ttl_ _numOfWalkers_
 			
-			if (input.substring(0, 5).equals("kfind") && input.length() > 6){
+			if (input.length() > 6 && input.substring(0, 5).equals("kfind")){
 				String[] args = input.substring(5).split(" ");
 				int ttl = 6;
 				if (args.length > 0){
@@ -133,7 +136,7 @@ public class Main {
 			/** Parsing the advanced walker search command */
 			//   akfind _filename_ _ttl_ _numOfWalkers_
 			
-			if (input.substring(0, 5).equals("afind") && input.length() > 6){
+			if (input.length() > 6 && input.substring(0, 5).equals("afind")){
 				String[] args = input.substring(6).split(" ");
 				int ttl = 6;
 				if (args.length > 0){

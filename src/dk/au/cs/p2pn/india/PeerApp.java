@@ -97,6 +97,16 @@ public class PeerApp {
 		}
 	}
 
+	public PeerApp(int id, int port){
+		try{
+			String ip = InetAddress.getLocalHost().getHostAddress();
+			this.setupPeer(id, ip, port, this.generateCapacity());
+		}catch (Exception e){
+			logger.error(e);
+			this.setupPeer(id, "127.0.0.1", port, this.generateCapacity());
+		}
+	}
+
 	/**
 	 * Calculates the capacity of a peer based on the power-law.
 	 *
