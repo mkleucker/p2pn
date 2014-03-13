@@ -42,8 +42,6 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg) {
-		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
-
 		this.app.addPeer(new Peer(IdArg, IPArg, portArg, capacityArg));
 		return CommunicationConverter.createVector(this.peer);
 	}
@@ -62,8 +60,6 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Vector pong(int IdArg, String IPArg, int portArg, int capacityArg, boolean isNeighborRequest) {
-		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
-
 		// Create Peer object
 		Peer inPeer = new Peer(IdArg, IPArg, portArg, capacityArg);
 		this.app.addPeer(inPeer);
@@ -84,8 +80,6 @@ public class CommunicationHandler {
 	}
 
 	public boolean responseNegotiate(Peer inPeer) {
-		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
-
 		if (this.app.neighborList.size() + this.app.openNeighborRequests.size() >= this.app.getPeer().getCapacity()) {
 			return false;
 		}
@@ -99,8 +93,6 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Hashtable<String, Vector> getPeerList() {
-		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
-
 		return CommunicationConverter.createVector(this.app.getPeerList());
 	}
 
@@ -130,8 +122,6 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Vector<Vector> getNeighborList() {
-		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
-
 		Hashtable<String, Vector> data = CommunicationConverter.createVector(this.app.getNeighborList());
 		return new Vector<Vector>(data.values());
 	}

@@ -38,8 +38,8 @@ public class ClientRequest extends XmlRpcClient {
 			throws XmlRpcException, IOException
 	{
 		Reporter.addEvent(ReporterMeasurements.BYTES_SENT, sizeOf(params));
-		Object retVal = super.execute(method, params);
 		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
+		Object retVal = super.execute(method, params);
 		Reporter.addEvent(ReporterMeasurements.BYTES_RECEIVED,sizeOf(retVal));
 		return retVal;
 	}

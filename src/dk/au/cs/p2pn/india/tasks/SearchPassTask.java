@@ -36,7 +36,7 @@ public class SearchPassTask extends DefaultAsyncTask {
 	@Override
 	public void run() {
 		try {
-
+			search.decreaseTtl();
 			if (search.getType() == SearchTypes.FLOOD_SEARCH) {
 				this.executeFloodSearch();
 			} else if (this.search.getType() == SearchTypes.K_WALKER_SEARCH){
