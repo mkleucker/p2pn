@@ -503,20 +503,81 @@ public class Tester {
 			ArrayList<PeerApp> peers = setupNetwork();
 			String shoot = "Stats\nBuildingNetwork:" + Reporter.getData().toString()+"\n";
 			Random random = new Random();
-			peers.get(random.nextInt(peers.size())).uploadFile("file");
-			peers.get(random.nextInt(peers.size())).uploadFile("file2");
+			int fi = random.nextInt(peers.size());
+			peers.get(fi).uploadFile("file");
+
+			int r = random.nextInt(peers.size());
+			Reporter.resetReporter();
+
+			peers.get(r).startFloodSearch("file", 4);
+
+			Thread.sleep(3000);
+			shoot += "\nFloodSearch with ttl 4: \n"+Reporter.getData().toString()+"\n";
 
 			Reporter.resetReporter();
 
-			peers.get(random.nextInt(peers.size())).startFloodSearch("file", 6);
+			peers.get(r).startFloodSearch("file", 5);
 
-			Thread.sleep(10000);
-			shoot += "\nFloodSearch: \n"+Reporter.getData().toString()+"\n";
+			Thread.sleep(3000);
+			shoot += "\nFloodSearch with ttl 5: \n"+Reporter.getData().toString()+"\n";
+
 			Reporter.resetReporter();
-			peers.get(random.nextInt(peers.size())).startWalkerSearch("file", 20, 3);
 
-			Thread.sleep(10000);
-			shoot += "\nWalkerSearch: \n"+Reporter.getData().toString()+"\n";
+			peers.get(r).startFloodSearch("file", 6);
+
+			Thread.sleep(3000);
+			shoot += "\nFloodSearch with ttl 6: \n"+Reporter.getData().toString()+"\n";
+
+			Reporter.resetReporter();
+
+			peers.get(r).startFloodSearch("file", 7);
+
+			Thread.sleep(3000);
+			shoot += "\nFloodSearch with ttl 7: \n"+Reporter.getData().toString()+"\n";
+
+			Reporter.resetReporter();
+
+			peers.get(r).startFloodSearch("file", 8);
+
+			Thread.sleep(3000);
+			shoot += "\nFloodSearch with ttl 8: \n"+Reporter.getData().toString()+"\n";
+
+			Reporter.resetReporter();
+
+			peers.get(r).startFloodSearch("file", 9);
+
+			Thread.sleep(3000);
+			shoot += "\nFloodSearch with ttl 9: \n"+Reporter.getData().toString()+"\n";
+
+			Reporter.resetReporter();
+
+			peers.get(r).startFloodSearch("file", 10);
+
+			Thread.sleep(3000);
+			shoot += "\nFloodSearch with ttl 10: \n"+Reporter.getData().toString()+"\n";
+
+			Reporter.resetReporter();
+			peers.get(r).startWalkerSearch("file", 10, 6);
+
+			Thread.sleep(3000);
+			shoot += "\nWalkerSearch with ttl 10 and 6 walkers: \n"+Reporter.getData().toString()+"\n";
+			
+			Reporter.resetReporter();
+			peers.get(r).startWalkerSearch("file", 10, 12);
+
+			Thread.sleep(3000);
+			shoot += "\nWalkerSearch with ttl 10 and 12 walkers: \n"+Reporter.getData().toString()+"\n";
+			
+			Reporter.resetReporter();
+			peers.get(r).startWalkerSearch("file", 10, 18);
+
+			Thread.sleep(3000);
+			shoot += "\nWalkerSearch with ttl 10 and 18 walkers: \n"+Reporter.getData().toString()+"\n";
+			
+			shoot += "\n" + "The random peer is " + r + " and the peer with the file is " + fi + "\n";
+			
+			peers.get(r).nlistGraph(null, "graph.dot", true);
+			
 			for (PeerApp peer : peers) {
 				peer.destroy();
 			}
