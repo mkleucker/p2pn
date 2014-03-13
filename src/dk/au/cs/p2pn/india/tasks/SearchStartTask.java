@@ -87,10 +87,12 @@ public class SearchStartTask extends DefaultAsyncTask implements Runnable {
 
 		Random rand = new Random();
 		for (int i = 0; i < num; i++){
-			int randomInt = rand.nextInt(possiblePeers.size());
-			Peer peer = possiblePeers.get(randomInt);
-			possiblePeers.remove(randomInt);
-			this.executeSearch(peer);
+			if (possiblePeers.size() > 0) {
+				int randomInt = rand.nextInt(possiblePeers.size());
+				Peer peer = possiblePeers.get(randomInt);
+				possiblePeers.remove(randomInt);
+				this.executeSearch(peer);
+			}
 		}
 
 	}
