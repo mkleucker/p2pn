@@ -7,11 +7,17 @@ import dk.au.cs.p2pn.india.helper.CommunicationConverter;
 import java.util.Vector;
 
 public abstract class BasicSearch {
-	private int ttl = 0;
+	/** ID **/
 	private String id;
+	/** FileName **/
 	private String filename;
+	/** Source **/
 	private Peer source;
+	/** Type **/
 	private SearchTypes type;
+	/** TTL **/
+	private int ttl = 0;
+
 
 
 

@@ -141,7 +141,6 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Vector respondSearch(Vector<Object> origin, String fileName, int ttl, String ident, int type, Vector<Object> path) {
-		Reporter.addEvent(ReporterMeasurements.MESSAGE_RECEIVED);
 		Reporter.addEvent(ReporterMeasurements.SEARCH_RECEIVED);
 
 		AdvancedWalkerSearch search;
@@ -172,6 +171,7 @@ public class CommunicationHandler {
 	 */
 	@SuppressWarnings("rawtypes")
 	public Vector respondSearch(Vector<Object> origin, String fileName, int ttl, String ident, int type) {
+		Reporter.addEvent(ReporterMeasurements.SEARCH_RECEIVED);
 
 		BasicSearch search;
 		Peer peer = CommunicationConverter.createPeer(origin);
@@ -203,7 +203,7 @@ public class CommunicationHandler {
 		// Send success
 		if (this.app.fileList.containsKey(search.getFilename())) {
 			// but only if i didn't yet.
-			if(!this.app.getSearchList().containsKey(search.getId())) {
+			//if(!this.app.getSearchList().containsKey(search.getId())) {
 				logger.info("Inside respondSearch, file matched, starting a new success thread");
 				if (search.getType() == SearchTypes.AK_WALKER_SEARCH) {
 					AdvancedWalkerSearch aWalkerSearch = (AdvancedWalkerSearch)search;
@@ -213,7 +213,7 @@ public class CommunicationHandler {
 				}
 				Thread success = new Thread(new SearchSuccessTask(search, this.app));
 				success.start();
-			}
+			//}
 			return;
 		}
 
